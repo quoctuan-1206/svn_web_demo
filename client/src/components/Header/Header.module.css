@@ -1,0 +1,231 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 16px 0;
+  transition:
+    background 240ms ease,
+    box-shadow 240ms ease,
+    border-color 240ms ease;
+  border-bottom: 1px solid transparent;
+}
+
+.scrolled {
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 var(--border);
+  border-bottom-color: var(--border);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.brandMark {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--green);
+}
+
+.brandTag {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--white-dim);
+  text-transform: uppercase;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+}
+
+.link {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--white-dim);
+  cursor: pointer;
+  transition:
+    color 180ms ease;
+}
+
+.link:hover {
+  color: var(--white);
+}
+
+.active {
+  color: var(--green);
+}
+
+.search {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.search:focus-within {
+  border-color: rgba(0, 230, 118, 0.24);
+  background: rgba(0, 230, 118, 0.06);
+  transform: translateY(-1px);
+}
+
+.searchInput {
+  width: 160px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--white);
+  font-size: 13px;
+}
+
+.searchInput::placeholder {
+  color: rgba(240, 242, 245, 0.55);
+}
+
+.searchBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--white);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease,
+    color 160ms ease;
+}
+
+.searchBtn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 230, 118, 0.22);
+  background: rgba(0, 230, 118, 0.1);
+  color: var(--green);
+}
+
+.langBtn {
+  background: transparent;
+  border: 0;
+  color: var(--white-dim);
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.langBtn:hover {
+  color: var(--green);
+}
+
+.burger {
+  display: none;
+  background: transparent;
+  border: 0;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 160ms ease;
+}
+
+.burger:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--white);
+  margin: 5px 0;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .burger {
+    display: inline-block;
+  }
+
+  .nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 64px;
+    background: rgba(10, 10, 10, 0.98);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(18px);
+    padding: 14px 24px 18px;
+    display: grid;
+    gap: 10px;
+    justify-items: start;
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 260ms ease,
+      opacity 260ms ease;
+  }
+
+  .open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .link {
+    width: 100%;
+    text-align: left;
+    padding: 10px 10px;
+    font-size: 16px;
+  }
+
+  .search {
+    width: 100%;
+    margin-left: 0;
+    justify-self: stretch;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+}

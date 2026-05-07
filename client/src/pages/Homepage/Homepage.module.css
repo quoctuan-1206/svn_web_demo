@@ -1,0 +1,174 @@
+/* =========================
+   FULLPAGE SCROLL + SNAP
+   ========================= */
+
+/* Scroll snap cho toàn trang */
+html:has([data-homepage-fullpage]) {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+
+  /* nếu có navbar fixed */
+  scroll-padding-top: 88px;
+}
+
+/* Trang Homepage nền trắng (chỉ khi có fullpage homepage) */
+body:has([data-homepage-fullpage]) {
+  background: #ffffff;
+  color: #0a0a0a;
+}
+
+/* reset */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* wrapper */
+.page {
+  width: 100%;
+  background: #ffffff;
+}
+
+/* =========================
+   SECTION FULL SCREEN
+   ========================= */
+
+.page > section {
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 100dvh;
+  /* min-height: 100dvh; */
+  position: relative;
+
+  /* Fullpage snap */
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  /* Layout */
+  display: block;
+
+  /* nếu có navbar fixed */
+  padding-top: 88px;
+  padding-bottom: 56px;
+
+  /* tránh tràn ngang */
+  overflow-x: hidden;
+
+  /* nội dung dài thì tự scroll */
+  overflow-y: auto;
+}
+
+/* Per-section route button (inline near title) */
+:global(.sectionRouteBtn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 34px;
+  padding: 0 16px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(0, 230, 118, 0.55);
+  background: rgba(6, 10, 10, 0.62);
+  color: rgba(0, 230, 118, 1);
+
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-indent: 1px;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.28),
+    0 0 0 3px rgba(0, 230, 118, 0.14);
+
+  backdrop-filter: blur(6px);
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+:global(.sectionRouteBtn:hover) {
+  transform: translateY(-1px);
+  background: rgba(0, 230, 118, 0.2);
+  border-color: rgba(0, 230, 118, 0.85);
+  color: var(--green);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.32),
+    0 0 0 5px rgba(0, 230, 118, 0.18);
+}
+
+:global(.sectionRouteBtn:focus-visible) {
+  outline: 3px solid rgba(0, 230, 118, 0.55);
+  outline-offset: 3px;
+}
+
+.footerFixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+}
+
+/* =========================
+   HERO SECTION
+   ========================= */
+
+.page > section#hero {
+  padding-top: 0;
+}
+
+/* News: do not allow internal scrolling */
+.page > section#tin-tuc {
+  overflow-y: hidden;
+}
+
+/* =========================
+   CONTENT STYLE
+   ========================= */
+
+.page > section h1 {
+  font-size: 64px;
+  margin: 0;
+}
+
+.page > section p {
+  font-size: 20px;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 768px) {
+  html:has([data-homepage-fullpage]) {
+    scroll-padding-top: 70px;
+  }
+
+  .page > section {
+    padding-top: 70px;
+    padding-bottom: 56px;
+  }
+
+  .page > section h1 {
+    font-size: 40px;
+  }
+
+  .page > section p {
+    font-size: 16px;
+  }
+
+  :global(.sectionRouteBtn) {
+    height: 32px;
+    padding: 0 14px;
+    font-size: 11px;
+  }
+}
