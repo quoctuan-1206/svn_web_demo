@@ -1,10 +1,17 @@
 .footer {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
   border-top: 1px solid rgba(255, 255, 255, 0.04);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .compact {
-  padding: 8px 0;
+  padding: 0;
+  width: 981.6px;
+  max-width: calc(100vw - 48px);
+  margin: 0 auto;
 }
 
 .row {

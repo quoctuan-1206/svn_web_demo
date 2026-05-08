@@ -40,7 +40,7 @@ export default function News() {
               to="/tin-tuc"
               aria-label="Tới trang Tin tức"
             >
-              Chuyển
+              ⭢
             </Link>
           </div>
           <p className={styles.sub}>To help you keep the world in motion</p>

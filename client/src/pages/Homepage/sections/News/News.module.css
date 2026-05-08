@@ -33,6 +33,26 @@
   flex-wrap: wrap;
 }
 
+/* Arrow button (shared class) matches section background */
+.section :global(.sectionRouteBtn) {
+  background: transparent;
+  border: 1px solid rgba(10, 10, 10, 0.12);
+  color: rgba(10, 10, 10, 0.82);
+  box-shadow: none;
+}
+
+.section :global(.sectionRouteBtn:hover) {
+  background: rgba(10, 10, 10, 0.08);
+  border-color: #ffffff;
+  color: rgba(10, 10, 10, 0.92);
+  box-shadow: none;
+}
+
+.section :global(.sectionRouteBtn:focus-visible) {
+  outline: 3px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 3px;
+}
+
 .title {
   font-family: var(--font-display);
 

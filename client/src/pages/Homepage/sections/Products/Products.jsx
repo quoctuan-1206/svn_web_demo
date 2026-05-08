@@ -1,16 +1,19 @@
 import styles from "./Products.module.css";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     axios
-      .get("/api/products")
+      .get("/api/products", { params: { page: 1, limit: 200 } })
       .then((r) => {
-        const data = Array.isArray(r.data) ? r.data : r.data?.data || [];
+        const raw = Array.isArray(r.data) ? r.data : r.data?.data || [];
+        const productItems = raw.filter((n) => n?.category === "product");
+        const onlyPublished = productItems.filter((n) => n?.isPublished === true);
+        const data = onlyPublished.length ? onlyPublished : productItems;
         setProducts(data.slice(0, 4));
       })
       .catch(() => {});
@@ -20,16 +23,19 @@ export default function Products() {
     <section className={styles.section} id="san-pham" aria-label="Products">
       <div className="container">
         <div className={styles.titleRow}>
-          <h2 className="section-title">Sản phẩm Công nghệ</h2>
+          <h2 className={styles.heading}>
+            <span className={styles.headingPrimary}>Sản phẩm</span>{" "}
+            <span className={styles.headingSecondary}>Công nghệ</span>
+          </h2>
           <Link
             className="sectionRouteBtn"
             to="/san-pham"
             aria-label="Tới trang Sản phẩm"
           >
-            Chuyển
+            ⭢
           </Link>
         </div>
-        <p className="section-sub">Thiết bị & Nền tảng</p>
+        <p className={styles.sub}>Thiết bị &amp; Nền tảng</p>
 
         <div className={styles.grid}>
           {products.map((p) => (
@@ -47,8 +53,6 @@ export default function Products() {
             </article>
           ))}
         </div>
-
-        <div className={styles.actions} />
       </div>
     </section>
   );

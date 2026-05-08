@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../admin.css";
 
 const API_BASE = "/api";
 
@@ -178,29 +179,29 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#070707]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_-10%,rgba(0,230,118,0.14),transparent_60%),radial-gradient(900px_circle_at_100%_0%,rgba(168,85,247,0.10),transparent_55%)]" />
-      <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4">
-        <div className="w-96 rounded-3xl border border-black/10 bg-white p-8 shadow-[0_30px_90px_rgba(0,0,0,0.60)]">
+    <div className="admin-shell">
+      <div className="admin-shell__bg" />
+      <div className="admin-shell__content mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4">
+        <div className="admin-card admin-fade-up w-full max-w-md p-8">
           <div className="mb-6 text-center">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#00e676] text-black shadow-[0_12px_30px_rgba(0,230,118,0.30)]">
+            <div className="admin-logo mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl shadow-[0_12px_30px_rgba(14,165,164,0.3)]">
               <span className="text-lg font-extrabold tracking-wide">SVN</span>
             </div>
-            <div className="text-xl font-semibold text-neutral-900">
+            <div className="text-xl font-semibold text-slate-900">
               Quản trị hệ thống
             </div>
-            <div className="mt-1 text-sm text-neutral-500">
+            <div className="mt-1 text-sm text-slate-500">
               SVN Automation Admin Panel
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-neutral-800">
+              <label className="mb-1 block text-sm font-medium text-slate-700">
                 Username
               </label>
               <div className="relative">
-                <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-neutral-400">
+                <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
                   <UserIcon className="h-5 w-5" />
                 </span>
                 <input
@@ -209,17 +210,17 @@ export default function LoginPage() {
                   onKeyDown={onKeyDown}
                   placeholder="Nhập username"
                   autoComplete="username"
-                  className="h-11 w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-3 text-sm text-neutral-900 outline-none transition focus:border-neutral-300 focus:ring-4 focus:ring-[#00e676]/20"
+                  className="admin-input h-11 w-full pl-10 pr-3 text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-neutral-800">
+              <label className="mb-1 block text-sm font-medium text-slate-700">
                 Password
               </label>
               <div className="relative">
-                <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-neutral-400">
+                <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
                   <LockIcon className="h-5 w-5" />
                 </span>
                 <input
@@ -229,12 +230,12 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Nhập mật khẩu"
                   autoComplete="current-password"
-                  className="h-11 w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-11 text-sm text-neutral-900 outline-none transition focus:border-neutral-300 focus:ring-4 focus:ring-[#00e676]/20"
+                  className="admin-input h-11 w-full pl-10 pr-11 text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute inset-y-0 right-2 inline-flex items-center justify-center rounded-lg px-2 text-neutral-500 hover:bg-neutral-100"
+                  className="admin-icon-button absolute inset-y-0 right-2 inline-flex items-center justify-center px-2"
                   aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 >
                   {showPassword ? (
@@ -256,13 +257,13 @@ export default function LoginPage() {
               type="button"
               disabled={!canSubmit}
               onClick={handleLogin}
-              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#00e676] px-4 text-sm font-semibold text-black shadow-[0_10px_30px_rgba(0,230,118,0.25)] transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
+              className="admin-button-primary inline-flex h-11 w-full items-center justify-center gap-2 px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? <Spinner /> : null}
               <span>{loading ? "Đang đăng nhập..." : "Đăng nhập"}</span>
             </button>
 
-            <div className="pt-2 text-center text-xs text-neutral-500">
+            <div className="pt-2 text-center text-xs text-slate-500">
               Token sẽ được lưu tại{" "}
               <span className="font-medium">localStorage</span> với key{" "}
               <span className="font-mono">svn_token</span>.

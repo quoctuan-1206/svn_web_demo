@@ -30,10 +30,8 @@ function StatusBadge({ active }) {
   return (
     <span
       className={[
-        "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold",
-        active
-          ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-300"
-          : "border-red-500/20 bg-red-500/15 text-red-300",
+        "admin-badge",
+        active ? "admin-badge-green" : "admin-badge-red",
       ].join(" ")}
     >
       {active ? "Hiển thị" : "Ẩn"}
@@ -50,28 +48,17 @@ function CategoryBadge({ category }) {
         : "—";
   const tone =
     category === "solution"
-      ? "border-purple-500/20 bg-purple-500/15 text-purple-300"
+      ? "admin-badge-purple"
       : category === "product"
-        ? "border-sky-500/20 bg-sky-500/15 text-sky-300"
-        : "border-white/10 bg-white/5 text-neutral-200";
+        ? "admin-badge-blue"
+        : "admin-badge-neutral";
 
-  return (
-    <span
-      className={[
-        "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold",
-        tone,
-      ].join(" ")}
-    >
-      {label}
-    </span>
-  );
+  return <span className={["admin-badge", tone].join(" ")}>{label}</span>;
 }
 
 function FieldLabel({ children }) {
   return (
-    <div className="mb-1 text-sm font-semibold text-neutral-200">
-      {children}
-    </div>
+    <div className="mb-1 text-sm font-semibold text-slate-700">{children}</div>
   );
 }
 
@@ -248,13 +235,13 @@ export default function ProductsAdmin() {
     const isEditing = Boolean(editingId);
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 admin-fade-up">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="text-xl font-bold text-white">
+            <div className="text-xl font-bold text-slate-900">
               {isEditing ? "Sửa sản phẩm" : "Thêm sản phẩm"}
             </div>
-            <div className="mt-1 text-sm text-neutral-400">
+            <div className="mt-1 text-sm text-slate-500">
               {isEditing ? `ID: ${editingId}` : "Tạo mới sản phẩm"}
             </div>
           </div>
@@ -263,7 +250,7 @@ export default function ProductsAdmin() {
             <button
               type="button"
               onClick={backToList}
-              className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="admin-button-outline inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
             >
               Quay lại
             </button>
@@ -271,7 +258,7 @@ export default function ProductsAdmin() {
               type="button"
               disabled={submitting}
               onClick={handleSubmit}
-              className="inline-flex h-10 items-center justify-center rounded-xl bg-[#00e676] px-4 text-sm font-semibold text-black transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
+              className="admin-button-primary inline-flex h-10 items-center justify-center px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? "Đang lưu..." : "Lưu"}
             </button>
@@ -279,13 +266,13 @@ export default function ProductsAdmin() {
         </div>
 
         {error ? (
-          <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {error}
           </div>
         ) : null}
 
         <div className="grid gap-4 lg:grid-cols-3">
-          <div className="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="admin-card lg:col-span-2 p-5">
             <div className="grid gap-4">
               <div>
                 <FieldLabel>Tiêu đề *</FieldLabel>
@@ -293,7 +280,7 @@ export default function ProductsAdmin() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Nhập tiêu đề"
-                  className="h-11 w-full rounded-xl border border-white/10 bg-[#0b0b0b] px-3 text-sm text-white outline-none transition focus:border-white/20 focus:ring-4 focus:ring-[#00e676]/15"
+                  className="admin-input h-11 w-full px-3 text-sm"
                 />
               </div>
 
@@ -304,7 +291,7 @@ export default function ProductsAdmin() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Nhập mô tả"
                   rows={5}
-                  className="w-full resize-none rounded-xl border border-white/10 bg-[#0b0b0b] px-3 py-3 text-sm text-white outline-none transition focus:border-white/20 focus:ring-4 focus:ring-[#00e676]/15"
+                  className="admin-textarea w-full resize-none px-3 py-3 text-sm"
                 />
               </div>
 
@@ -314,7 +301,7 @@ export default function ProductsAdmin() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="h-11 w-full rounded-xl border border-white/10 bg-[#0b0b0b] px-3 text-sm text-white outline-none transition focus:border-white/20 focus:ring-4 focus:ring-[#00e676]/15"
+                    className="admin-select h-11 w-full px-3 text-sm"
                   >
                     <option value="product">Sản phẩm</option>
                     <option value="solution">Giải pháp</option>
@@ -327,17 +314,17 @@ export default function ProductsAdmin() {
                     type="number"
                     value={order}
                     onChange={(e) => setOrder(Number(e.target.value))}
-                    className="h-11 w-full rounded-xl border border-white/10 bg-[#0b0b0b] px-3 text-sm text-white outline-none transition focus:border-white/20 focus:ring-4 focus:ring-[#00e676]/15"
+                    className="admin-input h-11 w-full px-3 text-sm"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between rounded-xl border border-white/10 bg-[#0b0b0b] px-4 py-3">
+              <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                 <div>
-                  <div className="text-sm font-semibold text-white">
+                  <div className="text-sm font-semibold text-slate-900">
                     Trạng thái
                   </div>
-                  <div className="text-xs text-neutral-400">
+                  <div className="text-xs text-slate-500">
                     Hiển thị / Ẩn sản phẩm
                   </div>
                 </div>
@@ -346,13 +333,13 @@ export default function ProductsAdmin() {
                   onClick={() => setIsActive((v) => !v)}
                   className={[
                     "relative inline-flex h-7 w-12 items-center rounded-full transition",
-                    isActive ? "bg-[#00e676]" : "bg-white/15",
+                    isActive ? "bg-teal-500" : "bg-slate-200",
                   ].join(" ")}
                   aria-label="Toggle hiển thị"
                 >
                   <span
                     className={[
-                      "inline-block h-5 w-5 transform rounded-full bg-black transition",
+                      "inline-block h-5 w-5 transform rounded-full bg-white shadow transition",
                       isActive ? "translate-x-6" : "translate-x-1",
                     ].join(" ")}
                   />
@@ -361,18 +348,20 @@ export default function ProductsAdmin() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="text-sm font-semibold text-white">Ảnh sản phẩm</div>
+          <div className="admin-card p-5">
+            <div className="text-sm font-semibold text-slate-900">
+              Ảnh sản phẩm
+            </div>
             <div className="mt-3">
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                className="block w-full text-sm text-neutral-300 file:mr-4 file:rounded-lg file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-white/15"
+                className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-slate-700 hover:file:bg-slate-200"
               />
             </div>
 
-            <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-[#0b0b0b]">
+            <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
               {currentImageUrl ? (
                 <img
                   src={currentImageUrl}
@@ -380,17 +369,17 @@ export default function ProductsAdmin() {
                   className="h-56 w-full object-cover"
                 />
               ) : (
-                <div className="flex h-56 items-center justify-center text-sm text-neutral-400">
+                <div className="flex h-56 items-center justify-center text-sm text-slate-500">
                   Chưa có ảnh
                 </div>
               )}
             </div>
 
             {existingImageUrl && previewUrl ? (
-              <div className="mt-3 text-xs text-neutral-400">
+              <div className="mt-3 text-xs text-slate-500">
                 Đang xem{" "}
-                <span className="font-semibold text-white">ảnh mới</span> (ảnh
-                cũ sẽ bị thay thế sau khi lưu)
+                <span className="font-semibold text-slate-900">ảnh mới</span>
+                (ảnh cũ sẽ bị thay thế sau khi lưu)
               </div>
             ) : null}
           </div>
@@ -400,11 +389,11 @@ export default function ProductsAdmin() {
           <button
             type="button"
             onClick={() => navigate("/admin/dashboard")}
-            className="text-sm font-semibold text-neutral-300 hover:text-white"
+            className="text-sm font-semibold text-slate-600 hover:text-slate-900"
           >
             ← Về Dashboard
           </button>
-          <div className="text-xs text-neutral-500">
+          <div className="text-xs text-slate-500">
             Submit bằng <span className="font-mono">FormData</span>
           </div>
         </div>
@@ -414,11 +403,13 @@ export default function ProductsAdmin() {
 
   // LIST VIEW
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 admin-fade-up">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="text-xl font-bold text-white">Quản lý sản phẩm</div>
-          <div className="mt-1 text-sm text-neutral-400">
+          <div className="text-xl font-bold text-slate-900">
+            Quản lý sản phẩm
+          </div>
+          <div className="mt-1 text-sm text-slate-500">
             {loadingList ? "Đang tải..." : `${items.length} sản phẩm`}
           </div>
         </div>
@@ -427,14 +418,14 @@ export default function ProductsAdmin() {
           <button
             type="button"
             onClick={fetchProducts}
-            className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="admin-button-outline inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
           >
             Refresh
           </button>
           <button
             type="button"
             onClick={openCreate}
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-[#00e676] px-4 text-sm font-semibold text-black transition hover:brightness-95"
+            className="admin-button-primary inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
           >
             + Thêm sản phẩm
           </button>
@@ -442,67 +433,67 @@ export default function ProductsAdmin() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px]">
+          <table className="admin-table min-w-[900px]">
             <thead>
-              <tr className="border-b border-white/10 text-left text-xs uppercase tracking-wide text-neutral-400">
-                <th className="px-4 py-3 font-semibold">STT</th>
-                <th className="px-4 py-3 font-semibold">Ảnh</th>
-                <th className="px-4 py-3 font-semibold">Tiêu đề</th>
-                <th className="px-4 py-3 font-semibold">Danh mục</th>
-                <th className="px-4 py-3 font-semibold">Trạng thái</th>
-                <th className="px-4 py-3 font-semibold">Tạo lúc</th>
-                <th className="px-4 py-3 font-semibold">Hành động</th>
+              <tr className="text-left">
+                <th>STT</th>
+                <th>Ảnh</th>
+                <th>Tiêu đề</th>
+                <th>Danh mục</th>
+                <th>Trạng thái</th>
+                <th>Tạo lúc</th>
+                <th>Hành động</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody>
               {items.map((item, idx) => (
                 <tr
                   key={item?._id || item?.id || idx}
-                  className="text-sm transition hover:bg-white/[0.04]"
+                  className="text-sm text-slate-700"
                 >
-                  <td className="px-4 py-3 text-neutral-300">{idx + 1}</td>
-                  <td className="px-4 py-3">
+                  <td className="text-slate-500">{idx + 1}</td>
+                  <td>
                     {item?.image ? (
                       <img
                         src={item.image}
                         alt={item?.title || "product"}
-                        className="h-10 w-10 rounded-lg object-cover"
+                        className="h-10 w-10 rounded-lg object-cover ring-1 ring-slate-200"
                       />
                     ) : (
-                      <div className="h-10 w-10 rounded-lg border border-white/10 bg-white/5" />
+                      <div className="h-10 w-10 rounded-lg border border-slate-200 bg-slate-100" />
                     )}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="font-semibold text-white">
+                  <td>
+                    <div className="font-semibold text-slate-900">
                       {item?.title || "(Không tên)"}
                     </div>
-                    <div className="mt-0.5 text-xs text-neutral-500">
+                    <div className="mt-0.5 text-xs text-slate-500">
                       Order:{" "}
                       {Number.isFinite(Number(item?.order)) ? item.order : 0}
                     </div>
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     <CategoryBadge category={item?.category} />
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     <StatusBadge active={item?.isActive !== false} />
                   </td>
-                  <td className="px-4 py-3 text-neutral-300">
+                  <td className="text-slate-600">
                     {formatDate(item?.createdAt)}
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => openEdit(item)}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
+                        className="admin-button-outline inline-flex h-9 w-9 items-center justify-center"
                         aria-label="Edit"
                       >
                         <Pencil className="h-4 w-4" />
@@ -510,7 +501,7 @@ export default function ProductsAdmin() {
                       <button
                         type="button"
                         onClick={() => handleDelete(item)}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10 text-red-200 transition hover:bg-red-500/15"
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
                         aria-label="Trash"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -523,11 +514,11 @@ export default function ProductsAdmin() {
               {!loadingList && items.length === 0 ? (
                 <tr>
                   <td
-                    className="px-4 py-8 text-center text-sm text-neutral-400"
+                    className="px-4 py-8 text-center text-sm text-slate-500"
                     colSpan={7}
                   >
                     Chưa có sản phẩm nào. Bấm{" "}
-                    <span className="font-semibold text-white">
+                    <span className="font-semibold text-slate-900">
                       + Thêm sản phẩm
                     </span>{" "}
                     để tạo mới.
@@ -539,7 +530,7 @@ export default function ProductsAdmin() {
         </div>
       </div>
 
-      <div className="text-xs text-neutral-500">
+      <div className="text-xs text-slate-500">
         Tip: API ảnh trả từ backend dạng{" "}
         <span className="font-mono">/uploads/...</span> hoặc URL đầy đủ.
       </div>

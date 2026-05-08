@@ -4,7 +4,6 @@ import Products from "./sections/Products/Products";
 import Solutions from "./sections/Solutions/Solutions";
 import Partners from "./sections/Partners/Partners";
 import News from "./sections/News/News";
-import Download from "./sections/Download/Download";
 import CTA from "./sections/CTA/CTA";
 import styles from "./Homepage.module.css";
 import { HomepageSectionProvider } from "../../context/HomepageSectionContext";
@@ -16,7 +15,6 @@ const SECTION_IDS = [
   "giai-phap",
   "doi-tac",
   "tin-tuc",
-  "tai-ve",
   "lien-he",
 ];
 
@@ -30,7 +28,6 @@ export default function Homepage() {
         <Solutions />
         <Partners />
         <News />
-        <Download />
         <CTA />
       </main>
     </HomepageSectionProvider>

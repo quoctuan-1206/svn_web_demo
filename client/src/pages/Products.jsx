@@ -9,9 +9,12 @@ export default function Products() {
   useEffect(() => {
     window.scrollTo(0, 0);
     axios
-      .get("/api/products")
+      .get("/api/products", { params: { page: 1, limit: 200 } })
       .then((r) => {
-        const data = Array.isArray(r.data) ? r.data : r.data?.data || [];
+        const raw = Array.isArray(r.data) ? r.data : r.data?.data || [];
+        const productItems = raw.filter((n) => n?.category === "product");
+        const onlyPublished = productItems.filter((n) => n?.isPublished === true);
+        const data = onlyPublished.length ? onlyPublished : productItems;
         setProducts(data);
       })
       .catch(() => {});

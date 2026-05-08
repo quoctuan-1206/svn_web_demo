@@ -47,10 +47,8 @@ function StatusBadge({ published }) {
   return (
     <span
       className={[
-        "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold",
-        published
-          ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-300"
-          : "border-yellow-500/25 bg-yellow-500/15 text-yellow-200",
+        "admin-badge",
+        published ? "admin-badge-green" : "admin-badge-amber",
       ].join(" ")}
     >
       {published ? "Đã xuất bản" : "Bản nháp"}
@@ -60,9 +58,7 @@ function StatusBadge({ published }) {
 
 function FieldLabel({ children }) {
   return (
-    <div className="mb-1 text-sm font-semibold text-neutral-200">
-      {children}
-    </div>
+    <div className="mb-1 text-sm font-semibold text-slate-700">{children}</div>
   );
 }
 
@@ -74,8 +70,8 @@ function TabButton({ active, onClick, children }) {
       className={[
         "inline-flex h-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition",
         active
-          ? "bg-[#00e676]/10 text-[#00e676] ring-1 ring-[#00e676]/25"
-          : "bg-white/5 text-neutral-200 hover:bg-white/10",
+          ? "bg-teal-50 text-teal-700 ring-1 ring-teal-200"
+          : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50",
       ].join(" ")}
     >
       {children}
@@ -289,13 +285,13 @@ export default function NewsAdmin() {
     const slugPreview = slug || slugFromTitle(title);
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 admin-fade-up">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="text-xl font-bold text-white">
+            <div className="text-xl font-bold text-slate-900">
               {isEditing ? "Sửa bài viết" : "Viết bài mới"}
             </div>
-            <div className="mt-1 text-sm text-neutral-400">
+            <div className="mt-1 text-sm text-slate-500">
               {isEditing ? `ID: ${editingId}` : "Tạo mới tin tức"}
             </div>
           </div>
@@ -304,7 +300,7 @@ export default function NewsAdmin() {
             <button
               type="button"
               onClick={backToList}
-              className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="admin-button-outline inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
             >
               Quay lại
             </button>
@@ -312,7 +308,7 @@ export default function NewsAdmin() {
               type="button"
               disabled={submitting}
               onClick={handleSubmit}
-              className="inline-flex h-10 items-center justify-center rounded-xl bg-[#00e676] px-4 text-sm font-semibold text-black transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
+              className="admin-button-primary inline-flex h-10 items-center justify-center px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? "Đang lưu..." : "Lưu"}
             </button>
@@ -320,13 +316,13 @@ export default function NewsAdmin() {
         </div>
 
         {error ? (
-          <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {error}
           </div>
         ) : null}
 
         <div className="grid gap-4 lg:grid-cols-3">
-          <div className="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="admin-card lg:col-span-2 p-5">
             <div className="grid gap-4">
               <div>
                 <FieldLabel>Tiêu đề *</FieldLabel>
@@ -335,11 +331,11 @@ export default function NewsAdmin() {
                   onChange={(e) => setTitle(e.target.value)}
                   onBlur={handleTitleBlur}
                   placeholder="Nhập tiêu đề"
-                  className="h-11 w-full rounded-xl border border-white/10 bg-[#0b0b0b] px-3 text-sm text-white outline-none transition focus:border-white/20 focus:ring-4 focus:ring-[#00e676]/15"
+                  className="admin-input h-11 w-full px-3 text-sm"
                 />
-                <div className="mt-2 text-xs text-neutral-400">
+                <div className="mt-2 text-xs text-slate-500">
                   Slug preview:{" "}
-                  <span className="font-mono text-white">
+                  <span className="font-mono text-slate-900">
                     {slugPreview || "—"}
                   </span>
                 </div>
@@ -350,7 +346,7 @@ export default function NewsAdmin() {
                 <input
                   value={slugPreview}
                   readOnly
-                  className="h-11 w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-neutral-200 outline-none"
+                  className="h-11 w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100 px-3 text-sm text-slate-700 outline-none"
                 />
               </div>
 
@@ -361,7 +357,7 @@ export default function NewsAdmin() {
                   onChange={(e) => setExcerpt(e.target.value)}
                   rows={3}
                   placeholder="Nhập tóm tắt"
-                  className="w-full resize-none rounded-xl border border-white/10 bg-[#0b0b0b] px-3 py-3 text-sm text-white outline-none transition focus:border-white/20 focus:ring-4 focus:ring-[#00e676]/15"
+                  className="admin-textarea w-full resize-none px-3 py-3 text-sm"
                 />
               </div>
 
@@ -372,7 +368,7 @@ export default function NewsAdmin() {
                   onChange={(e) => setContent(e.target.value)}
                   rows={8}
                   placeholder="Nhập nội dung"
-                  className="w-full resize-none rounded-xl border border-white/10 bg-[#0b0b0b] px-3 py-3 text-sm text-white outline-none transition focus:border-white/20 focus:ring-4 focus:ring-[#00e676]/15"
+                  className="admin-textarea w-full resize-none px-3 py-3 text-sm"
                 />
               </div>
 
@@ -383,17 +379,17 @@ export default function NewsAdmin() {
                     type="date"
                     value={publishedAt}
                     onChange={(e) => setPublishedAt(e.target.value)}
-                    className="h-11 w-full rounded-xl border border-white/10 bg-[#0b0b0b] px-3 text-sm text-white outline-none transition focus:border-white/20 focus:ring-4 focus:ring-[#00e676]/15"
+                    className="admin-input h-11 w-full px-3 text-sm"
                   />
                 </div>
 
                 <div className="flex items-end">
-                  <div className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-[#0b0b0b] px-4 py-3">
+                  <div className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                     <div>
-                      <div className="text-sm font-semibold text-white">
+                      <div className="text-sm font-semibold text-slate-900">
                         Trạng thái
                       </div>
-                      <div className="text-xs text-neutral-400">
+                      <div className="text-xs text-slate-500">
                         {isPublished ? "Xuất bản" : "Bản nháp"}
                       </div>
                     </div>
@@ -402,13 +398,13 @@ export default function NewsAdmin() {
                       onClick={() => setIsPublished((v) => !v)}
                       className={[
                         "relative inline-flex h-7 w-12 items-center rounded-full transition",
-                        isPublished ? "bg-[#00e676]" : "bg-white/15",
+                        isPublished ? "bg-teal-500" : "bg-slate-200",
                       ].join(" ")}
                       aria-label="Toggle xuất bản"
                     >
                       <span
                         className={[
-                          "inline-block h-5 w-5 transform rounded-full bg-black transition",
+                          "inline-block h-5 w-5 transform rounded-full bg-white shadow transition",
                           isPublished ? "translate-x-6" : "translate-x-1",
                         ].join(" ")}
                       />
@@ -419,18 +415,20 @@ export default function NewsAdmin() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="text-sm font-semibold text-white">Ảnh bài viết</div>
+          <div className="admin-card p-5">
+            <div className="text-sm font-semibold text-slate-900">
+              Ảnh bài viết
+            </div>
             <div className="mt-3">
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                className="block w-full text-sm text-neutral-300 file:mr-4 file:rounded-lg file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-white/15"
+                className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-slate-700 hover:file:bg-slate-200"
               />
             </div>
 
-            <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-[#0b0b0b]">
+            <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
               {currentImageUrl ? (
                 <img
                   src={currentImageUrl}
@@ -438,17 +436,17 @@ export default function NewsAdmin() {
                   className="h-56 w-full object-cover"
                 />
               ) : (
-                <div className="flex h-56 items-center justify-center text-sm text-neutral-400">
+                <div className="flex h-56 items-center justify-center text-sm text-slate-500">
                   Chưa có ảnh
                 </div>
               )}
             </div>
 
             {existingImageUrl && previewUrl ? (
-              <div className="mt-3 text-xs text-neutral-400">
+              <div className="mt-3 text-xs text-slate-500">
                 Đang xem{" "}
-                <span className="font-semibold text-white">ảnh mới</span> (ảnh
-                cũ sẽ bị thay thế sau khi lưu)
+                <span className="font-semibold text-slate-900">ảnh mới</span>
+                (ảnh cũ sẽ bị thay thế sau khi lưu)
               </div>
             ) : null}
           </div>
@@ -459,11 +457,13 @@ export default function NewsAdmin() {
 
   // LIST VIEW
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 admin-fade-up">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="text-xl font-bold text-white">Quản lý tin tức</div>
-          <div className="mt-1 text-sm text-neutral-400">
+          <div className="text-xl font-bold text-slate-900">
+            Quản lý tin tức
+          </div>
+          <div className="mt-1 text-sm text-slate-500">
             {loadingList
               ? "Đang tải..."
               : `Trang ${page}/${pages} · Tổng ${total} bài`}
@@ -474,14 +474,14 @@ export default function NewsAdmin() {
           <button
             type="button"
             onClick={() => fetchNews(page)}
-            className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="admin-button-outline inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
           >
             Refresh
           </button>
           <button
             type="button"
             onClick={openCreate}
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-[#00e676] px-4 text-sm font-semibold text-black transition hover:brightness-95"
+            className="admin-button-primary inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
           >
             + Viết bài
           </button>
@@ -504,49 +504,49 @@ export default function NewsAdmin() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px]">
+          <table className="admin-table min-w-[900px]">
             <thead>
-              <tr className="border-b border-white/10 text-left text-xs uppercase tracking-wide text-neutral-400">
-                <th className="px-4 py-3 font-semibold">STT</th>
-                <th className="px-4 py-3 font-semibold">Ảnh</th>
-                <th className="px-4 py-3 font-semibold">Tiêu đề</th>
-                <th className="px-4 py-3 font-semibold">Ngày đăng</th>
-                <th className="px-4 py-3 font-semibold">Trạng thái</th>
-                <th className="px-4 py-3 font-semibold">Hành động</th>
+              <tr className="text-left">
+                <th>STT</th>
+                <th>Ảnh</th>
+                <th>Tiêu đề</th>
+                <th>Ngày đăng</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody>
               {filteredItems.map((item, idx) => (
                 <tr
                   key={item?._id || item?.id || idx}
-                  className="text-sm transition hover:bg-white/[0.04]"
+                  className="text-sm text-slate-700"
                 >
-                  <td className="px-4 py-3 text-neutral-300">
+                  <td className="text-slate-500">
                     {(page - 1) * limit + idx + 1}
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     {item?.image ? (
                       <img
                         src={item.image}
                         alt={item?.title || "news"}
-                        className="h-10 w-10 rounded-lg object-cover"
+                        className="h-10 w-10 rounded-lg object-cover ring-1 ring-slate-200"
                       />
                     ) : (
-                      <div className="h-10 w-10 rounded-lg border border-white/10 bg-white/5" />
+                      <div className="h-10 w-10 rounded-lg border border-slate-200 bg-slate-100" />
                     )}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="font-semibold text-white">
+                  <td>
+                    <div className="font-semibold text-slate-900">
                       {item?.title || "(Không tiêu đề)"}
                     </div>
-                    <div className="mt-0.5 text-xs text-neutral-500">
+                    <div className="mt-0.5 text-xs text-slate-500">
                       {item?.slug ? (
                         <span className="font-mono">{item.slug}</span>
                       ) : (
@@ -554,18 +554,18 @@ export default function NewsAdmin() {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-neutral-300">
+                  <td className="text-slate-600">
                     {formatDate(item?.publishedAt || item?.createdAt)}
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     <StatusBadge published={Boolean(item?.isPublished)} />
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => openEdit(item)}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
+                        className="admin-button-outline inline-flex h-9 w-9 items-center justify-center"
                         aria-label="Edit"
                       >
                         <Pencil className="h-4 w-4" />
@@ -573,7 +573,7 @@ export default function NewsAdmin() {
                       <button
                         type="button"
                         onClick={() => handleDelete(item)}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10 text-red-200 transition hover:bg-red-500/15"
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
                         aria-label="Trash"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -586,7 +586,7 @@ export default function NewsAdmin() {
               {!loadingList && filteredItems.length === 0 ? (
                 <tr>
                   <td
-                    className="px-4 py-8 text-center text-sm text-neutral-400"
+                    className="px-4 py-8 text-center text-sm text-slate-500"
                     colSpan={6}
                   >
                     Không có bài viết nào trong tab này.
@@ -599,24 +599,24 @@ export default function NewsAdmin() {
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-sm text-neutral-400">10 bài / trang</div>
+        <div className="text-sm text-slate-500">10 bài / trang</div>
         <div className="flex items-center gap-2">
           <button
             type="button"
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            className="admin-button-outline inline-flex h-10 items-center justify-center px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
           >
             ← Trước
           </button>
-          <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white">
+          <div className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
             {page} / {pages}
           </div>
           <button
             type="button"
             disabled={page >= pages}
             onClick={() => setPage((p) => Math.min(pages, p + 1))}
-            className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            className="admin-button-outline inline-flex h-10 items-center justify-center px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
           >
             Sau →
           </button>

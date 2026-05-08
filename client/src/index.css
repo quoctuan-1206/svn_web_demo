@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./admin/admin.css";
 
 :root {
   --black: #0a0a0a;
@@ -30,8 +31,8 @@ html {
 }
 
 body {
-  background: var(--black);
-  color: var(--white);
+  background: #ffffff;
+  color: #0f172a;
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.6;
@@ -40,7 +41,7 @@ body {
 
 /* Fixed footer support (non-homepage pages) */
 .has-fixed-footer {
-  padding-bottom: 56px;
+  padding-bottom: 42.2px;
 }
 
 .global-footer-fixed {
@@ -138,4 +139,3 @@ h4 {
 ::selection {
   background: rgba(0, 230, 118, 0.22);
 }
-

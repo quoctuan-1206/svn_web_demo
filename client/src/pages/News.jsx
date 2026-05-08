@@ -20,9 +20,16 @@ export default function News() {
   useEffect(() => {
     window.scrollTo(0, 0);
     axios
-      .get("/api/news")
+      .get("/api/news", { params: { page: 1, limit: 100 } })
       .then((r) => {
-        const data = Array.isArray(r.data) ? r.data : r.data?.data || [];
+        const raw = Array.isArray(r.data) ? r.data : r.data?.data || [];
+        const onlyPublished = raw.filter((n) => n?.isPublished === true);
+        const data = onlyPublished.length ? onlyPublished : raw;
+        data.sort((a, b) => {
+          const da = new Date(a?.publishedAt || a?.date || a?.createdAt || 0).getTime();
+          const db = new Date(b?.publishedAt || b?.date || b?.createdAt || 0).getTime();
+          return db - da;
+        });
         setNews(data);
       })
       .catch(() => {});
@@ -44,24 +51,42 @@ export default function News() {
 
       <section className="page-content">
         <div className="container">
-          <div className="news-page-grid">
-            {news.map((n) => (
-              <article key={n._id || n.id} className="news-card">
-                <div className="news-img-wrap">
-                  {n.image ? <img src={n.image} alt={n.title} /> : null}
+          <div className="prod-list">
+            {news.length ? (
+              news.map((n, i) => (
+                <div
+                  key={n._id || n.id}
+                  className={`prod-item ${i % 2 !== 0 ? "reverse" : ""}`}
+                >
+                  <div className="prod-img">
+                    {n.image ? <img src={n.image} alt={n.title} /> : null}
+                  </div>
+
+                  <div className="prod-text">
+                    <span
+                      className="card-cat"
+                      style={{ display: "inline-block", marginBottom: 16 }}
+                    >
+                      {formatDate(n.publishedAt || n.date || n.createdAt) ||
+                        "Tin tức"}
+                    </span>
+                    <h2>{n.title}</h2>
+                    <p>{n.excerpt || n.content}</p>
+                    <Link
+                      to="/tin-tuc"
+                      className="btn-primary"
+                      style={{ display: "inline-block", marginTop: 24 }}
+                    >
+                      Xem chi tiết
+                    </Link>
+                  </div>
                 </div>
-                <div className="news-body">
-                  <span className="news-date">
-                    {formatDate(n.publishedAt || n.date)}
-                  </span>
-                  <h3>{n.title}</h3>
-                  <p>{n.excerpt || n.content}</p>
-                  <Link to="/tin-tuc" className="card-link">
-                    Đọc thêm →
-                  </Link>
-                </div>
-              </article>
-            ))}
+              ))
+            ) : (
+              <p style={{ color: "var(--white-dim)" }}>
+                Chưa có tin tức / sự kiện nào được thêm.
+              </p>
+            )}
           </div>
         </div>
       </section>

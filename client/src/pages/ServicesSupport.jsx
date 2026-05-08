@@ -31,33 +31,13 @@ const SERVICES = [
 
 export default function ServicesSupport() {
   return (
-    <PageShell
-      eyebrow="Dịch vụ & Hỗ trợ"
-      title={
-        <>
-          Dịch vụ <span className="green">và Hỗ Trợ</span>
-        </>
-      }
-      subtitle="Gói dịch vụ đi kèm giúp dự án vận hành bền vững: chuẩn hóa, chuyển giao và hỗ trợ dài hạn."
-    >
-      <div className={styles.grid}>
-        {SERVICES.map((s) => (
-          <div key={s.title} className={styles.card}>
-            <div className={styles.title}>{s.title}</div>
-            <div className={styles.desc}>{s.desc}</div>
-          </div>
-        ))}
+    <main className="page">
+      <div className="container">
+        <p className="page-eyebrow">Dịch vụ & Hỗ trợ</p>
+        <h1>Dịch vụ <span className="green">và Hỗ Trợ</span></h1>
+        <p className="page-desc">Đây là trang Dịch vụ & Hỗ trợ</p>
       </div>
-
-      <div className={styles.cta}>
-        <div className={styles.ctaText}>
-          Cần tư vấn gói dịch vụ phù hợp cho nhà máy của bạn?
-        </div>
-        <Link className={styles.ctaBtn} to="/lien-he">
-          Liên hệ ngay →
-        </Link>
-      </div>
-    </PageShell>
+    </main>
   );
 }
 

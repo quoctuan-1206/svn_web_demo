@@ -4,19 +4,12 @@ import styles from "./PartnersPage.module.css";
 
 export default function PartnersPage() {
   return (
-    <PageShell
-      eyebrow="Đối tác"
-      title={
-        <>
-          Đối Tác <span className="green">được chứng nhận</span>
-        </>
-      }
-      subtitle="Trang Đối Tác (route `/doi-tac`) đồng nhất với section `#doi-tac` trên landing."
-    >
-      <div className={styles.embed}>
-        <Partners />
+    <main className="page">
+      <div className="container">
+        <p className="page-eyebrow">Đối tác</p>
+        <h1>Đối Tác <span className="green">được chứng nhận</span></h1>
+        <p className="page-desc">Đây là trang Đối Tác</p>
       </div>
-    </PageShell>
+    </main>
   );
 }
-

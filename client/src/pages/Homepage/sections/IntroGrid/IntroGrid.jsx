@@ -14,7 +14,7 @@ export default function IntroGrid() {
             to="/gioi-thieu"
             aria-label="Tới trang Giới thiệu"
           >
-            Chuyển
+            ⭢
           </Link>
         </div>
         <p className={styles.sub}>

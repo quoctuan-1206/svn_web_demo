@@ -4,17 +4,19 @@
   left: 0;
   right: 0;
   z-index: 50;
-  padding: 16px 0;
+  height: 70px;
+  padding: 0;
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(14px);
   transition:
     background 240ms ease,
     box-shadow 240ms ease,
     border-color 240ms ease;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--border);
 }
 
 .scrolled {
-  background: rgba(10, 10, 10, 0.92);
-  backdrop-filter: blur(14px);
+  background: rgba(10, 10, 10, 0.96);
   box-shadow: 0 1px 0 var(--border);
   border-bottom-color: var(--border);
 }
@@ -24,16 +26,23 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 12px;
+  height: 100%;
 }
 
 .brand {
   display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   background: transparent;
   border: 0;
   cursor: pointer;
-  padding: 4px 0;
+  padding: 0;
+}
+
+.logo {
+  display: block;
+  height: 28px;
+  width: auto;
 }
 
 .brandMark {
@@ -76,8 +85,7 @@
   border: 1px solid transparent;
   color: var(--white-dim);
   cursor: pointer;
-  transition:
-    color 180ms ease;
+  transition: color 180ms ease;
 }
 
 .link:hover {
@@ -190,10 +198,9 @@
     position: fixed;
     left: 0;
     right: 0;
-    top: 64px;
+    top: 56px;
     background: rgba(10, 10, 10, 0.98);
     border-top: 1px solid var(--border);
-    backdrop-filter: blur(18px);
     padding: 14px 24px 18px;
     display: grid;
     gap: 10px;
