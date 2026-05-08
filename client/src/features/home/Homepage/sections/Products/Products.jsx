@@ -12,9 +12,8 @@ export default function Products() {
       .then((r) => {
         const raw = Array.isArray(r.data) ? r.data : r.data?.data || [];
         const productItems = raw.filter((n) => n?.category === "product");
-        const onlyPublished = productItems.filter((n) => n?.isPublished === true);
-        const data = onlyPublished.length ? onlyPublished : productItems;
-        setProducts(data.slice(0, 4));
+        // Public API đã lọc isActive=true; ở đây chỉ cần lấy đúng category.
+        setProducts(productItems.slice(0, 4));
       })
       .catch(() => {});
   }, []);
@@ -50,6 +49,16 @@ export default function Products() {
               ) : null}
               <div className={styles.overlay} aria-hidden="true" />
               <h3 className={styles.cardTitle}>{p.title}</h3>
+              <div className={styles.cardBody}>
+                <div className={styles.cardActions}>
+                  <Link className={styles.cardLink} to="/san-pham">
+                    Xem thêm →
+                  </Link>
+                  <Link className={styles.cardCta} to="/lien-he">
+                    Tư vấn
+                  </Link>
+                </div>
+              </div>
             </article>
           ))}
         </div>

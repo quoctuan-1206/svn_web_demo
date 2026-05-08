@@ -12,9 +12,8 @@ export default function Solutions() {
       .then((r) => {
         const raw = Array.isArray(r.data) ? r.data : r.data?.data || [];
         const solutionItems = raw.filter((n) => n?.category === "solution");
-        const onlyPublished = solutionItems.filter((n) => n?.isPublished === true);
-        const data = onlyPublished.length ? onlyPublished : solutionItems;
-        setSolutions(data.slice(0, 3));
+        // Public API đã lọc isActive=true; ở đây chỉ cần lấy đúng category.
+        setSolutions(solutionItems.slice(0, 3));
       })
       .catch(() => {});
   }, []);

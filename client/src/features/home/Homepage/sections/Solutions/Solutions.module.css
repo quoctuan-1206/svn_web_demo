@@ -58,7 +58,7 @@
   box-shadow:
     0 16px 40px rgba(2, 8, 23, 0.10),
     0 2px 8px rgba(2, 8, 23, 0.06);
-  min-height: 310px;
+  min-height: 420px;
   cursor: default;
   transition:
     transform 200ms ease,
@@ -103,7 +103,7 @@
   right: 0;
   bottom: 0;
   z-index: 2;
-  padding: 14px 16px 12px;
+  padding: 16px 16px 14px;
   background: rgba(15, 23, 42, 0.72);
   backdrop-filter: blur(8px);
 }
@@ -125,7 +125,7 @@
   font-size: 12px;
   line-height: 1.55;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -159,7 +159,7 @@
   }
 
   .card {
-    min-height: 240px;
+    min-height: 360px;
   }
 
   .cardTitle {
