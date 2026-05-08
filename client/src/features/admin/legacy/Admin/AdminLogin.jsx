@@ -44,28 +44,37 @@ const AdminLogin = () => {
 
   return (
     <div className="admin-login-container">
-      <div className="login-box">
-        <h1>Admin Login</h1>
+      <div className="login-shell">
+        <div className="login-left" aria-hidden="true">
+          <div className="login-brand">SVN Automation</div>
+          <div className="login-tagline">
+            Đăng nhập quản trị để quản lý sản phẩm, tin tức và nội dung hệ thống.
+          </div>
+        </div>
+
+        <div className="login-box">
+          <h1 className="login-title">Đăng nhập</h1>
+          <p className="login-sub">Admin portal</p>
         <form onSubmit={handleLogin}>
           <div className="form-group">
-            <label>Username:</label>
+            <label>Tài khoản</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="Nhập username"
+              autoComplete="username"
             />
           </div>
 
           <div className="form-group">
-            <label>Password:</label>
+            <label>Mật khẩu</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Nhập password"
+              autoComplete="current-password"
             />
           </div>
 
@@ -75,6 +84,7 @@ const AdminLogin = () => {
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
         </form>
+        </div>
       </div>
     </div>
   );

@@ -4,54 +4,6 @@ import "../admin.css";
 
 const API_BASE = "/api";
 
-function UserIcon(props) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      className={props.className}
-    >
-      <path
-        d="M20 21a8 8 0 1 0-16 0"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-      <path
-        d="M12 13a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function LockIcon(props) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      className={props.className}
-    >
-      <path
-        d="M7 11V8a5 5 0 0 1 10 0v3"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-      <path
-        d="M6.5 11h11A2.5 2.5 0 0 1 20 13.5v6A2.5 2.5 0 0 1 17.5 22h-11A2.5 2.5 0 0 1 4 19.5v-6A2.5 2.5 0 0 1 6.5 11Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function EyeIcon(props) {
   return (
     <svg
@@ -181,92 +133,94 @@ export default function LoginPage() {
   return (
     <div className="admin-shell">
       <div className="admin-shell__bg" />
-      <div className="admin-shell__content mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4">
-        <div className="admin-card admin-fade-up w-full max-w-md p-8">
-          <div className="mb-6 text-center">
-            <div className="admin-logo mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl shadow-[0_12px_30px_rgba(14,165,164,0.3)]">
-              <span className="text-lg font-extrabold tracking-wide">SVN</span>
-            </div>
-            <div className="text-xl font-semibold text-slate-900">
-              Quản trị hệ thống
-            </div>
-            <div className="mt-1 text-sm text-slate-500">
-              SVN Automation Admin Panel
+      <div className="admin-shell__content admin-login">
+        <div className="admin-login__grid">
+          <div className="admin-login__left">
+            <div className="admin-login__brand">SVN Automation</div>
+            <div className="admin-login__headline">Admin Panel</div>
+            <div className="admin-login__tagline">
+              Đăng nhập để quản lý sản phẩm, giải pháp và tin tức.
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Username
-              </label>
-              <div className="relative">
-                <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
-                  <UserIcon className="h-5 w-5" />
-                </span>
+          <div className="admin-card admin-fade-up admin-login__card">
+            <div className="admin-login__cardHeader">
+              <div className="admin-logo admin-login__logo">
+                <span className="admin-login__logoText">SVN</span>
+              </div>
+              <div>
+                <div className="admin-login__cardTitle">Đăng nhập</div>
+                <div className="admin-login__cardSub">
+                  Quản trị hệ thống SVN Automation
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Username
+                </label>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   onKeyDown={onKeyDown}
                   placeholder="Nhập username"
                   autoComplete="username"
-                  className="admin-input h-11 w-full pl-10 pr-3 text-sm"
+                  className="admin-input admin-login__input w-full px-3 text-sm"
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Password
-              </label>
-              <div className="relative">
-                <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
-                  <LockIcon className="h-5 w-5" />
-                </span>
-                <input
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={onKeyDown}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Nhập mật khẩu"
-                  autoComplete="current-password"
-                  className="admin-input h-11 w-full pl-10 pr-11 text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="admin-icon-button absolute inset-y-0 right-2 inline-flex items-center justify-center px-2"
-                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                >
-                  {showPassword ? (
-                    <EyeOffIcon className="h-5 w-5" />
-                  ) : (
-                    <EyeIcon className="h-5 w-5" />
-                  )}
-                </button>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Password
+                </label>
+                <div className="admin-login__passwordRow">
+                  <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={onKeyDown}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Nhập mật khẩu"
+                    autoComplete="current-password"
+                    className="admin-input admin-login__input w-full px-3 text-sm"
+                  />
+                  <button
+                    type="button"
+                    className="admin-login__togglePw"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  >
+                    {showPassword ? (
+                      <EyeOffIcon className="admin-login__togglePwIcon" />
+                    ) : (
+                      <EyeIcon className="admin-login__togglePwIcon" />
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {error ? (
-              <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
-                {error}
+              {error ? (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+                  {error}
+                </div>
+              ) : null}
+
+              <button
+                type="button"
+                disabled={!canSubmit}
+                onClick={handleLogin}
+                className="admin-button-primary admin-login__submit inline-flex w-full items-center justify-center gap-2 px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? <Spinner /> : null}
+                <span>{loading ? "Đang đăng nhập..." : "Đăng nhập"}</span>
+              </button>
+
+              <div className="admin-login__hint">
+                Token sẽ được lưu tại{" "}
+                <span className="font-medium">localStorage</span> với key{" "}
+                <span className="font-mono">svn_token</span>.
               </div>
-            ) : null}
-
-            <button
-              type="button"
-              disabled={!canSubmit}
-              onClick={handleLogin}
-              className="admin-button-primary inline-flex h-11 w-full items-center justify-center gap-2 px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {loading ? <Spinner /> : null}
-              <span>{loading ? "Đang đăng nhập..." : "Đăng nhập"}</span>
-            </button>
-
-            <div className="pt-2 text-center text-xs text-slate-500">
-              Token sẽ được lưu tại{" "}
-              <span className="font-medium">localStorage</span> với key{" "}
-              <span className="font-mono">svn_token</span>.
             </div>
           </div>
         </div>
