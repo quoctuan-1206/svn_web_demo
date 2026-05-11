@@ -5,6 +5,7 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const productsRoutes = require('./routes/products');
 const newsRoutes = require('./routes/news');
+const uploadsRoutes = require('./routes/uploads');
 
 const app = express();
 
@@ -31,5 +32,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/uploads', uploadsRoutes);
 
 module.exports = app;

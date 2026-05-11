@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, Trash2 } from "lucide-react";
-
-const API_BASE = "";
+import NewsRichEditor from "../components/NewsRichEditor";
+import { apiOriginUrl } from "../../../utils/apiOriginUrl";
 
 function getToken() {
   try {
@@ -75,6 +75,9 @@ export default function ProductsAdmin() {
   const [editingId, setEditingId] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [excerpt, setExcerpt] = useState("");
+  const [content, setContent] = useState("");
+  const [existingSlug, setExistingSlug] = useState("");
   const [category, setCategory] = useState("product");
   const [order, setOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
@@ -97,12 +100,45 @@ export default function ProductsAdmin() {
     };
   }, [previewUrl]);
 
+  const uploadImageFiles = useCallback(async (fileList) => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Cần đăng nhập để tải ảnh lên.");
+    }
+    const fd = new FormData();
+    Array.from(fileList).forEach((f) => fd.append("images", f));
+    const resp = await fetch(apiOriginUrl("/api/uploads/images"), {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    });
+    const raw = await resp.text();
+    let data = {};
+    try {
+      data = raw ? JSON.parse(raw) : {};
+    } catch {
+      data = {};
+    }
+    if (!resp.ok) {
+      const fallback =
+        resp.status === 401
+          ? "Phiên đăng nhập hết hạn — đăng nhập lại."
+          : `Tải ảnh thất bại (${resp.status})`;
+      throw new Error(data?.message || raw?.slice(0, 200) || fallback);
+    }
+    const urls = Array.isArray(data.urls) ? data.urls : [];
+    if (!urls.length) {
+      throw new Error("Server không trả về URL ảnh");
+    }
+    return urls;
+  }, []);
+
   async function fetchProducts() {
     setLoadingList(true);
     setError("");
     try {
       const token = getToken();
-      const resp = await fetch(`${API_BASE}/api/products`, {
+      const resp = await fetch(apiOriginUrl("/api/products"), {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       const data = await resp.json().catch(() => null);
@@ -126,6 +162,9 @@ export default function ProductsAdmin() {
     setEditingId(null);
     setTitle("");
     setDescription("");
+    setExcerpt("");
+    setContent("");
+    setExistingSlug("");
     setCategory("product");
     setOrder(0);
     setIsActive(true);
@@ -143,6 +182,9 @@ export default function ProductsAdmin() {
     setEditingId(item?._id || item?.id || null);
     setTitle(item?.title || "");
     setDescription(item?.description || "");
+    setExcerpt(item?.excerpt || "");
+    setContent(item?.content || "");
+    setExistingSlug(item?.slug || "");
     setCategory(item?.category || "product");
     setOrder(Number.isFinite(Number(item?.order)) ? Number(item.order) : 0);
     setIsActive(item?.isActive !== false);
@@ -167,7 +209,7 @@ export default function ProductsAdmin() {
     setError("");
     try {
       const token = getToken();
-      const resp = await fetch(`${API_BASE}/api/products/${id}`, {
+      const resp = await fetch(apiOriginUrl(`/api/products/${id}`), {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -198,20 +240,19 @@ export default function ProductsAdmin() {
     const fd = new FormData();
     fd.append("title", title.trim());
     if (description) fd.append("description", description);
+    fd.append("excerpt", excerpt ?? "");
+    fd.append("content", content ?? "");
     if (category) fd.append("category", category);
     fd.append("order", String(order ?? 0));
     fd.append("isActive", String(Boolean(isActive)));
     if (imageFile) fd.append("image", imageFile);
 
     try {
-      const resp = await fetch(
-        `${API_BASE}/api/products${id ? `/${id}` : ""}`,
-        {
-          method: id ? "PUT" : "POST",
-          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-          body: fd,
-        },
-      );
+      const resp = await fetch(apiOriginUrl(`/api/products${id ? `/${id}` : ""}`), {
+        method: id ? "PUT" : "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: fd,
+      });
 
       const data = await resp.json().catch(() => null);
       if (!resp.ok) {
@@ -285,14 +326,49 @@ export default function ProductsAdmin() {
               </div>
 
               <div>
-                <FieldLabel>Mô tả</FieldLabel>
+                <FieldLabel>Mô tả ngắn (danh sách)</FieldLabel>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Nhập mô tả"
-                  rows={5}
+                  placeholder="Hiển thị trên trang danh sách / thẻ"
+                  rows={4}
                   className="admin-textarea w-full resize-none px-3 py-3 text-sm"
                 />
+              </div>
+
+              <div>
+                <FieldLabel>Tóm tắt (trang chi tiết)</FieldLabel>
+                <textarea
+                  value={excerpt}
+                  onChange={(e) => setExcerpt(e.target.value)}
+                  placeholder="Đoạn dẫn dưới tiêu đề trang chi tiết (tuỳ chọn)"
+                  rows={3}
+                  className="admin-textarea w-full resize-none px-3 py-3 text-sm"
+                />
+              </div>
+
+              {isEditing && existingSlug ? (
+                <div>
+                  <FieldLabel>Slug URL</FieldLabel>
+                  <input
+                    value={existingSlug}
+                    readOnly
+                    className="h-11 w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100 px-3 font-mono text-xs text-slate-700 outline-none"
+                  />
+                </div>
+              ) : null}
+
+              <div>
+                <FieldLabel>Nội dung chi tiết</FieldLabel>
+                <NewsRichEditor
+                  value={content}
+                  onChange={setContent}
+                  disabled={submitting}
+                  uploadImages={uploadImageFiles}
+                />
+                <p className="mt-2 text-xs text-slate-500">
+                  Soạn nội dung đầy đủ; ảnh trong bài: biểu tượng ảnh → chọn file.
+                </p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">

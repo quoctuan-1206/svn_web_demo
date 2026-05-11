@@ -23,10 +23,16 @@ const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter(_req, file, cb) {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const okExt = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext);
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    const allowedExt = ['.jpg', '.jpeg', '.png', '.webp'];
     const okMime = ['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype);
-    if (okExt && okMime) {
+    const okExt = !ext || allowedExt.includes(ext);
+    // Trình duyệt thường gửi MIME đúng; Windows đôi khi gửi octet-stream nhưng có đuôi hợp lệ
+    if (okMime && okExt) {
+      cb(null, true);
+      return;
+    }
+    if (allowedExt.includes(ext) && (file.mimetype === 'application/octet-stream' || !file.mimetype)) {
       cb(null, true);
       return;
     }
@@ -36,12 +42,17 @@ const upload = multer({
 
 function publicUploadUrl(filename) {
   if (!filename) return '';
-  const base =
-    process.env.PUBLIC_UPLOAD_BASE ||
-    `http://localhost:${process.env.PORT || 3001}/uploads`;
-  const normalizedBase = base.replace(/\/$/, '');
-  const name = String(filename).replace(/^uploads\//, '').replace(/^\//, '');
-  return `${normalizedBase}/${name}`;
+  let name = String(filename).trim();
+  const up = '/uploads/';
+  if (name.startsWith(up)) name = name.slice(up.length);
+  name = name.replace(/^uploads\//, '').replace(/^\//, '');
+  // Mặc định URL tương đối: cùng origin với Vite (proxy /uploads → API) hoặc app phục vụ tĩnh + API
+  const base = process.env.PUBLIC_UPLOAD_BASE;
+  if (base) {
+    const normalizedBase = String(base).replace(/\/$/, '');
+    return `${normalizedBase}/${name}`;
+  }
+  return `/uploads/${name}`;
 }
 
 module.exports = upload;

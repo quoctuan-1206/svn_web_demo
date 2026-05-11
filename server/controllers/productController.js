@@ -19,8 +19,9 @@ async function list(req, res) {
 
 async function getById(req, res) {
   try {
-    const item = await productService.getProductById({
-      id: req.params.id,
+    const param = req.params.id;
+    const item = await productService.getProductOne({
+      param,
       isAdmin: isAdmin(req),
       publicUploadUrl: upload.publicUploadUrl,
     });

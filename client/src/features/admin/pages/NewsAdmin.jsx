@@ -1,7 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Pencil, Trash2 } from "lucide-react";
-
-const API_BASE = "";
+import NewsRichEditor from "../components/NewsRichEditor";
+import { apiOriginUrl } from "../../../utils/apiOriginUrl";
 
 function getToken() {
   try {
@@ -120,13 +126,48 @@ export default function NewsAdmin() {
     };
   }, [previewUrl]);
 
+  const uploadImageFiles = useCallback(async (fileList) => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Cần đăng nhập để tải ảnh lên.");
+    }
+    const fd = new FormData();
+    Array.from(fileList).forEach((f) => fd.append("images", f));
+    const resp = await fetch(apiOriginUrl("/api/uploads/images"), {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    });
+    const raw = await resp.text();
+    let data = {};
+    try {
+      data = raw ? JSON.parse(raw) : {};
+    } catch {
+      data = {};
+    }
+    if (!resp.ok) {
+      const fallback =
+        resp.status === 401
+          ? "Phiên đăng nhập hết hạn — đăng xuất và đăng nhập lại."
+          : resp.status === 404
+            ? "Không tìm thấy API upload (kiểm tra server và proxy /api)."
+            : `Tải ảnh thất bại (${resp.status})`;
+      throw new Error(data?.message || raw?.slice(0, 200) || fallback);
+    }
+    const urls = Array.isArray(data.urls) ? data.urls : [];
+    if (!urls.length) {
+      throw new Error("Server không trả về URL ảnh");
+    }
+    return urls;
+  }, []);
+
   async function fetchNews(nextPage = page) {
     setLoadingList(true);
     setError("");
     try {
       const token = getToken();
       const resp = await fetch(
-        `${API_BASE}/api/news?page=${nextPage}&limit=${limit}`,
+        apiOriginUrl(`/api/news?page=${nextPage}&limit=${limit}`),
         {
           headers: {
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -218,7 +259,7 @@ export default function NewsAdmin() {
     setError("");
     try {
       const token = getToken();
-      const resp = await fetch(`${API_BASE}/api/news/${id}`, {
+      const resp = await fetch(apiOriginUrl(`/api/news/${id}`), {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -256,7 +297,7 @@ export default function NewsAdmin() {
     if (imageFile) fd.append("image", imageFile);
 
     try {
-      const resp = await fetch(`${API_BASE}/api/news${id ? `/${id}` : ""}`, {
+      const resp = await fetch(apiOriginUrl(`/api/news${id ? `/${id}` : ""}`), {
         method: id ? "PUT" : "POST",
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         body: fd,
@@ -363,13 +404,17 @@ export default function NewsAdmin() {
 
               <div>
                 <FieldLabel>Nội dung</FieldLabel>
-                <textarea
+                <NewsRichEditor
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows={8}
-                  placeholder="Nhập nội dung"
-                  className="admin-textarea w-full resize-none px-3 py-3 text-sm"
+                  onChange={setContent}
+                  disabled={submitting}
+                  uploadImages={uploadImageFiles}
                 />
+                <p className="mt-2 text-xs text-slate-500">
+                  Soạn thảo giống Word: định dạng, danh sách, căn lề, màu. Chèn
+                  ảnh trong bài: bấm biểu tượng ảnh rồi chọn file (có thể nhiều
+                  ảnh). Ảnh đại diện bên phải dùng cho danh sách và thẻ bài.
+                </p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">

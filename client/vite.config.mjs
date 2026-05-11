@@ -2,16 +2,27 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
+const devProxy = {
+  "/api": {
+    target: "http://localhost:3001",
+    changeOrigin: true,
+  },
+  "/uploads": {
+    target: "http://localhost:3001",
+    changeOrigin: true,
+  },
+};
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     port: 3000,
-    proxy: {
-      "/api": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-    },
+    proxy: devProxy,
+  },
+  /** `vite preview` không dùng server.proxy trừ khi khai báo lại */
+  preview: {
+    port: 3000,
+    proxy: devProxy,
   },
 });
 

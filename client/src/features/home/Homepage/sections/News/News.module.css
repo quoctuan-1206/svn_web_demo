@@ -102,6 +102,12 @@
   align-items: start;
 }
 
+.itemLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
 .item {
   text-align: center;
 

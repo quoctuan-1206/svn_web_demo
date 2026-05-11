@@ -25,6 +25,11 @@ const newsSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    /** Ảnh minh họa thêm (URL hoặc path uploads) */
+    gallery: {
+      type: [String],
+      default: () => [],
+    },
     publishedAt: {
       type: Date,
     },

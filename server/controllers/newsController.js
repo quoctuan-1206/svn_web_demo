@@ -21,8 +21,8 @@ async function list(req, res) {
 
 async function getById(req, res) {
   try {
-    const item = await newsService.getNewsById({
-      id: req.params.id,
+    const item = await newsService.getNewsOne({
+      param: req.params.id,
       isAdmin: isAdmin(req),
       publicUploadUrl: upload.publicUploadUrl,
     });

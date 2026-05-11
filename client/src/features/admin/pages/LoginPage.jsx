@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../admin.css";
-
-const API_BASE = "/api";
+import { apiOriginUrl } from "../../../utils/apiOriginUrl";
 
 function EyeIcon(props) {
   return (
@@ -96,7 +95,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const resp = await fetch(`${API_BASE}/auth/login`, {
+      const resp = await fetch(apiOriginUrl("/api/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.trim(), password }),

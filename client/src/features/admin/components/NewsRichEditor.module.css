@@ -1,0 +1,31 @@
+.wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgb(226 232 240);
+  background: #fff;
+}
+
+.wrap :global(.ql-toolbar.ql-snow) {
+  border: 0;
+  border-bottom: 1px solid rgb(226 232 240);
+  border-radius: 12px 12px 0 0;
+  background: rgb(248 250 252);
+  flex-wrap: wrap;
+}
+
+.wrap :global(.ql-container.ql-snow) {
+  border: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  min-height: 280px;
+}
+
+.wrap :global(.ql-editor) {
+  min-height: 280px;
+  color: rgb(15 23 42);
+}
+
+.wrap :global(.ql-editor.ql-blank::before) {
+  color: rgb(148 163 184);
+  font-style: normal;
+}

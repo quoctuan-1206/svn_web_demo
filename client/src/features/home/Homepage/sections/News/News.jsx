@@ -1,5 +1,6 @@
 import styles from "./News.module.css";
 import { Link } from "react-router-dom";
+import { newsArticlePath } from "../../../../../utils/newsArticlePath";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
@@ -77,9 +78,10 @@ export default function News() {
 
         <div className={styles.list} aria-label="Latest posts">
           {visible.map((p, i) => (
-            <article
+            <Link
               key={`${slide}-${p._id || p.id || i}`}
-              className={styles.item}
+              to={newsArticlePath(p)}
+              className={`${styles.item} ${styles.itemLink}`}
             >
               <div className={styles.date}>
                 {formatDate(p.publishedAt || p.date)}
@@ -93,7 +95,7 @@ export default function News() {
                     </span>
                   ))}
               </h3>
-            </article>
+            </Link>
           ))}
         </div>
 

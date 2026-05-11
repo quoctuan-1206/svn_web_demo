@@ -11,6 +11,8 @@ import Homepage from "../features/home/Homepage/Homepage";
 import Contact from "../features/pages/Contact";
 import Products from "../features/pages/Products";
 import News from "../features/pages/News";
+import NewsDetailPage from "../features/pages/NewsDetailPage";
+import CatalogDetailPage from "../features/pages/CatalogDetailPage";
 import Intro from "../features/pages/Intro";
 import Solutions from "../features/pages/Solutions";
 import PartnersPage from "../features/pages/PartnersPage";
@@ -29,20 +31,27 @@ import NewsAdmin from "../features/admin/pages/NewsAdmin";
 function AppShell() {
   const { pathname } = useLocation();
   const isAdminPage = pathname.startsWith("/admin");
+  /** Trang chi tiết tin: không footer cố định, không padding đáy cho footer */
+  const isArticleStyleDetail =
+    /^\/tin-tuc\/.+|^\/san-pham\/.+|^\/giai-phap\/.+/.test(pathname);
+  const useFixedFooterShell = !isAdminPage && !isArticleStyleDetail;
 
   return (
     <>
       {!isAdminPage ? <Header /> : null}
 
-      <div className={!isAdminPage ? "has-fixed-footer" : undefined}>
+      <div className={useFixedFooterShell ? "has-fixed-footer" : undefined}>
         <Routes>
           {/* Public */}
           <Route path="/" element={<Homepage />} />
           <Route path="/tong-quan" element={<Overview />} />
           <Route path="/gioi-thieu" element={<Intro />} />
+          <Route path="/san-pham/:slug" element={<CatalogDetailPage variant="product" />} />
           <Route path="/san-pham" element={<Products />} />
+          <Route path="/giai-phap/:slug" element={<CatalogDetailPage variant="solution" />} />
           <Route path="/giai-phap" element={<Solutions />} />
           <Route path="/doi-tac" element={<PartnersPage />} />
+          <Route path="/tin-tuc/:slug" element={<NewsDetailPage />} />
           <Route path="/tin-tuc" element={<News />} />
           <Route path="/tai-ve" element={<DownloadPage />} />
           <Route path="/hien-dien-toan-cau" element={<GlobalPresence />} />
@@ -64,7 +73,7 @@ function AppShell() {
         </Routes>
       </div>
 
-      {!isAdminPage ? (
+      {useFixedFooterShell ? (
         <div className="global-footer-fixed">
           <Footer />
         </div>

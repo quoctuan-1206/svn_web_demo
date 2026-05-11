@@ -2,6 +2,7 @@ import styles from "./Products.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { catalogItemPath } from "../../../../../utils/catalogItemPath";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -51,8 +52,8 @@ export default function Products() {
               <h3 className={styles.cardTitle}>{p.title}</h3>
               <div className={styles.cardBody}>
                 <div className={styles.cardActions}>
-                  <Link className={styles.cardLink} to="/san-pham">
-                    Xem thêm →
+                  <Link className={styles.cardLink} to={catalogItemPath(p)}>
+                    Xem chi tiết →
                   </Link>
                   <Link className={styles.cardCta} to="/lien-he">
                     Tư vấn

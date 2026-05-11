@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./PageCommon.css";
+import { newsArticlePath } from "../../utils/newsArticlePath";
 
 function formatDate(value) {
   if (!value) return "";
@@ -73,7 +74,7 @@ export default function News() {
                     <h2>{n.title}</h2>
                     <p>{n.excerpt || n.content}</p>
                     <Link
-                      to="/tin-tuc"
+                      to={newsArticlePath(n)}
                       className="btn-primary"
                       style={{ display: "inline-block", marginTop: 24 }}
                     >

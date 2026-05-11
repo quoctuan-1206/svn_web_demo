@@ -2,6 +2,7 @@ import styles from "./Solutions.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { catalogItemPath } from "../../../../../utils/catalogItemPath";
 
 export default function Solutions() {
   const [solutions, setSolutions] = useState([]);
@@ -26,6 +27,13 @@ export default function Solutions() {
             <span className={styles.headingPrimary}>Giải pháp Tự động hóa</span>{" "}
             <span className={styles.headingSecondary}>Chuyên sâu</span>
           </h2>
+          <Link
+            className="sectionRouteBtn"
+            to="/giai-phap"
+            aria-label="Tới trang Giải pháp"
+          >
+            ⭢
+          </Link>
         </div>
         <p className={styles.sub}>Nền tảng kỹ thuật vững &amp; triển khai thực tế</p>
 
@@ -47,8 +55,8 @@ export default function Solutions() {
               <div className={styles.panel}>
                 <h3 className={styles.cardTitle}>{s.title}</h3>
                 <p className={styles.cardDesc}>{s.description || s.desc}</p>
-                <Link className={styles.cardLink} to="/giai-phap">
-                  Khám phá thêm →
+                <Link className={styles.cardLink} to={catalogItemPath(s)}>
+                  Xem chi tiết →
                 </Link>
               </div>
             </article>
