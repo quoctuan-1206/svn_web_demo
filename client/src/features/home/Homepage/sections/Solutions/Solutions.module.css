@@ -38,10 +38,10 @@
 .headingPrimary {
   background: linear-gradient(
     90deg,
-    #2dd36f,
-    #19c37d,
-    #0ea5e9,
-    #2563eb
+    #007CFE,
+    #1480a3,
+    #218365,
+    #75C01F
   );
   -webkit-background-clip: text;
   background-clip: text;

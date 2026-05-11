@@ -1,0 +1,248 @@
+.page {
+  background: #ffffff;
+  color: #0a0a0a;
+}
+
+.contentShell {
+  max-width: 1320px;
+}
+
+.filtersRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.card {
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 28px rgba(2, 8, 23, 0.07);
+  overflow: hidden;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(2, 8, 23, 0.11);
+}
+
+.media {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background: rgba(2, 8, 23, 0.04);
+}
+
+.img,
+.imgFallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.img {
+  object-fit: cover;
+}
+
+.imgFallback {
+  background:
+    radial-gradient(circle at 15% 25%, rgba(0, 124, 254, 0.18), transparent 52%),
+    radial-gradient(circle at 85% 75%, rgba(117, 192, 31, 0.18), transparent 48%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.05), rgba(15, 23, 42, 0.02));
+}
+
+.meta {
+  padding: 14px 14px 16px;
+}
+
+.kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(2, 8, 23, 0.55);
+  margin-bottom: 6px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  color: #0a0a0a;
+  line-height: 1.35;
+  display: -webkit-box;
+  line-clamp: 5;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.date {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(10, 10, 10, 0.45);
+}
+
+.pagerRow {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ctrl {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(15, 23, 42, 0.04);
+  color: rgba(10, 10, 10, 0.65);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 160ms ease, transform 160ms ease, color 160ms ease;
+}
+
+.ctrl:hover:not(:disabled) {
+  background: rgba(0, 124, 254, 0.1);
+  color: rgba(10, 10, 10, 0.82);
+  transform: translateY(-1px);
+}
+
+.ctrl:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pageNums {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.pageNum {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: rgba(2, 8, 23, 0.55);
+  transition: background 160ms ease, transform 160ms ease, color 160ms ease;
+}
+
+.pageNum:hover:not(:disabled) {
+  background: rgba(0, 124, 254, 0.12);
+  color: rgba(2, 8, 23, 0.8);
+  transform: translateY(-1px);
+}
+
+.pageNumActive {
+  background: rgba(0, 124, 254, 0.16);
+  color: rgba(2, 8, 23, 0.92);
+}
+
+.ellipsis {
+  color: rgba(2, 8, 23, 0.45);
+  font-weight: 900;
+  padding: 0 4px;
+}
+
+.touchStrip {
+  margin-top: 18px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(90deg, #0b2b6e, #0c5eb8, #1a7fb0, #2f8a2c);
+}
+
+.touchInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+}
+
+.touchTitle {
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 26px;
+  letter-spacing: 0.02em;
+}
+
+.touchBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 4px;
+  background: #f57c00;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.touchBtn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .media {
+    height: 240px;
+  }
+}
+
+@media (max-width: 620px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .media {
+    height: 260px;
+  }
+
+  .touchTitle {
+    font-size: 22px;
+  }
+
+  .touchInner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

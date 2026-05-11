@@ -1,8 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./PageCommon.css";
 import { newsArticlePath } from "../../utils/newsArticlePath";
+import styles from "./NewsPage.module.css";
+
+const PAGE_SIZE = 12;
+
+function pickCategoryLabel(p) {
+  const raw =
+    p?.category ||
+    p?.type ||
+    p?.tag ||
+    p?.label ||
+    (Array.isArray(p?.tags) ? p.tags[0] : "");
+  const v = String(raw || "").trim();
+  return v || "News";
+}
+
+function pickImage(p) {
+  return (
+    p?.image ||
+    p?.thumbnail ||
+    p?.thumb ||
+    p?.cover ||
+    p?.coverImage ||
+    p?.heroImage ||
+    ""
+  );
+}
 
 function formatDate(value) {
   if (!value) return "";
@@ -17,6 +43,7 @@ function formatDate(value) {
 
 export default function News() {
   const [news, setNews] = useState([]);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,59 +63,146 @@ export default function News() {
       .catch(() => {});
   }, []);
 
+  const totalPages = useMemo(() => {
+    if (!news.length) return 1;
+    return Math.max(1, Math.ceil(news.length / PAGE_SIZE));
+  }, [news.length]);
+
+  const visible = useMemo(() => {
+    const safePage = Math.min(Math.max(1, page), totalPages);
+    const start = (safePage - 1) * PAGE_SIZE;
+    return news.slice(start, start + PAGE_SIZE);
+  }, [news, page, totalPages]);
+
+  useEffect(() => {
+    setPage((p) => Math.min(Math.max(1, p), totalPages));
+  }, [totalPages]);
+
+  const canNavigate = news.length > PAGE_SIZE;
+
+  function goPrev() {
+    setPage((p) => (p - 1 < 1 ? totalPages : p - 1));
+  }
+
+  function goNext() {
+    setPage((p) => (p + 1 > totalPages ? 1 : p + 1));
+  }
+
   return (
-    <main className="page">
-      <div className="page-hero">
-        <div className="container">
-          <p className="page-eyebrow">SVN Automation</p>
-          <h1>
-            Tin tức <span className="green">& Sự kiện</span>
-          </h1>
-          <p className="page-desc">
-            Cập nhật hoạt động, triển lãm và thành tựu mới nhất của SVN
-          </p>
-        </div>
-      </div>
-
+    <main className={`page ${styles.page}`}>
       <section className="page-content">
-        <div className="container">
-          <div className="prod-list">
-            {news.length ? (
-              news.map((n, i) => (
-                <div
-                  key={n._id || n.id}
-                  className={`prod-item ${i % 2 !== 0 ? "reverse" : ""}`}
-                >
-                  <div className="prod-img">
-                    {n.image ? <img src={n.image} alt={n.title} /> : null}
+        <div className={`container ${styles.contentShell}`}>
+          {news.length ? (
+            <>
+              <div className={styles.grid} aria-label="News grid">
+                {visible.map((n) => (
+                  <Link
+                    key={n._id || n.id}
+                    to={newsArticlePath(n)}
+                    className={styles.card}
+                    aria-label={n.title}
+                  >
+                    <div className={styles.media} aria-hidden="true">
+                      {pickImage(n) ? (
+                        <img
+                          className={styles.img}
+                          src={pickImage(n)}
+                          alt=""
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className={styles.imgFallback} />
+                      )}
+                    </div>
+
+                    <div className={styles.meta}>
+                      <div className={styles.kicker}>{pickCategoryLabel(n)}</div>
+                      <h2 className={styles.title}>{n.title}</h2>
+                      <div className={styles.date}>
+                        {formatDate(n.publishedAt || n.date || n.createdAt)}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className={styles.pagerRow} aria-label="Pagination row">
+                <div className={styles.pager} aria-label="Pagination">
+                  <button
+                    type="button"
+                    className={styles.ctrl}
+                    aria-label="Trang trước"
+                    disabled={!canNavigate}
+                    onClick={goPrev}
+                  >
+                    ‹
+                  </button>
+
+                  <div className={styles.pageNums} aria-label="Pages">
+                    {Array.from({ length: Math.min(totalPages, 5) }).map((_, idx) => {
+                      const p = idx + 1;
+                      const active = p === page;
+                      return (
+                        <button
+                          key={p}
+                          type="button"
+                          className={`${styles.pageNum} ${
+                            active ? styles.pageNumActive : ""
+                          }`}
+                          onClick={() => setPage(p)}
+                          aria-current={active ? "page" : undefined}
+                          disabled={!canNavigate}
+                        >
+                          {p}
+                        </button>
+                      );
+                    })}
+                    {totalPages > 5 ? (
+                      <>
+                        <span className={styles.ellipsis} aria-hidden="true">
+                          …
+                        </span>
+                        <button
+                          type="button"
+                          className={`${styles.pageNum} ${
+                            page === totalPages ? styles.pageNumActive : ""
+                          }`}
+                          onClick={() => setPage(totalPages)}
+                          disabled={!canNavigate}
+                          aria-label={`Trang ${totalPages}`}
+                        >
+                          {totalPages}
+                        </button>
+                      </>
+                    ) : null}
                   </div>
 
-                  <div className="prod-text">
-                    <span
-                      className="card-cat"
-                      style={{ display: "inline-block", marginBottom: 16 }}
-                    >
-                      {formatDate(n.publishedAt || n.date || n.createdAt) ||
-                        "Tin tức"}
-                    </span>
-                    <h2>{n.title}</h2>
-                    <p>{n.excerpt || n.content}</p>
-                    <Link
-                      to={newsArticlePath(n)}
-                      className="btn-primary"
-                      style={{ display: "inline-block", marginTop: 24 }}
-                    >
-                      Xem chi tiết
-                    </Link>
-                  </div>
+                  <button
+                    type="button"
+                    className={styles.ctrl}
+                    aria-label="Trang sau"
+                    disabled={!canNavigate}
+                    onClick={goNext}
+                  >
+                    ›
+                  </button>
                 </div>
-              ))
-            ) : (
-              <p style={{ color: "var(--white-dim)" }}>
-                Chưa có tin tức / sự kiện nào được thêm.
-              </p>
-            )}
-          </div>
+              </div>
+
+              <div className={styles.touchStrip} aria-label="Get in touch">
+                <div className={styles.touchInner}>
+                  <div className={styles.touchTitle}>Get in Touch with Us</div>
+                  <Link className={styles.touchBtn} to="/lien-he" aria-label="Contact us">
+                    Contact us <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p style={{ color: "var(--white-dim)" }}>
+              Chưa có tin tức / sự kiện nào được thêm.
+            </p>
+          )}
         </div>
       </section>
     </main>
