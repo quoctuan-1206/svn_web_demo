@@ -9,11 +9,11 @@
   --border: rgba(255, 255, 255, 0.08);
   --white: #f0f2f5;
   --white-dim: rgba(240, 242, 245, 0.7);
-  --green: #00e676;
-  --green-dim: rgba(0, 230, 118, 0.15);
-  --green-glow: rgba(0, 230, 118, 0.4);
-  --blue: #00b0ff;
-  --accent: #00e676;
+  --green: #75c01f;
+  --green-dim: rgba(117, 192, 31, 0.15);
+  --green-glow: rgba(117, 192, 31, 0.4);
+  --blue: #007cfe;
+  --accent: #75c01f;
   --font-display: "Rajdhani", sans-serif;
   --font-body: "Nunito Sans", sans-serif;
 }
@@ -137,5 +137,5 @@ h4 {
 
 /* Selection */
 ::selection {
-  background: rgba(0, 230, 118, 0.22);
+  background: rgba(117, 192, 31, 0.22);
 }

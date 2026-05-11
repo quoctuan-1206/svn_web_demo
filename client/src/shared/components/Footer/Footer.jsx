@@ -1,8 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import styles from "./Footer.module.css";
+import { useHomepageSection } from "../../../context/HomepageSectionContext";
 
 export default function Footer({ withId = true } = {}) {
   const { pathname } = useLocation();
+  const { activeSectionId } = useHomepageSection();
+  const isHomepage = pathname === "/";
   const isActive = (to) => pathname === to || pathname.startsWith(`${to}/`);
 
   return (
@@ -11,19 +14,43 @@ export default function Footer({ withId = true } = {}) {
         <div className={`container ${styles.row}`}>
           <nav className={styles.nav} aria-label="Footer navigation">
             <Link
-              className={`${styles.link} ${isActive("/tong-quan") ? styles.active : ""}`}
+              className={`${styles.link} ${
+                isHomepage
+                  ? activeSectionId === "hero"
+                    ? styles.active
+                    : ""
+                  : isActive("/tong-quan")
+                    ? styles.active
+                    : ""
+              }`}
               to="/tong-quan"
             >
               Tổng Quan
             </Link>
             <Link
-              className={`${styles.link} ${isActive("/san-pham") ? styles.active : ""}`}
+              className={`${styles.link} ${
+                isHomepage
+                  ? activeSectionId === "san-pham"
+                    ? styles.active
+                    : ""
+                  : isActive("/san-pham")
+                    ? styles.active
+                    : ""
+              }`}
               to="/san-pham"
             >
               Sản Phẩm
             </Link>
             <Link
-              className={`${styles.link} ${isActive("/giai-phap") ? styles.active : ""}`}
+              className={`${styles.link} ${
+                isHomepage
+                  ? activeSectionId === "giai-phap"
+                    ? styles.active
+                    : ""
+                  : isActive("/giai-phap")
+                    ? styles.active
+                    : ""
+              }`}
               to="/giai-phap"
             >
               Giải Pháp
@@ -41,7 +68,15 @@ export default function Footer({ withId = true } = {}) {
               Dịch Vụ &amp; Hỗ Trợ
             </Link>
             <Link
-              className={`${styles.link} ${isActive("/tin-tuc") ? styles.active : ""}`}
+              className={`${styles.link} ${
+                isHomepage
+                  ? activeSectionId === "tin-tuc"
+                    ? styles.active
+                    : ""
+                  : isActive("/tin-tuc")
+                    ? styles.active
+                    : ""
+              }`}
               to="/tin-tuc"
             >
               Tin Tức

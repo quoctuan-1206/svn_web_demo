@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Header from "../shared/components/Header/Header";
 import Footer from "../shared/components/Footer/Footer";
+import { HomepageSectionProvider } from "../context/HomepageSectionContext";
 import Homepage from "../features/home/Homepage/Homepage";
 import Contact from "../features/pages/Contact";
 import Products from "../features/pages/Products";
@@ -85,7 +86,9 @@ function AppShell() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppShell />
+      <HomepageSectionProvider>
+        <AppShell />
+      </HomepageSectionProvider>
     </BrowserRouter>
   );
 }

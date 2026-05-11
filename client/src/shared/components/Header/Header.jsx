@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
+import { useHomepageSection } from "../../../context/HomepageSectionContext";
 
 const LOGO_SRC = "/images/logo-27.11.png";
 
@@ -28,8 +29,10 @@ export default function Header() {
   const [query, setQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const { activeSectionId } = useHomepageSection();
 
   const activePath = useMemo(() => location.pathname, [location.pathname]);
+  const isHomepage = activePath === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -103,7 +106,15 @@ export default function Header() {
             <button
               key={item.to}
               type="button"
-              className={`${styles.link} ${activePath === item.to ? styles.active : ""}`}
+              className={`${styles.link} ${
+                isHomepage
+                  ? activeSectionId && item.sectionId === activeSectionId
+                    ? styles.active
+                    : ""
+                  : activePath === item.to
+                    ? styles.active
+                    : ""
+              }`}
               onClick={() => handleNav(item)}
             >
               {item.label}
