@@ -161,6 +161,41 @@ export default function NewsAdmin() {
     return urls;
   }, []);
 
+  const listImageLibrary = useCallback(async () => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Cần đăng nhập để xem thư viện ảnh.");
+    }
+    const resp = await fetch(apiOriginUrl("/api/uploads/images"), {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await resp.json().catch(() => null);
+    if (!resp.ok) {
+      throw new Error(data?.message || "Không tải được thư viện ảnh");
+    }
+    return Array.isArray(data?.items) ? data.items : [];
+  }, []);
+
+  const deleteImageFromLibrary = useCallback(async (urls) => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Cần đăng nhập để xóa ảnh.");
+    }
+    const resp = await fetch(apiOriginUrl("/api/uploads/cleanup"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ urls }),
+    });
+    const data = await resp.json().catch(() => null);
+    if (!resp.ok) {
+      throw new Error(data?.message || "Xóa ảnh thất bại");
+    }
+    return data;
+  }, []);
+
   async function fetchNews(nextPage = page) {
     setLoadingList(true);
     setError("");
@@ -409,6 +444,8 @@ export default function NewsAdmin() {
                   onChange={setContent}
                   disabled={submitting}
                   uploadImages={uploadImageFiles}
+                  listImages={listImageLibrary}
+                  deleteImages={deleteImageFromLibrary}
                 />
                 <p className="mt-2 text-xs text-slate-500">
                   Soạn thảo giống Word: định dạng, danh sách, căn lề, màu. Chèn

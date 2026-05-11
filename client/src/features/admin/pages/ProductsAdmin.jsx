@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, Trash2 } from "lucide-react";
 import NewsRichEditor from "../components/NewsRichEditor";
@@ -133,6 +139,41 @@ export default function ProductsAdmin() {
     return urls;
   }, []);
 
+  const listImageLibrary = useCallback(async () => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Cần đăng nhập để xem thư viện ảnh.");
+    }
+    const resp = await fetch(apiOriginUrl("/api/uploads/images"), {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await resp.json().catch(() => null);
+    if (!resp.ok) {
+      throw new Error(data?.message || "Không tải được thư viện ảnh");
+    }
+    return Array.isArray(data?.items) ? data.items : [];
+  }, []);
+
+  const deleteImageFromLibrary = useCallback(async (urls) => {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Cần đăng nhập để xóa ảnh.");
+    }
+    const resp = await fetch(apiOriginUrl("/api/uploads/cleanup"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ urls }),
+    });
+    const data = await resp.json().catch(() => null);
+    if (!resp.ok) {
+      throw new Error(data?.message || "Xóa ảnh thất bại");
+    }
+    return data;
+  }, []);
+
   async function fetchProducts() {
     setLoadingList(true);
     setError("");
@@ -248,11 +289,14 @@ export default function ProductsAdmin() {
     if (imageFile) fd.append("image", imageFile);
 
     try {
-      const resp = await fetch(apiOriginUrl(`/api/products${id ? `/${id}` : ""}`), {
-        method: id ? "PUT" : "POST",
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-        body: fd,
-      });
+      const resp = await fetch(
+        apiOriginUrl(`/api/products${id ? `/${id}` : ""}`),
+        {
+          method: id ? "PUT" : "POST",
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+          body: fd,
+        },
+      );
 
       const data = await resp.json().catch(() => null);
       if (!resp.ok) {
@@ -365,9 +409,12 @@ export default function ProductsAdmin() {
                   onChange={setContent}
                   disabled={submitting}
                   uploadImages={uploadImageFiles}
+                  listImages={listImageLibrary}
+                  deleteImages={deleteImageFromLibrary}
                 />
                 <p className="mt-2 text-xs text-slate-500">
-                  Soạn nội dung đầy đủ; ảnh trong bài: biểu tượng ảnh → chọn file.
+                  Soạn nội dung đầy đủ; ảnh trong bài: biểu tượng ảnh → chọn
+                  file.
                 </p>
               </div>
 
