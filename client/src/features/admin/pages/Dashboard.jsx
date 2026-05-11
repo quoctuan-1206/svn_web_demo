@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, Eye, Newspaper, Package } from "lucide-react";
+import {
+  CheckCircle,
+  Eye,
+  Mail,
+  Newspaper,
+  Package,
+} from "lucide-react";
 
 const API_BASE = "";
 
@@ -90,6 +96,8 @@ export default function Dashboard() {
   const [error, setError] = useState("");
   const [products, setProducts] = useState([]);
   const [news, setNews] = useState([]);
+  const [contactLeads, setContactLeads] = useState([]);
+  const [contactTotal, setContactTotal] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -112,13 +120,15 @@ export default function Dashboard() {
       };
 
       try {
-        const [pRes, nRes] = await Promise.all([
+        const [pRes, nRes, cRes] = await Promise.all([
           fetch(`${API_BASE}/api/products`, { headers }),
           fetch(`${API_BASE}/api/news?page=1&limit=100`, { headers }),
+          fetch(`${API_BASE}/api/contact?page=1&limit=200`, { headers }),
         ]);
 
         const pJson = await pRes.json().catch(() => null);
         const nJson = await nRes.json().catch(() => null);
+        const cJson = await cRes.json().catch(() => null);
 
         if (!pRes.ok) {
           throw new Error(
@@ -130,12 +140,22 @@ export default function Dashboard() {
             nJson?.message || "Không tải được danh sách bài viết",
           );
         }
+        if (!cRes.ok) {
+          throw new Error(
+            cJson?.message || "Không tải được yêu cầu liên hệ",
+          );
+        }
 
         const newsList = Array.isArray(nJson) ? nJson : nJson?.data;
+        const leads = Array.isArray(cJson?.data) ? cJson.data : [];
 
         if (!cancelled) {
           setProducts(Array.isArray(pJson) ? pJson : []);
           setNews(Array.isArray(newsList) ? newsList : []);
+          setContactLeads(leads);
+          setContactTotal(
+            typeof cJson?.total === "number" ? cJson.total : leads.length,
+          );
         }
       } catch (e) {
         if (!cancelled) setError(e?.message || "Có lỗi xảy ra");
@@ -155,8 +175,14 @@ export default function Dashboard() {
     const totalNews = news.length;
     const publishedNews = news.filter((n) => Boolean(n?.isPublished)).length;
     const activeProducts = products.filter((p) => p?.isActive !== false).length;
-    return { totalProducts, totalNews, publishedNews, activeProducts };
-  }, [products, news]);
+    return {
+      totalProducts,
+      totalNews,
+      publishedNews,
+      activeProducts,
+      totalContactLeads: contactTotal,
+    };
+  }, [products, news, contactTotal]);
 
   const latestProducts = useMemo(() => {
     return [...products]
@@ -169,6 +195,12 @@ export default function Dashboard() {
       .sort((a, b) => new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0))
       .slice(0, 5);
   }, [news]);
+
+  const latestContactLeads = useMemo(() => {
+    return [...contactLeads]
+      .sort((a, b) => new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0))
+      .slice(0, 8);
+  }, [contactLeads]);
 
   return (
     <div className="space-y-6 admin-fade-up">
@@ -204,7 +236,7 @@ export default function Dashboard() {
         </div>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard
           Icon={Package}
           iconBg="bg-emerald-100"
@@ -232,6 +264,13 @@ export default function Dashboard() {
           iconColor="text-amber-600"
           label="Sản phẩm active"
           value={loading ? "—" : stats.activeProducts}
+        />
+        <StatCard
+          Icon={Mail}
+          iconBg="bg-sky-100"
+          iconColor="text-sky-600"
+          label="Yêu cầu liên hệ"
+          value={loading ? "—" : stats.totalContactLeads}
         />
       </div>
 
@@ -302,6 +341,62 @@ export default function Dashboard() {
           />
         </TableCard>
       </div>
+
+      <TableCard title="Yêu cầu liên hệ gần đây">
+        {!latestContactLeads.length ? (
+          <div className="px-4 py-6 text-sm text-slate-500">
+            {loading ? "Đang tải..." : "Chưa có yêu cầu liên hệ nào"}
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-slate-200">
+            <table className="admin-table">
+              <thead>
+                <tr className="text-left">
+                  <th>Họ tên</th>
+                  <th>Email</th>
+                  <th>Công ty</th>
+                  <th>Mục đích</th>
+                  <th>Nguồn</th>
+                  <th>Ngày gửi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {latestContactLeads.map((row) => (
+                  <tr
+                    key={row?._id || row?.id}
+                    className="text-sm text-slate-700"
+                  >
+                    <td className="font-semibold text-slate-900">
+                      {row?.fullName || "—"}
+                    </td>
+                    <td className="max-w-[200px] truncate text-slate-600">
+                      {row?.email || "—"}
+                    </td>
+                    <td className="max-w-[160px] truncate">
+                      {row?.companyName || "—"}
+                    </td>
+                    <td className="max-w-[180px] truncate text-slate-600">
+                      {row?.purpose || "—"}
+                    </td>
+                    <td>
+                      {row?.source === "homepage_cta" ? (
+                        <StatusBadge tone="purple">CTA</StatusBadge>
+                      ) : row?.source === "contact_page" ? (
+                        <StatusBadge tone="neutral">Trang LH</StatusBadge>
+                      ) : (
+                        <StatusBadge tone="neutral">Web</StatusBadge>
+                      )}
+                    </td>
+                    <td className="text-slate-600 whitespace-nowrap">
+                      {formatDate(row?.createdAt)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </TableCard>
     </div>
   );
 }

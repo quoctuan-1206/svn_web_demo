@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth');
 const productsRoutes = require('./routes/products');
 const newsRoutes = require('./routes/news');
 const uploadsRoutes = require('./routes/uploads');
+const contactRoutes = require('./routes/contact');
 
 const app = express();
 
@@ -33,5 +34,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/uploads', uploadsRoutes);
+app.use('/api/contact', contactRoutes);
 
 module.exports = app;

@@ -1,16 +1,17 @@
-/* Giống Homepage CTA: nền đen + cta-bg.png + cột trái nội dung */
+/* Tỷ lệ & layout bám theo Homepage `sections/CTA/CTA.module.css` (+ chừa chỗ header cố định 70px) */
 
 .page {
   position: relative;
-  margin: 0;
-  padding: 0;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 16px;
+  padding-top: 70px;
+
   background-color: #000000;
   background-image: url("/images/cta-bg.png");
-  /* keep artwork proportions similar to reference */
-  background-size: auto 100%;
+  background-size: cover;
   background-position: right center;
   background-repeat: no-repeat;
 }
@@ -34,32 +35,33 @@
   z-index: 1;
 }
 
-.shell {
-  /* width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
-  gap: clamp(16px, 4vw, 48px);
-  align-items: stretch;
-  min-height: 100dvh;
-  padding-bottom: 48px;
-  padding-top: clamp(72px, 12vh, 120px); */
+/* = CTA `.container` */
+.pageInner {
   width: 100%;
-  max-width: 1200px;
-  margin: 0;                    /* sát trái */
-  padding: 0 24px 80px 24px;    /* tăng padding dưới để dính đáy */
+  max-width: 1280px;
+  margin: 0 auto;
+  margin-left: 100px;
+  margin-top: clamp(72px, 14vh, 200px);
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* = CTA `.shell` */
+.shell {
+  width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 700px) minmax(0, 1fr);
   gap: clamp(16px, 4vw, 48px);
-  align-items: flex-end;        /* dính sát bottom */
-  justify-content: flex-start;  /* sát trái */
+  align-items: end;
+  padding-bottom: 0;
+  padding-top: 24px;
 }
 
 .col {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 0;
-  min-height: 0;
 }
 
 .colGraphic {
@@ -76,7 +78,7 @@
 }
 
 .upper {
-  margin-bottom: 0;
+  margin-bottom: 144px;
 }
 
 .lower {
@@ -88,7 +90,7 @@
 .headlineRow {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 28px;
 }
@@ -116,15 +118,18 @@
   cursor: pointer;
   display: grid;
   place-items: center;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1;
-  transition: transform 160ms ease, filter 160ms ease;
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
 }
 
 .scrollBtn:hover {
   transform: translateY(-2px);
   filter: brightness(1.08);
+}
+
+.scrollBtnIcon {
+  display: block;
 }
 
 .quickLinks {
@@ -140,7 +145,9 @@
   font-weight: 500;
   text-decoration: none;
   opacity: 0.92;
-  transition: opacity 160ms ease, transform 160ms ease;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
 }
 
 .quickLink:hover {
@@ -156,7 +163,7 @@
 .companyTitle {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 13px;
+  font-size: 33px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #ffffff;
@@ -164,10 +171,10 @@
 
 .companyLine {
   margin: 0;
-  font-size: 13px;
+  font-size: 13px !important;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.75);
-  max-width: 520px;
+  max-width: 660px;
 }
 
 .ctaWrap {
@@ -190,7 +197,9 @@
   font-size: 13px;
   letter-spacing: 0.04em;
   cursor: pointer;
-  transition: transform 160ms ease, filter 160ms ease;
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
 }
 
 .contactBtn:hover {
@@ -209,7 +218,7 @@
   border: 0;
   height: 1px;
   background: rgba(255, 255, 255, 0.22);
-  max-width: 520px;
+  max-width: 660px;
 }
 
 .bottomRow {
@@ -218,7 +227,7 @@
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  max-width: 520px;
+  max-width: 660px;
 }
 
 .copy {
@@ -243,10 +252,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 800;
   text-decoration: none;
-  transition: transform 160ms ease, opacity 160ms ease;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
 }
 
 .social:hover {
@@ -254,7 +263,7 @@
   opacity: 0.92;
 }
 
-/* Form — dark panel cùng tone trang */
+/* Form — cột phải, cùng tone trang */
 .formCard {
   width: 100%;
   max-width: 440px;
@@ -310,7 +319,9 @@
   color: #f2f2f2;
   font-size: 14px;
   outline: none;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .control::placeholder {
@@ -350,7 +361,9 @@
   font-size: 13px;
   letter-spacing: 0.04em;
   cursor: pointer;
-  transition: transform 160ms ease, filter 160ms ease;
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
 }
 
 .submitBtn:hover {
@@ -358,40 +371,86 @@
   filter: brightness(1.06);
 }
 
+.submitBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+  filter: none;
+}
+
 .hint {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.45);
 }
 
-@media (max-width: 1200px) {
-  .contact-grid {
-    gap: 40px;
+.formMessageOk {
+  font-size: 12px;
+  color: rgba(166, 255, 0, 0.95);
+}
+
+.formMessageErr {
+  font-size: 12px;
+  color: #ff8a8a;
+}
+
+@media (max-width: 1100px) {
+  .pageInner {
+    margin-left: 24px;
   }
 }
 
 @media (max-width: 900px) {
-  .contact-container {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  
-  .contact-grid {
+  .shell {
     grid-template-columns: 1fr;
-    gap: 50px;
+    padding-bottom: 0;
   }
-  
-  .contact-form-wrap {
-    padding: 36px;
+
+  .colGraphic {
+    display: none;
+  }
+
+  .quickLinks {
+    max-width: none;
+  }
+
+  .rule,
+  .bottomRow {
+    max-width: none;
+  }
+
+  .formCard {
+    margin-left: 0;
+    max-width: none;
   }
 }
 
 @media (max-width: 520px) {
-  .contact-container {
+  .shell {
+    padding-bottom: 0;
+    padding-top: 16px;
+  }
+
+  .pageInner {
+    margin-left: 0;
+    margin-top: 48px;
     padding-left: 16px;
     padding-right: 16px;
   }
-  
-  .contact-form-wrap {
-    padding: 28px 24px;
+
+  .upper {
+    margin-bottom: 36px;
+  }
+
+  .headlineRow {
+    flex-wrap: wrap;
+  }
+
+  .quickLinks {
+    gap: 12px 28px;
+  }
+
+  .bottomRow {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

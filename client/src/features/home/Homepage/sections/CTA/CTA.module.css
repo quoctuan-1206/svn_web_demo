@@ -67,6 +67,15 @@
   pointer-events: none;
 }
 
+/* Cột phải: form (giống Contact.module.css .aside) */
+.formAside {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
 .upper {
   margin-bottom: 144px;
 }
@@ -177,6 +186,7 @@
   gap: 12px;
   min-height: 46px;
   padding: 0 26px;
+  border: 0;
   border-radius: 999px;
   background: var(--green);
   color: #ffffff;
@@ -185,6 +195,7 @@
   font-size: 13px;
   letter-spacing: 0.04em;
   text-decoration: none;
+  cursor: pointer;
   transition:
     transform 160ms ease,
     filter 160ms ease;
@@ -261,6 +272,10 @@
 
   .colGraphic {
     display: none;
+  }
+
+  .formAside {
+    justify-content: flex-start;
   }
 
   .quickLinks {
