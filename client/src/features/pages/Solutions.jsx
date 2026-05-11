@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./PageCommon.css";
 import { catalogItemPath } from "../../utils/catalogItemPath";
+import styles from "./NewsPage.module.css";
+
+const PAGE_SIZE = 12;
 
 function formatDate(value) {
   if (!value) return "";
@@ -17,6 +20,7 @@ function formatDate(value) {
 
 export default function Solutions() {
   const [solutions, setSolutions] = useState([]);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,62 +36,140 @@ export default function Solutions() {
       .catch(() => {});
   }, []);
 
-  return (
-    <main className="page">
-      <div className="page-hero">
-        <div className="container">
-          <p className="page-eyebrow">Giải pháp</p>
-          <h1>
-            Giải pháp <span className="green">Tự động hóa</span>
-          </h1>
-          <p className="page-desc">
-            Các giải pháp tự động hóa được thiết kế và phát triển bởi SVN Automation
-          </p>
-        </div>
-      </div>
+  const totalPages = useMemo(() => {
+    if (!solutions.length) return 1;
+    return Math.max(1, Math.ceil(solutions.length / PAGE_SIZE));
+  }, [solutions.length]);
 
+  const visible = useMemo(() => {
+    const safePage = Math.min(Math.max(1, page), totalPages);
+    const start = (safePage - 1) * PAGE_SIZE;
+    return solutions.slice(start, start + PAGE_SIZE);
+  }, [solutions, page, totalPages]);
+
+  useEffect(() => {
+    setPage((p) => Math.min(Math.max(1, p), totalPages));
+  }, [totalPages]);
+
+  const canNavigate = solutions.length > PAGE_SIZE;
+
+  function goPrev() {
+    setPage((p) => (p - 1 < 1 ? totalPages : p - 1));
+  }
+
+  function goNext() {
+    setPage((p) => (p + 1 > totalPages ? 1 : p + 1));
+  }
+
+  return (
+    <main className={`page ${styles.page}`}>
       <section className="page-content">
-        <div className="container">
-          <div className="prod-list">
-            {solutions.length ? (
-              solutions.map((p, i) => (
-                <div
-                  key={p._id || p.id}
-                  className={`prod-item ${i % 2 !== 0 ? "reverse" : ""}`}
-                >
-                  <div className="prod-img">
-                    {p.image ? <img src={p.image} alt={p.title} /> : null}
-                  </div>
-                  <div className="prod-text">
-                    <span
-                      className="card-cat"
-                      style={{ display: "inline-block", marginBottom: 16 }}
-                    >
-                      {formatDate(p.updatedAt || p.createdAt) || "Giải pháp"}
-                    </span>
-                    <h2>{p.title}</h2>
-                    <p>{p.excerpt || p.description}</p>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 24 }}>
-                      <Link to={catalogItemPath(p)} className="btn-primary" style={{ display: "inline-block" }}>
-                        Xem chi tiết
-                      </Link>
-                      <Link
-                        to="/lien-he"
-                        className="btn-primary"
-                        style={{ display: "inline-block", opacity: 0.92 }}
-                      >
-                        Tư vấn
-                      </Link>
+        <div className={`container ${styles.contentShell}`}>
+          {solutions.length ? (
+            <>
+              <div className={styles.grid} aria-label="Solutions grid">
+                {visible.map((p) => (
+                  <Link
+                    key={p._id || p.id}
+                    to={catalogItemPath(p)}
+                    className={styles.card}
+                    aria-label={p.title}
+                  >
+                    <div className={styles.media} aria-hidden="true">
+                      {p.image ? (
+                        <img className={styles.img} src={p.image} alt="" loading="lazy" />
+                      ) : (
+                        <div className={styles.imgFallback} />
+                      )}
                     </div>
+                    <div className={styles.meta}>
+                      <div className={styles.kicker}>Giải pháp</div>
+                      <h2 className={styles.title}>{p.title}</h2>
+                      <div className={styles.date}>
+                        {formatDate(p.updatedAt || p.createdAt)}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className={styles.pagerRow} aria-label="Pagination row">
+                <div className={styles.pager} aria-label="Pagination">
+                  <button
+                    type="button"
+                    className={styles.ctrl}
+                    aria-label="Trang trước"
+                    disabled={!canNavigate}
+                    onClick={goPrev}
+                  >
+                    ‹
+                  </button>
+
+                  <div className={styles.pageNums} aria-label="Pages">
+                    {Array.from({ length: Math.min(totalPages, 5) }).map((_, idx) => {
+                      const pg = idx + 1;
+                      const active = pg === page;
+                      return (
+                        <button
+                          key={pg}
+                          type="button"
+                          className={`${styles.pageNum} ${
+                            active ? styles.pageNumActive : ""
+                          }`}
+                          onClick={() => setPage(pg)}
+                          aria-current={active ? "page" : undefined}
+                          disabled={!canNavigate}
+                        >
+                          {pg}
+                        </button>
+                      );
+                    })}
+                    {totalPages > 5 ? (
+                      <>
+                        <span className={styles.ellipsis} aria-hidden="true">
+                          …
+                        </span>
+                        <button
+                          type="button"
+                          className={`${styles.pageNum} ${
+                            page === totalPages ? styles.pageNumActive : ""
+                          }`}
+                          onClick={() => setPage(totalPages)}
+                          disabled={!canNavigate}
+                          aria-label={`Trang ${totalPages}`}
+                        >
+                          {totalPages}
+                        </button>
+                      </>
+                    ) : null}
                   </div>
+
+                  <button
+                    type="button"
+                    className={styles.ctrl}
+                    aria-label="Trang sau"
+                    disabled={!canNavigate}
+                    onClick={goNext}
+                  >
+                    ›
+                  </button>
                 </div>
-              ))
-            ) : (
-              <p style={{ color: "var(--white-dim)" }}>
-                Chưa có giải pháp nào được hiển thị.
-              </p>
-            )}
-          </div>
+              </div>
+
+              <div className={styles.touchStrip} aria-label="Get in touch">
+                <div className={styles.touchInner}>
+                  <div className={styles.touchTitle}>Get in Touch with Us</div>
+                  <Link className={styles.touchBtn} to="/lien-he" aria-label="Contact us">
+                    Contact us <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p style={{ color: "var(--white-dim)" }}>
+              Chưa có giải pháp nào được hiển thị.
+            </p>
+          )}
         </div>
       </section>
     </main>

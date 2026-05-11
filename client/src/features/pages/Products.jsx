@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./PageCommon.css";
 import { catalogItemPath } from "../../utils/catalogItemPath";
+import styles from "./NewsPage.module.css";
+
+const PAGE_SIZE = 12;
 
 function formatDate(value) {
   if (!value) return "";
@@ -17,6 +20,7 @@ function formatDate(value) {
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,62 +36,140 @@ export default function Products() {
       .catch(() => {});
   }, []);
 
-  return (
-    <main className="page">
-      <div className="page-hero">
-        <div className="container">
-          <p className="page-eyebrow">Thiết bị & Nền tảng</p>
-          <h1>
-            Sản phẩm <span className="green">Công nghệ</span>
-          </h1>
-          <p className="page-desc">
-            Hệ sinh thái sản phẩm tự động hóa tiên tiến từ SVN Automation
-          </p>
-        </div>
-      </div>
+  const totalPages = useMemo(() => {
+    if (!products.length) return 1;
+    return Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+  }, [products.length]);
 
+  const visible = useMemo(() => {
+    const safePage = Math.min(Math.max(1, page), totalPages);
+    const start = (safePage - 1) * PAGE_SIZE;
+    return products.slice(start, start + PAGE_SIZE);
+  }, [products, page, totalPages]);
+
+  useEffect(() => {
+    setPage((p) => Math.min(Math.max(1, p), totalPages));
+  }, [totalPages]);
+
+  const canNavigate = products.length > PAGE_SIZE;
+
+  function goPrev() {
+    setPage((p) => (p - 1 < 1 ? totalPages : p - 1));
+  }
+
+  function goNext() {
+    setPage((p) => (p + 1 > totalPages ? 1 : p + 1));
+  }
+
+  return (
+    <main className={`page ${styles.page}`}>
       <section className="page-content">
-        <div className="container">
-          <div className="prod-list">
-            {products.length ? (
-              products.map((p, i) => (
-                <div
-                  key={p._id || p.id}
-                  className={`prod-item ${i % 2 !== 0 ? "reverse" : ""}`}
-                >
-                  <div className="prod-img">
-                    {p.image ? <img src={p.image} alt={p.title} /> : null}
+        <div className={`container ${styles.contentShell}`}>
+          {products.length ? (
+            <>
+              <div className={styles.grid} aria-label="Products grid">
+                {visible.map((p) => (
+                  <Link
+                    key={p._id || p.id}
+                    to={catalogItemPath(p)}
+                    className={styles.card}
+                    aria-label={p.title}
+                  >
+                      <div className={styles.media} aria-hidden="true">
+                        {p.image ? (
+                          <img className={styles.img} src={p.image} alt="" loading="lazy" />
+                        ) : (
+                          <div className={styles.imgFallback} />
+                        )}
+                      </div>
+                      <div className={styles.meta}>
+                        <div className={styles.kicker}>Sản phẩm</div>
+                        <h2 className={styles.title}>{p.title}</h2>
+                        <div className={styles.date}>
+                          {formatDate(p.updatedAt || p.createdAt)}
+                        </div>
+                      </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className={styles.pagerRow} aria-label="Pagination row">
+                <div className={styles.pager} aria-label="Pagination">
+                  <button
+                    type="button"
+                    className={styles.ctrl}
+                    aria-label="Trang trước"
+                    disabled={!canNavigate}
+                    onClick={goPrev}
+                  >
+                    ‹
+                  </button>
+
+                  <div className={styles.pageNums} aria-label="Pages">
+                    {Array.from({ length: Math.min(totalPages, 5) }).map((_, idx) => {
+                      const pg = idx + 1;
+                      const active = pg === page;
+                      return (
+                        <button
+                          key={pg}
+                          type="button"
+                          className={`${styles.pageNum} ${
+                            active ? styles.pageNumActive : ""
+                          }`}
+                          onClick={() => setPage(pg)}
+                          aria-current={active ? "page" : undefined}
+                          disabled={!canNavigate}
+                        >
+                          {pg}
+                        </button>
+                      );
+                    })}
+                    {totalPages > 5 ? (
+                      <>
+                        <span className={styles.ellipsis} aria-hidden="true">
+                          …
+                        </span>
+                        <button
+                          type="button"
+                          className={`${styles.pageNum} ${
+                            page === totalPages ? styles.pageNumActive : ""
+                          }`}
+                          onClick={() => setPage(totalPages)}
+                          disabled={!canNavigate}
+                          aria-label={`Trang ${totalPages}`}
+                        >
+                          {totalPages}
+                        </button>
+                      </>
+                    ) : null}
                   </div>
-                  <div className="prod-text">
-                    <span
-                      className="card-cat"
-                      style={{ display: "inline-block", marginBottom: 16 }}
-                    >
-                      {formatDate(p.updatedAt || p.createdAt) || "Sản phẩm"}
-                    </span>
-                    <h2>{p.title}</h2>
-                    <p>{p.excerpt || p.description}</p>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 24 }}>
-                      <Link to={catalogItemPath(p)} className="btn-primary" style={{ display: "inline-block" }}>
-                        Xem chi tiết
-                      </Link>
-                      <Link
-                        to="/lien-he"
-                        className="btn-primary"
-                        style={{ display: "inline-block", opacity: 0.92 }}
-                      >
-                        Tư vấn
-                      </Link>
-                    </div>
-                  </div>
+
+                  <button
+                    type="button"
+                    className={styles.ctrl}
+                    aria-label="Trang sau"
+                    disabled={!canNavigate}
+                    onClick={goNext}
+                  >
+                    ›
+                  </button>
                 </div>
-              ))
-            ) : (
-              <p style={{ color: "var(--white-dim)" }}>
-                Chưa có sản phẩm nào được hiển thị.
-              </p>
-            )}
-          </div>
+              </div>
+
+              <div className={styles.touchStrip} aria-label="Get in touch">
+                <div className={styles.touchInner}>
+                  <div className={styles.touchTitle}>Get in Touch with Us</div>
+                  <Link className={styles.touchBtn} to="/lien-he" aria-label="Contact us">
+                    Contact us <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p style={{ color: "var(--white-dim)" }}>
+              Chưa có sản phẩm nào được hiển thị.
+            </p>
+          )}
         </div>
       </section>
     </main>
