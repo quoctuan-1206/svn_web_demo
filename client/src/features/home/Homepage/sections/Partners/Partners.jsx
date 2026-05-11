@@ -20,7 +20,7 @@ export default function Partners() {
       <div className="container">
         <header className={styles.header}>
           <h2 className={styles.title}>
-            <span className={styles.titleAccent}>Đối tác</span> được chứng nhận
+            <span className={styles.headingPrimary}>Đối tác</span> được chứng nhận
           </h2>
         </header>
 

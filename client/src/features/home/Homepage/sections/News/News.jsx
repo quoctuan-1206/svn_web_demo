@@ -60,7 +60,8 @@ export default function News() {
         <header className={styles.header}>
           <div className={styles.titleRow}>
             <h2 className={styles.title}>
-              We Go <span className={styles.accent}>The Extra Mile</span>
+              We Go{" "}
+              <span className={styles.headingPrimary}>The Extra Mile</span>
             </h2>
             <Link
               className="sectionRouteBtn"

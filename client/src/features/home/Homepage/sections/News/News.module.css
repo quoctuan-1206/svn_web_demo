@@ -67,8 +67,19 @@
   color: #0a0a0a;
 }
 
-.accent {
-  color: #2f80ed;
+.headingPrimary {
+  background: linear-gradient(
+    90deg,
+    #2dd36f,
+    #19c37d,
+    #0ea5e9,
+    #2563eb
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: 0 2px 12px rgba(37, 99, 235, 0.12);
 }
 
 .sub {

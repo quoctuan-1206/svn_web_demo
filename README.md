@@ -1,67 +1,69 @@
 # SVN Automation Website
 
-Website chính thức SVN Automation Co., Ltd — React + Node.js
+Hướng dẫn chạy dự án.
 
-## Cấu trúc dự án
+## Yêu cầu
 
+- Node.js >= 16
+- npm
+- MongoDB (local hoặc MongoDB Atlas)
+
+## 1. Kết nối Database (MongoDB)
+
+### Cách 1: MongoDB Local
+
+Cài MongoDB Community Server: https://www.mongodb.com/try/download/community
+
+Sau khi cài, mặc định MongoDB chạy tại: `mongodb://localhost:27017`
+
+### Cách 2: MongoDB Atlas (Cloud, miễn phí)
+
+1. Đăng ký tại: https://www.mongodb.com/cloud/atlas
+2. Tạo Cluster (Free tier M0)
+3. Tạo Database User (username + password)
+4. Vào **Network Access** → **Add IP** → `0.0.0.0/0` (cho phép mọi IP)
+5. Vào **Connect** → **Drivers** → copy connection string, dạng:
+   ```
+   mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/svn_automation
+   ```
+
+### Tạo file `.env` trong thư mục `server/`
+
+```env
+PORT=3001
+MONGODB_URI=mongodb://localhost:27017/svn_automation
+JWT_SECRET=your_secret_key_here
 ```
-svn-automation/
-├── client/          # React frontend (Vite)
-│   └── src/
-│       ├── components/   # Navbar, Footer
-│       └── pages/        # Home, Products, Solutions, News, Contact, About
-└── server/          # Node.js + Express backend
-    └── index.js
+
+> Nếu dùng Atlas thì thay `MONGODB_URI` bằng connection string ở trên.
+
+### Tạo tài khoản Admin (chạy 1 lần đầu)
+
+```bash
+cd server
+node scripts/seedAdmin.js
 ```
 
-## Cài đặt & Chạy
+Tài khoản mặc định: `admin` / `svn@2025`
 
-### 1. Backend (Node.js server)
+## 2. Backend (Node.js server)
 
 ```bash
 cd server
 npm install
-node app.js
-# Server chạy tại http://localhost:3001
+node index.js
 ```
 
-### 2. Frontend (React)
+Server chạy tại: `http://localhost:3001`
+
+## 3. Frontend (React)
+
+Mở terminal mới:
 
 ```bash
 cd client
 npm install
 npm run dev
-# Web chạy tại http://localhost:3000
 ```
 
-## API Endpoints
-
-| Method | Path           | Mô tả               |
-| ------ | -------------- | ------------------- |
-| GET    | /api/products  | Danh sách sản phẩm  |
-| GET    | /api/solutions | Danh sách giải pháp |
-| GET    | /api/partners  | Danh sách đối tác   |
-| GET    | /api/news      | Tin tức             |
-| POST   | /api/contact   | Gửi form liên hệ    |
-
-## Tính năng
-
-- ✅ Trang chủ với Hero, Sản phẩm, Giải pháp, Đối tác, Tin tức
-- ✅ Trang Sản phẩm
-- ✅ Trang Giải pháp
-- ✅ Trang Tin tức
-- ✅ Trang Liên hệ (với form gửi API)
-- ✅ Trang Về chúng tôi
-- ✅ Navbar responsive + Footer
-- ✅ Thiết kế Dark theme — màu xanh lá công nghiệp
-- ✅ Font Rajdhani (display) + Nunito Sans (body)
-- ✅ Animations, hover effects, smooth scroll
-- ✅ Mobile responsive
-
-## Mở rộng thêm
-
-- Kết nối MongoDB để lưu trữ dữ liệu thực
-- Thêm trang Admin để quản lý nội dung
-- SEO meta tags
-- Multilingual (vi/en)
-- Deploy lên VPS / Vercel + Railway
+Web chạy tại: `http://localhost:3000`

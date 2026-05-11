@@ -131,6 +131,15 @@ body {
   overflow-y: hidden;
 }
 
+/* CTA: một viewport, không cuộn trong section; flex căn nội dung + ít padding đáy hơn các section khác */
+.page > section#lien-he {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow-y: hidden;
+  padding-bottom: clamp(12px, 2.5dvh, 28px);
+}
+
 /* =========================
    CONTENT STYLE
    ========================= */
@@ -139,8 +148,7 @@ body {
   font-size: 64px;
   margin: 0;
 }
-
-.page > section p {
+.page > section:not(#lien-he) p {
   font-size: 20px;
 }
 
@@ -162,7 +170,7 @@ body {
     font-size: 40px;
   }
 
-  .page > section p {
+  .page > section:not(#lien-he) p {
     font-size: 16px;
   }
 

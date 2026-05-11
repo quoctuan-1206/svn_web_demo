@@ -25,7 +25,18 @@
 }
 
 .headingPrimary {
-  color: #2563eb;
+  background: linear-gradient(
+    90deg,
+    #2dd36f,
+    #19c37d,
+    #0ea5e9,
+    #2563eb
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: 0 2px 12px rgba(37, 99, 235, 0.12);
 }
 
 .headingSecondary {
@@ -44,9 +55,9 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 26px;
+  gap: clamp(28px, 3.5vw, 44px);
   align-items: stretch;
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
 .card {

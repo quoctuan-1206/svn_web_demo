@@ -3,6 +3,8 @@
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
+  margin-left: 100px;
+  margin-top: 200px;
   padding-left: 24px;
   padding-right: 24px;
 }
@@ -66,7 +68,7 @@
 }
 
 .upper {
-  margin-bottom: 44px;
+  margin-bottom: 144px;
 }
 
 .lower {
@@ -150,7 +152,7 @@
 .companyTitle {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 13px;
+  font-size: 33px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #ffffff;
@@ -158,7 +160,7 @@
 
 .companyLine {
   margin: 0;
-  font-size: 13px;
+  font-size: 13px !important;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.75);
   max-width: 660px;

@@ -23,8 +23,8 @@ export default function Solutions() {
       <div className="container">
         <div className={styles.titleRow}>
           <h2 className={styles.heading}>
-            <span className={styles.headingPrimary}>Giải pháp</span>{" "}
-            <span className={styles.headingSecondary}>Tự động hóa</span>
+            <span className={styles.headingPrimary}>Giải pháp Tự động hóa</span>{" "}
+            <span className={styles.headingSecondary}>Chuyên sâu</span>
           </h2>
         </div>
         <p className={styles.sub}>Nền tảng kỹ thuật vững &amp; triển khai thực tế</p>
