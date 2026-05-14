@@ -1,114 +1,245 @@
+/* IntroGrid.module.css */
+
 .section {
   position: relative;
-  margin: 0;
-  padding: 0;
-  background-color: #1a1d22;
-  background-image: url("./intro-collage-bg.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  display: grid;
-  align-items: end;
+
+  width: 100%;
+  height: 100vh;
+
+  overflow: hidden;
+  background: #0f1216;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.overlay {
+/* tránh horizontal scrollbar */
+:global(body) {
+  overflow-x: hidden;
+}
+
+.marqueeMask {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.18) 0%,
-    rgba(0, 0, 0, 0.62) 70%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
+
+  overflow: hidden;
+
+  pointer-events: none;
+  z-index: 0;
+}
+
+.marquee {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 120%;
+  height: 120%;
+
+  transform: translate(-50%, -50%) rotate(-6deg) scale(1.06);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 24px;
+}
+
+.row {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* tạo chiều sâu nhẹ */
+.row:nth-child(1) {
+  transform: translateX(-60px);
+}
+
+.row:nth-child(3) {
+  transform: translateX(60px);
+}
+
+.track {
+  display: flex;
+  gap: 24px;
+
+  width: max-content;
+
+  will-change: transform;
+}
+
+/* hàng trên + dưới */
+.rowRight .track {
+  animation: introScrollRight 70s linear infinite;
+}
+
+/* hàng giữa */
+.rowLeft .track {
+  animation: introScrollLeft 70s linear infinite;
+}
+
+.row:hover .track {
+  animation-play-state: paused;
+}
+
+.cell {
+  flex: 0 0 auto;
+
+  width: 547px;
+  height: 320px;
+
+  border-radius: 20px;
+  overflow: hidden;
+
+  background: #14171c;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.28),
+    0 30px 60px rgba(0, 0, 0, 0.18);
+
+  transform: rotate(1.5deg);
+}
+
+.cell img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  display: block;
+
+  user-select: none;
+
+  transition: transform 0.8s ease;
+}
+
+.cell:hover img {
+  transform: scale(1.08);
+}
+
+/* hàng giữa mờ nhẹ tạo depth */
+.row:nth-child(2) {
+  opacity: 0.75;
+  transform: scale(0.96) translateX(10px);
+}
+
+/* fade 2 bên */
+.section::before,
+.section::after {
+  content: "";
+
+  position: absolute;
+  top: 0;
+
+  width: 180px;
+  height: 100%;
+
+  z-index: 2;
   pointer-events: none;
 }
 
-.inner {
-  position: relative;
-  z-index: 1;
-  padding: 72px 0 56px;
-  max-width: 740px;
+.section::before {
+  left: 0;
+
+  background: linear-gradient(to right, #0f1216, transparent);
 }
 
-.kicker {
-  margin: 0 0 10px;
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
+.section::after {
+  right: 0;
+
+  background: linear-gradient(to left, #0f1216, transparent);
+}
+
+/* overlay tối */
+.overlay {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(5, 15, 24, 0.55);
+
+  z-index: 1;
+  pointer-events: none;
+}
+
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+
+  text-align: center;
+  max-width: min(920px, 92vw);
+
+  color: #f3f6fb;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+
+  transform: translate(-50%, -50%) rotate(-4deg);
 }
 
 .title {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: clamp(28px, 4vw, 44px);
-  letter-spacing: 0.01em;
-  color: #ffffff;
+  font-size: clamp(24px, 3.6vw, 44px);
+  font-weight: 600;
+  letter-spacing: 0.1em;
 }
 
-.titleRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+@keyframes introScrollLeft {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-33.333%);
+  }
 }
 
-/* Override the shared route button for this dark image section */
-.section :global(.sectionRouteBtn) {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  box-shadow: none;
+@keyframes introScrollRight {
+  from {
+    transform: translateX(-33.333%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
-.section :global(.sectionRouteBtn:hover) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #ffffff;
-  color: #ffffff;
-  box-shadow: none;
+@media (prefers-reduced-motion: reduce) {
+  .rowLeft .track,
+  .rowRight .track {
+    animation: none;
+  }
 }
 
-.section :global(.sectionRouteBtn:focus-visible) {
-  outline: 3px solid rgba(255, 255, 255, 0.6);
-  outline-offset: 3px;
-}
+@media (max-width: 768px) {
+  .marquee {
+    gap: 16px;
+    transform: translate(-50%, -50%) rotate(-4deg) scale(1.03);
+  }
 
-.sub {
-  margin: 12px 0 0;
-  font-size: 14px;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.72);
-}
+  .track {
+    gap: 16px;
+  }
 
-.actions {
-  margin-top: 18px;
-}
+  .cell {
+    width: 312px;
+    height: 208px;
 
-.toPage {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: transparent;
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 13px;
-  transition:
-    transform 160ms ease,
-    background 160ms ease,
-    border-color 160ms ease,
-    color 160ms ease;
-}
+    border-radius: 16px;
+  }
 
-.toPage:hover {
-  transform: translateY(-1px);
-  background: rgba(0, 230, 118, 0.18);
-  border-color: rgba(0, 230, 118, 0.55);
-  color: rgba(0, 230, 118, 1);
+  .row:nth-child(1),
+  .row:nth-child(3) {
+    transform: none;
+  }
+
+  .row:nth-child(2) {
+    transform: scale(0.96);
+  }
+
+  .section::before,
+  .section::after {
+    width: 80px;
+  }
 }

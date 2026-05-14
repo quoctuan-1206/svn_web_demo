@@ -39,7 +39,12 @@ export default function Products() {
 
         <div className={styles.grid}>
           {products.map((p) => (
-            <article key={p._id || p.id} className={styles.card}>
+            <Link
+              key={p._id || p.id}
+              className={styles.card}
+              to={catalogItemPath(p)}
+              aria-label={p.title}
+            >
               {p.image ? (
                 <img
                   className={styles.img}
@@ -48,19 +53,8 @@ export default function Products() {
                   loading="lazy"
                 />
               ) : null}
-              <div className={styles.overlay} aria-hidden="true" />
               <h3 className={styles.cardTitle}>{p.title}</h3>
-              <div className={styles.cardBody}>
-                <div className={styles.cardActions}>
-                  <Link className={styles.cardLink} to={catalogItemPath(p)}>
-                    Xem chi tiết →
-                  </Link>
-                  <Link className={styles.cardCta} to="/lien-he">
-                    Tư vấn
-                  </Link>
-                </div>
-              </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>

@@ -5,6 +5,8 @@ import styles from "./NewsDetailPage.module.css";
 import { catalogItemPath } from "../../utils/catalogItemPath";
 import { ArticleBody } from "./ArticleBody";
 
+
+
 function formatDate(value) {
   if (!value) return "";
   const d = new Date(value);
@@ -38,11 +40,6 @@ export default function CatalogDetailPage({ variant }) {
   const listPath = variant === "solution" ? "/giai-phap" : "/san-pham";
   const listLabel = variant === "solution" ? "Giải pháp" : "Sản phẩm";
   const relatedTitle = variant === "solution" ? "Giải pháp khác" : "Sản phẩm khác";
-
-  const illustrationUrls = useMemo(() => {
-    if (!item?.image) return [];
-    return [item.image];
-  }, [item]);
 
   const bodySource = useMemo(() => {
     if (!item) return "";
@@ -155,24 +152,6 @@ export default function CatalogDetailPage({ variant }) {
               {formatDate(item.updatedAt || item.createdAt)}
             </time>
           </header>
-
-          {illustrationUrls.length > 0 ? (
-            <section className={styles.gallery} aria-label="Hình ảnh">
-              <div
-                className={
-                  illustrationUrls.length === 1
-                    ? styles.gallerySingle
-                    : styles.galleryGrid
-                }
-              >
-                {illustrationUrls.map((url, idx) => (
-                  <figure key={`${url}-${idx}`} className={styles.figure}>
-                    <img src={url} alt="" loading={idx === 0 ? "eager" : "lazy"} />
-                  </figure>
-                ))}
-              </div>
-            </section>
-          ) : null}
 
           <section className={styles.content} aria-label="Nội dung chính">
             <ArticleBody content={bodySource} />

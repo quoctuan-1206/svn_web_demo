@@ -131,6 +131,11 @@ body {
   overflow-y: hidden;
 }
 
+/* IntroGrid: full viewport collage, no internal scrolling */
+.page > section#gioi-thieu {
+  overflow-y: hidden;
+}
+
 /* CTA: một viewport, không cuộn trong section; flex căn nội dung + ít padding đáy hơn các section khác */
 .page > section#lien-he {
   display: flex;
