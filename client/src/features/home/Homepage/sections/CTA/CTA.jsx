@@ -124,7 +124,13 @@ export default function CTA() {
             <div className={styles.bottomRow}>
               <p className={styles.copy}>Bản quyền © 2024 SVN Automation.</p>
               <div className={styles.socialRow} aria-label="Mạng xã hội">
-                <a className={styles.social} href="#" aria-label="Facebook">
+                <a
+                  className={styles.social}
+                  href="https://www.facebook.com/SVNAutomation"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                >
                   <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
                     <path
                       fill="currentColor"
