@@ -28,6 +28,7 @@ import LoginPage from "../features/admin/pages/LoginPage";
 import Dashboard from "../features/admin/pages/Dashboard";
 import ProductsAdmin from "../features/admin/pages/ProductsAdmin";
 import NewsAdmin from "../features/admin/pages/NewsAdmin";
+import ContactLeadsAdmin from "../features/admin/pages/ContactLeadsAdmin";
 
 function AppShell() {
   const { pathname } = useLocation();
@@ -67,6 +68,7 @@ function AppShell() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="products" element={<ProductsAdmin />} />
             <Route path="news" element={<NewsAdmin />} />
+            <Route path="contacts" element={<ContactLeadsAdmin />} />
           </Route>
 
           {/* Fallback */}

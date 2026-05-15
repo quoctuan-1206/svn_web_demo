@@ -342,7 +342,18 @@ export default function Dashboard() {
         </TableCard>
       </div>
 
-      <TableCard title="Yêu cầu liên hệ gần đây">
+      <TableCard
+        title="Yêu cầu liên hệ gần đây"
+        right={
+          <button
+            type="button"
+            onClick={() => navigate("/admin/contacts")}
+            className="text-xs font-semibold text-teal-700 hover:text-teal-800"
+          >
+            Xem tất cả
+          </button>
+        }
+      >
         {!latestContactLeads.length ? (
           <div className="px-4 py-6 text-sm text-slate-500">
             {loading ? "Đang tải..." : "Chưa có yêu cầu liên hệ nào"}

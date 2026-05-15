@@ -7,6 +7,7 @@ const productsRoutes = require('./routes/products');
 const newsRoutes = require('./routes/news');
 const uploadsRoutes = require('./routes/uploads');
 const contactRoutes = require('./routes/contact');
+const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
 
@@ -35,5 +36,8 @@ app.use('/api/products', productsRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/uploads', uploadsRoutes);
 app.use('/api/contact', contactRoutes);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 module.exports = app;

@@ -6,6 +6,7 @@ import "../admin.css";
 function getTitleFromPath(pathname) {
   if (pathname.startsWith("/admin/products")) return "Products";
   if (pathname.startsWith("/admin/news")) return "News";
+  if (pathname.startsWith("/admin/contacts")) return "Liên hệ";
   if (pathname.startsWith("/admin/dashboard")) return "Dashboard";
   return "Admin";
 }

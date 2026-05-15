@@ -1,12 +1,19 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, LogOut, Newspaper, Package } from "lucide-react";
+import {
+  Inbox,
+  LayoutDashboard,
+  LogOut,
+  Newspaper,
+  Package,
+} from "lucide-react";
 import useAuth from "../hooks/useAuth";
 
 const navItems = [
   { label: "Dashboard", to: "/admin/dashboard", Icon: LayoutDashboard },
   { label: "Products", to: "/admin/products", Icon: Package },
   { label: "News", to: "/admin/news", Icon: Newspaper },
+  { label: "Liên hệ", to: "/admin/contacts", Icon: Inbox },
 ];
 
 function SidebarLink({ to, label, Icon }) {
