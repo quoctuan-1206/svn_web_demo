@@ -4,7 +4,11 @@
   align-items: center;
 
   /* nền trắng */
-  background: #ffffff;
+  background-color: #ffffff;
+  background-image: url("/images/bgnews.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #0a0a0a;
 }
 
@@ -33,7 +37,6 @@
   flex-wrap: wrap;
 }
 
-/* Arrow button (shared class) matches section background */
 .section :global(.sectionRouteBtn) {
   background: transparent;
   border: 1px solid rgba(10, 10, 10, 0.12);
@@ -68,13 +71,7 @@
 }
 
 .headingPrimary {
-  background: linear-gradient(
-    90deg,
-    #007CFE,
-    #1480a3,
-    #218365,
-    #75C01F
-  );
+  background: linear-gradient(90deg, #007cfe, #1480a3, #218365, #75c01f);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -113,7 +110,9 @@
   background: transparent;
   border: 0;
   box-shadow: none;
-  transition: transform 180ms ease, opacity 180ms ease;
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
 }
 
 .item:hover {

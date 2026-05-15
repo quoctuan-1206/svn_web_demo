@@ -1,12 +1,13 @@
 import styles from "./Hero.module.css";
-import heroBg from "./bg1.png";
+
+const HERO_BG_SRC = "/images/bg1.png";
 
 export default function Hero() {
   return (
     <section className={styles.hero} id="hero" aria-label="SVN Automation">
       <img
         className={styles.bgImg}
-        src={heroBg}
+        src={HERO_BG_SRC}
         alt="background image"
         aria-hidden="true"
         draggable={false}

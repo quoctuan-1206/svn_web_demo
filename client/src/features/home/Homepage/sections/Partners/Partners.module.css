@@ -5,26 +5,11 @@
   align-items: center;
   overflow: hidden;
   padding: 70px 0 60px;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(15, 23, 42, 0.045) 0%,
-      rgba(15, 23, 42, 0.045) 32%,
-      transparent 32%
-    ),
-    #f8f8f8;
-}
-
-/* texture nhẹ giống ảnh */
-.section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(rgba(0,0,0,0.03) 0.7px, transparent 0.7px);
-  background-size: 6px 6px;
-  opacity: 0.35;
-  pointer-events: none;
+  background-color: #f8f8f8;
+  background-image: url("/images/bgdoitac.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .header {
@@ -45,13 +30,7 @@
 }
 
 .headingPrimary {
-  background: linear-gradient(
-    90deg,
-    #007CFE,
-    #1480a3,
-    #218365,
-    #75C01F
-  );
+  background: linear-gradient(90deg, #007cfe, #1480a3, #218365, #75c01f);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -127,4 +106,3 @@
   font-size: 34px;
   line-height: 1;
 }
-

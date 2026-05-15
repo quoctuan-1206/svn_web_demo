@@ -51,15 +51,12 @@ export default function Solutions() {
       const absDelta = Math.abs(delta);
       if (absDelta > moved) moved = absDelta;
 
-      // Chỉ kích hoạt chế độ kéo sau khi vượt ngưỡng, để click bình thường vẫn đi qua.
       if (!dragging && moved > DRAG_THRESHOLD) {
         dragging = true;
         el.classList.add(styles.isDragging);
         try {
           el.setPointerCapture(pointerId);
-        } catch {
-          // ignore – setPointerCapture may not be supported on all browsers
-        }
+        } catch {}
       }
 
       if (dragging) {

@@ -1,26 +1,20 @@
-/* Nền đen + ảnh graphic xanh bên phải */
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1600px;
   margin: 0 auto;
-  margin-left: 100px;
-  margin-top: 200px;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-inline: clamp(20px, 4vw, 40px);
 }
+
 .section {
   position: relative;
-  min-height: 100dvh; /* Chiều cao toàn màn hình */
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  /* Đẩy nội dung xuống đáy */
-  justify-content: flex-end; 
-  
-  /* Khoảng cách từ nội dung đến mép đáy màn hình (chỉnh số này để cao lên hoặc thấp xuống) */
-  padding-bottom: 16px; 
-
+  justify-content: flex-end;
+  padding-bottom: 32px;
+  align-items: flex-start;
   background-color: #000000;
-  background-image: url("/images/cta-bg.png");
+  background-image: url("/images/bglienhe.png");
   background-size: cover;
   background-position: right center;
   background-repeat: no-repeat;
@@ -49,35 +43,91 @@
   width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 700px) minmax(0, 1fr);
-  gap: clamp(16px, 4vw, 48px);
-  align-items: end;
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(16px, 4vw, 48px);
+  row-gap: 0;
+  align-items: stretch;
   padding-bottom: 0;
   padding-top: 24px;
+  margin-top: 200px;
 }
 
-.col {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 0;
+/* Hàng 1: tiêu đề trái và đỉnh form phải cùng baseline lưới */
+.headlineSlot {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  margin-bottom: 28px;
 }
 
-.colGraphic {
-  min-height: 120px;
-  pointer-events: none;
-}
-
-/* Cột phải: form (giống Contact.module.css .aside) */
-.formAside {
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+.formSlot {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: 100%;
+  max-width: 440px;
   min-width: 0;
 }
 
-.upper {
-  margin-bottom: 144px;
+/* Giới hạn chiều cao form, cuộn bên trong — section không bị đẩy cao thêm */
+.formSlotOpen {
+  grid-row: 1 / -1;
+  align-self: start;
+  max-height: min(640px, calc(100dvh - 200px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.formSlot > div {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+}
+
+.formSlotOpen > div {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.formSlot > div form {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.leftRest {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: stretch;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.leftRest > .lower {
+  margin-top: 48px;
+}
+
+.rightRest {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+}
+
+.colGraphic {
+  flex: 1 1 auto;
+  min-height: 120px;
+  pointer-events: none;
 }
 
 .lower {
@@ -91,13 +141,13 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 28px;
+  margin-bottom: 0;
 }
 
 .title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(24px, 3.6vw, 38px);
+  font-size: clamp(24px, 3.6vw, 30px);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: 0.01em;
@@ -266,16 +316,47 @@
 
 @media (max-width: 900px) {
   .shell {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 4vw, 48px);
+    grid-template-columns: unset;
+    grid-template-rows: unset;
     padding-bottom: 0;
+  }
+
+  .headlineSlot {
+    grid-column: unset;
+    grid-row: unset;
+    order: 1;
+    margin-bottom: 0;
+  }
+
+  .formSlot {
+    grid-column: unset;
+    grid-row: unset;
+    order: 2;
+    justify-self: stretch;
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .formSlotOpen {
+    align-self: stretch;
+    max-height: min(78dvh, calc(100dvh - 140px));
+  }
+
+  .leftRest {
+    grid-column: unset;
+    grid-row: unset;
+    order: 3;
+  }
+
+  .rightRest {
+    display: none;
   }
 
   .colGraphic {
     display: none;
-  }
-
-  .formAside {
-    justify-content: flex-start;
   }
 
   .quickLinks {
@@ -294,8 +375,8 @@
     padding-top: 16px;
   }
 
-  .upper {
-    margin-bottom: 36px;
+  .leftRest > .lower {
+    margin-top: 36px;
   }
 
   .headlineRow {

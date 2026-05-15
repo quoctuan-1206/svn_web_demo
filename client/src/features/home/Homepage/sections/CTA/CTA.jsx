@@ -14,17 +14,6 @@ export default function CTA() {
   const [showForm, setShowForm] = useState(false);
   const formRef = useRef(null);
 
-  function openForm() {
-    setShowForm(true);
-    window.setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      const first = formRef.current?.querySelector(
-        "input, select, textarea, button",
-      );
-      first?.focus?.();
-    }, 0);
-  }
-
   /** Nút mũi tên: bấm lần nữa khi form đang mở thì ẩn form */
   function toggleFormFromArrow() {
     setShowForm((wasOpen) => {
@@ -46,46 +35,55 @@ export default function CTA() {
   return (
     <section className={styles.section} id="lien-he" aria-label="Liên hệ">
       <div className={`${styles.container} ${styles.shell}`}>
-        <div className={styles.col}>
-          <div className={styles.upper}>
-            <div className={styles.headlineRow}>
-              <h2 className={styles.title}>
-                Hãy để chúng tôi đồng hành cùng bạn
-              </h2>
-              <button
-                type="button"
-                className={styles.scrollBtn}
-                aria-expanded={showForm}
-                aria-label={showForm ? "Đóng form liên hệ" : "Mở form liên hệ"}
-                onClick={toggleFormFromArrow}
+        <div className={styles.headlineSlot}>
+          <div className={styles.headlineRow}>
+            <h2 className={styles.title}>
+              Hãy để chúng tôi đồng hành cùng bạn
+            </h2>
+            <button
+              type="button"
+              className={styles.scrollBtn}
+              aria-expanded={showForm}
+              aria-label={showForm ? "Đóng form liên hệ" : "Mở form liên hệ"}
+              onClick={toggleFormFromArrow}
+            >
+              <svg
+                className={styles.scrollBtnIcon}
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
               >
-                <svg
-                  className={styles.scrollBtnIcon}
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M12 5v14M5 13l7 7 7-7"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <nav className={styles.quickLinks} aria-label="Liên kết nhanh">
-              {QUICK_LINKS.map((item) => (
-                <Link key={item.to} className={styles.quickLink} to={item.to}>
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+                <path
+                  d="M12 5v14M5 13l7 7 7-7"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
+        </div>
+
+        <aside
+          className={`${styles.formSlot} ${showForm ? styles.formSlotOpen : ""}`}
+          aria-label="Biểu mẫu liên hệ"
+        >
+          {showForm ? (
+            <ContactFormBlock formRef={formRef} source="homepage_cta" />
+          ) : null}
+        </aside>
+
+        <div className={styles.leftRest}>
+          <nav className={styles.quickLinks} aria-label="Liên kết nhanh">
+            {QUICK_LINKS.map((item) => (
+              <Link key={item.to} className={styles.quickLink} to={item.to}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
           <div className={styles.lower}>
             <div className={styles.company}>
@@ -99,11 +97,7 @@ export default function CTA() {
               </p>
 
               <div className={styles.ctaWrap}>
-                <button
-                  type="button"
-                  className={styles.contactBtn}
-                  onClick={openForm}
-                >
+                <Link className={styles.contactBtn} to="/lien-he">
                   <span className={styles.btnIcon} aria-hidden="true">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                       <path
@@ -116,7 +110,7 @@ export default function CTA() {
                     </svg>
                   </span>
                   Liên hệ với chúng tôi
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -181,13 +175,11 @@ export default function CTA() {
           </div>
         </div>
 
-        <aside className={styles.formAside} aria-label="Biểu mẫu liên hệ">
-          {showForm ? (
-            <ContactFormBlock formRef={formRef} source="homepage_cta" />
-          ) : (
-            <div className={styles.colGraphic} aria-hidden="true" />
-          )}
-        </aside>
+        {!showForm ? (
+          <div className={styles.rightRest} aria-hidden="true">
+            <div className={styles.colGraphic} />
+          </div>
+        ) : null}
       </div>
     </section>
   );

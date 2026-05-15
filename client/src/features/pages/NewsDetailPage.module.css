@@ -1,5 +1,4 @@
 .page {
-  /* Header cố định 70px — canh nội dung ngay dưới header */
   padding-top: 70px;
   min-height: 100dvh;
   padding-bottom: 48px;
@@ -7,7 +6,6 @@
   color: #0a0a0a;
 }
 
-/* Tránh padding 80px mặc định của `section` trong index.css */
 .page :global(section) {
   padding: 0;
 }

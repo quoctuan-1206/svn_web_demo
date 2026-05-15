@@ -1,17 +1,10 @@
-/* =========================
-   FULLPAGE SCROLL + SNAP
-   ========================= */
-
-/* Scroll snap cho toàn trang */
 html:has([data-homepage-fullpage]) {
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 
-  /* nếu có navbar fixed */
   scroll-padding-top: 88px;
 }
 
-/* Trang Homepage nền trắng (chỉ khi có fullpage homepage) */
 body:has([data-homepage-fullpage]) {
   background: #ffffff;
   color: #0a0a0a;
@@ -60,7 +53,6 @@ body {
   overflow-y: auto;
 }
 
-/* Per-section route button (inline near title) */
 :global(.sectionRouteBtn) {
   display: inline-flex;
   align-items: center;

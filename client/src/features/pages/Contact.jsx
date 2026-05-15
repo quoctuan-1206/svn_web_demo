@@ -47,56 +47,68 @@ export default function Contact() {
   return (
     <main className={styles.page}>
       <div className={styles.pageInner}>
-        <div className={styles.shell}>
-          <section className={styles.col} aria-label="Liên hệ">
-            <div className={styles.upper}>
-              <div className={styles.headlineRow}>
-                <h1 className={styles.title}>
-                  Hãy để chúng tôi đồng hành cùng bạn
-                </h1>
-                <button
-                  type="button"
-                  className={styles.scrollBtn}
-                  aria-expanded={showForm}
-                  aria-label={
-                    showForm ? "Đóng form liên hệ" : "Mở form liên hệ"
-                  }
-                  onClick={toggleFormFromArrow}
+        <section
+          className={`${styles.shell} ${showForm ? "" : styles.shellFormIdle}`}
+          aria-label="Liên hệ"
+        >
+          <div className={styles.headlineSlot}>
+            <div className={styles.headlineRow}>
+              <h1 className={styles.title}>
+                Hãy để chúng tôi đồng hành cùng bạn
+              </h1>
+              <button
+                type="button"
+                className={styles.scrollBtn}
+                aria-expanded={showForm}
+                aria-label={
+                  showForm ? "Đóng form liên hệ" : "Mở form liên hệ"
+                }
+                onClick={toggleFormFromArrow}
+              >
+                <svg
+                  className={styles.scrollBtnIcon}
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
                 >
-                  <svg
-                    className={styles.scrollBtnIcon}
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M12 5v14M5 13l7 7 7-7"
-                      stroke="currentColor"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <nav className={styles.quickLinks} aria-label="Liên kết nhanh">
-                {QUICK_LINKS.map((item) => (
-                  <Link key={item.to} className={styles.quickLink} to={item.to}>
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
+                  <path
+                    d="M12 5v14M5 13l7 7 7-7"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
             </div>
+          </div>
+
+          <aside
+            className={`${styles.formSlot} ${showForm ? styles.formSlotOpen : ""}`}
+            aria-label="Biểu mẫu liên hệ"
+          >
+            {showForm ? <ContactFormBlock formRef={formRef} /> : null}
+          </aside>
+
+          <div className={styles.leftRest}>
+            <nav className={styles.quickLinks} aria-label="Liên kết nhanh">
+              {QUICK_LINKS.map((item) => (
+                <Link key={item.to} className={styles.quickLink} to={item.to}>
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
 
             <div className={styles.lower}>
               <div className={styles.company}>
-                <div className={styles.companyTitle}>SVN AUTOMATION CO., LTD</div>
+                <div className={styles.companyTitle}>
+                  SVN AUTOMATION CO., LTD
+                </div>
                 <p className={styles.companyLine}>
-                  Địa chỉ: Số 9 đường Đinh Thị Thi, Khu Nhà ở Đông Nam, Phường Hiệp
-                  Bình, Thành phố Hồ Chí Minh, Việt Nam
+                  Địa chỉ: Số 9 đường Đinh Thị Thi, Khu Nhà ở Đông Nam, Phường
+                  Hiệp Bình, Thành phố Hồ Chí Minh, Việt Nam
                 </p>
                 <p className={styles.companyLine}>
                   Điện thoại liên hệ: (+84) 286 282 1235
@@ -183,16 +195,14 @@ export default function Contact() {
                 </div>
               </div>
             </div>
-          </section>
+          </div>
 
-          <aside className={styles.aside} aria-label="Biểu mẫu liên hệ">
-            {showForm ? (
-              <ContactFormBlock formRef={formRef} />
-            ) : (
-              <div className={styles.colGraphic} aria-hidden="true" />
-            )}
-          </aside>
-        </div>
+          {!showForm ? (
+            <div className={styles.rightRest} aria-hidden="true">
+              <div className={styles.colGraphic} />
+            </div>
+          ) : null}
+        </section>
       </div>
     </main>
   );
