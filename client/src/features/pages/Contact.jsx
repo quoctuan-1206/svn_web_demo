@@ -18,17 +18,6 @@ export default function Contact() {
     window.scrollTo(0, 0);
   }, []);
 
-  function openForm() {
-    setShowForm(true);
-    window.setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      const first = formRef.current?.querySelector(
-        "input, select, textarea, button",
-      );
-      first?.focus?.();
-    }, 0);
-  }
-
   /** Nút mũi tên: bấm lần nữa khi form đang mở thì ẩn form */
   function toggleFormFromArrow() {
     setShowForm((wasOpen) => {
@@ -48,7 +37,7 @@ export default function Contact() {
     <main className={styles.page}>
       <div className={styles.pageInner}>
         <section
-          className={`${styles.shell} ${showForm ? "" : styles.shellFormIdle}`}
+          className={`${styles.shell} ${showForm ? styles.shellOpen : ""}`}
           aria-label="Liên hệ"
         >
           <div className={styles.headlineSlot}>
@@ -58,11 +47,11 @@ export default function Contact() {
               </h1>
               <button
                 type="button"
-                className={styles.scrollBtn}
+                className={`${styles.scrollBtn} ${
+                  showForm ? styles.scrollBtnOpen : ""
+                }`}
                 aria-expanded={showForm}
-                aria-label={
-                  showForm ? "Đóng form liên hệ" : "Mở form liên hệ"
-                }
+                aria-label={showForm ? "Đóng form liên hệ" : "Mở form liên hệ"}
                 onClick={toggleFormFromArrow}
               >
                 <svg
@@ -101,106 +90,93 @@ export default function Contact() {
               ))}
             </nav>
 
-            <div className={styles.lower}>
-              <div className={styles.company}>
-                <div className={styles.companyTitle}>
-                  SVN AUTOMATION CO., LTD
-                </div>
-                <p className={styles.companyLine}>
-                  Địa chỉ: Số 9 đường Đinh Thị Thi, Khu Nhà ở Đông Nam, Phường
-                  Hiệp Bình, Thành phố Hồ Chí Minh, Việt Nam
-                </p>
-                <p className={styles.companyLine}>
-                  Điện thoại liên hệ: (+84) 286 282 1235
-                </p>
+            <div className={styles.company}>
+              <div className={styles.companyTitle}>SVN AUTOMATION CO., LTD</div>
+              <p className={styles.companyLine}>
+                Địa chỉ: Số 9 đường Đinh Thị Thi, Khu Nhà ở Đông Nam, Phường
+                Hiệp Bình, Thành phố Hồ Chí Minh, Việt Nam
+              </p>
+              <p className={styles.companyLine}>
+                Điện thoại liên hệ: (+84) 286 282 1235
+              </p>
+              <Link className={styles.contactBtn} to="/lien-he">
+                <span className={styles.btnIcon} aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M4 6h16v12H4V6zm0 0l8 6 8-6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                Liên hệ với chúng tôi
+              </Link>
+            </div>
 
-                <div className={styles.ctaWrap}>
-                  <button
-                    type="button"
-                    className={styles.contactBtn}
-                    onClick={openForm}
-                  >
-                    <span className={styles.btnIcon} aria-hidden="true">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M4 6h16v12H4V6zm0 0l8 6 8-6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </span>
-                    Liên hệ với chúng tôi
-                  </button>
-                </div>
-              </div>
+            <hr className={styles.rule} />
 
-              <hr className={styles.rule} />
-
-              <div className={styles.bottomRow}>
-                <p className={styles.copy}>Bản quyền © 2024 SVN Automation.</p>
-                <div className={styles.socialRow} aria-label="Mạng xã hội">
-                  <a
-                    className={styles.social}
-                    href="https://www.facebook.com/SVNAutomation"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Facebook"
+            <div className={styles.bottomRow}>
+              <p className={styles.copy}>Bản quyền © 2024 SVN Automation.</p>
+              <div className={styles.socialRow} aria-label="Mạng xã hội">
+                <a
+                  className={styles.social}
+                  href="https://www.facebook.com/SVNAutomation"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M13.5 22v-9h3l.5-4h-4V7.5c0-1.16.32-2 2.44-2H17V2.14C16.39 2.05 14.59 2 12.6 2 8.52 2 6 4.16 6 7.36V9H3v4h3v9h4.5z"
-                      />
-                    </svg>
-                  </a>
-                  <a className={styles.social} href="#" aria-label="LinkedIn">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M6.94 6.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM5 22V8h4v14H5zm6 0V13.2c0-2.12 2.06-2.87 3.2-1.55l.3.35V22h4v-8.9c0-3.45-3.22-4.42-5.6-2.03L15 11V8h-4v14z"
-                      />
-                    </svg>
-                  </a>
-                  <a
-                    className={styles.social}
-                    href="https://www.youtube.com/@SVNAutomationCompanyLimited"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="YouTube"
+                    <path
+                      fill="currentColor"
+                      d="M13.5 22v-9h3l.5-4h-4V7.5c0-1.16.32-2 2.44-2H17V2.14C16.39 2.05 14.59 2 12.6 2 8.52 2 6 4.16 6 7.36V9H3v4h3v9h4.5z"
+                    />
+                  </svg>
+                </a>
+                <a className={styles.social} href="#" aria-label="LinkedIn">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M21.6 7.2s-.2-1.4-.8-2c-.8-.8-1.7-.8-2.1-.9C16 4 12 4 12 4s-4 0-6.7.3c-.4 0-1.3.1-2.1.9-.6.6-.8 2-.8 2S2 8.9 2 10.6v1.8c0 1.7.2 3.4.2 3.4s.2 1.4.8 2c.8.8 1.9.8 2.4.9 1.8.2 7.6.3 7.6.3s4 0 6.7-.3c.4 0 1.3-.1 2.1-.9.6-.6.8-2 .8-2s.2-1.7.2-3.4v-1.8c0-1.7-.2-3.4-.2-3.4zM10 14.5v-7l6 3.5-6 3.5z"
-                      />
-                    </svg>
-                  </a>
-                </div>
+                    <path
+                      fill="currentColor"
+                      d="M6.94 6.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM5 22V8h4v14H5zm6 0V13.2c0-2.12 2.06-2.87 3.2-1.55l.3.35V22h4v-8.9c0-3.45-3.22-4.42-5.6-2.03L15 11V8h-4v14z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  className={styles.social}
+                  href="https://www.youtube.com/@SVNAutomationCompanyLimited"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M21.6 7.2s-.2-1.4-.8-2c-.8-.8-1.7-.8-2.1-.9C16 4 12 4 12 4s-4 0-6.7.3c-.4 0-1.3.1-2.1.9-.6.6-.8 2-.8 2S2 8.9 2 10.6v1.8c0 1.7.2 3.4.2 3.4s.2 1.4.8 2c.8.8 1.9.8 2.4.9 1.8.2 7.6.3 7.6.3s4 0 6.7-.3c.4 0 1.3-.1 2.1-.9.6-.6.8-2 .8-2s.2-1.7.2-3.4v-1.8c0-1.7-.2-3.4-.2-3.4zM10 14.5v-7l6 3.5-6 3.5z"
+                    />
+                  </svg>
+                </a>
               </div>
             </div>
           </div>
 
           {!showForm ? (
-            <div className={styles.rightRest} aria-hidden="true">
-              <div className={styles.colGraphic} />
-            </div>
+            <div className={styles.rightRest} aria-hidden="true" />
           ) : null}
         </section>
       </div>

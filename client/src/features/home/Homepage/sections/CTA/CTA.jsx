@@ -34,12 +34,16 @@ export default function CTA() {
 
   return (
     <section className={styles.section} id="lien-he" aria-label="Liên hệ">
-      <div className={`${styles.container} ${styles.shell}`}>
+      <div
+        className={`${styles.container} ${styles.shell} ${
+          showForm ? styles.shellOpen : ""
+        }`}
+      >
         <header className={styles.headline}>
           <h2 className={styles.title}>Hãy để chúng tôi đồng hành cùng bạn</h2>
           <button
             type="button"
-            className={styles.scrollBtn}
+            className={`${styles.scrollBtn} ${showForm ? styles.scrollBtnOpen : ""}`}
             aria-expanded={showForm}
             aria-label={showForm ? "Đóng form liên hệ" : "Mở form liên hệ"}
             onClick={toggleFormFromArrow}
