@@ -6,7 +6,7 @@ import { useHomepageSection } from "../../../context/HomepageSectionContext";
 const LOGO_SRC = "/images/logo-27.11.png";
 
 const NAV_ITEMS = [
-  { to: "/gioi-thieu", label: "Về", sectionId: "gioi-thieu" },
+  { to: "/ve-chung-toi", label: "Về" },
   { to: "/san-pham", label: "Sản Phẩm", sectionId: "san-pham" },
   { to: "/giai-phap", label: "Giải Pháp", sectionId: "giai-phap" },
   { to: "/doi-tac", label: "Đối Tác", sectionId: "doi-tac" },

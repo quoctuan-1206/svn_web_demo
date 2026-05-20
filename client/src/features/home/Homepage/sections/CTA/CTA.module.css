@@ -53,11 +53,15 @@
 }
 
 /* Hàng 1: tiêu đề trái và đỉnh form phải cùng baseline lưới */
-.headlineSlot {
+.headline {
   grid-column: 1;
   grid-row: 1;
   align-self: start;
   margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .formSlot {
@@ -109,45 +113,18 @@
   flex-direction: column;
 }
 
-.leftRest > .lower {
-  margin-top: 48px;
-}
-
 .rightRest {
   grid-column: 2;
   grid-row: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: stretch;
   min-width: 0;
-  min-height: 0;
-}
-
-.colGraphic {
-  flex: 1 1 auto;
   min-height: 120px;
   pointer-events: none;
-}
-
-.lower {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.headlineRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 0;
 }
 
 .title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(24px, 3.6vw, 30px);
+  font-size: clamp(24px, 3.6vw, 33px);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: 0.01em;
@@ -206,12 +183,13 @@
 .company {
   display: grid;
   gap: 14px;
+  margin-top: 48px;
 }
 
 .companyTitle {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 33px;
+  font-size: 14px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #ffffff;
@@ -225,27 +203,23 @@
   max-width: 660px;
 }
 
-.ctaWrap {
-  margin-top: 6px;
-}
-
 .contactBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  min-height: 46px;
-  padding: 0 26px;
+  gap: 10px;
+  padding: 6px 16px;
   border: 0;
   border-radius: 999px;
   background: var(--green);
   color: #ffffff;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 400;
   font-size: 13px;
   letter-spacing: 0.04em;
   text-decoration: none;
   cursor: pointer;
+  margin-top: 6px;
   transition:
     transform 160ms ease,
     filter 160ms ease;
@@ -260,6 +234,8 @@
   display: inline-flex;
   align-items: center;
   color: inherit;
+  width: 16px;
+  height: 16px;
 }
 
 .rule {
@@ -324,7 +300,7 @@
     padding-bottom: 0;
   }
 
-  .headlineSlot {
+  .headline {
     grid-column: unset;
     grid-row: unset;
     order: 1;
@@ -355,10 +331,6 @@
     display: none;
   }
 
-  .colGraphic {
-    display: none;
-  }
-
   .quickLinks {
     max-width: none;
   }
@@ -375,12 +347,8 @@
     padding-top: 16px;
   }
 
-  .leftRest > .lower {
+  .company {
     margin-top: 36px;
-  }
-
-  .headlineRow {
-    flex-wrap: wrap;
   }
 
   .quickLinks {

@@ -7,14 +7,16 @@ import {
 } from "react-router-dom";
 import Header from "../shared/components/Header/Header";
 import Footer from "../shared/components/Footer/Footer";
-import { HomepageSectionProvider } from "../context/HomepageSectionContext";
+import {
+  HomepageSectionProvider,
+  useHomepageSection,
+} from "../context/HomepageSectionContext";
 import Homepage from "../features/home/Homepage/Homepage";
 import Contact from "../features/pages/Contact";
 import Products from "../features/pages/Products";
 import News from "../features/pages/News";
 import NewsDetailPage from "../features/pages/NewsDetailPage";
 import CatalogDetailPage from "../features/pages/CatalogDetailPage";
-import Intro from "../features/pages/Intro";
 import Solutions from "../features/pages/Solutions";
 import PartnersPage from "../features/pages/PartnersPage";
 import DownloadPage from "../features/pages/DownloadPage";
@@ -32,25 +34,34 @@ import ContactLeadsAdmin from "../features/admin/pages/ContactLeadsAdmin";
 
 function AppShell() {
   const { pathname } = useLocation();
+  const { activeSectionId } = useHomepageSection();
   const isAdminPage = pathname.startsWith("/admin");
+  const isHomepage = pathname === "/";
   /** Trang chi tiết tin: không footer cố định, không padding đáy cho footer */
   const isArticleStyleDetail =
     /^\/tin-tuc\/.+|^\/san-pham\/.+|^\/giai-phap\/.+/.test(pathname);
   const useFixedFooterShell = !isAdminPage && !isArticleStyleDetail;
+  const hideGlobalFooterOnCta = isHomepage && activeSectionId === "lien-he";
+  const showGlobalFooter = useFixedFooterShell && !hideGlobalFooterOnCta;
 
   return (
     <>
       {!isAdminPage ? <Header /> : null}
 
-      <div className={useFixedFooterShell ? "has-fixed-footer" : undefined}>
+      <div className={showGlobalFooter ? "has-fixed-footer" : undefined}>
         <Routes>
           {/* Public */}
           <Route path="/" element={<Homepage />} />
           <Route path="/tong-quan" element={<Overview />} />
-          <Route path="/gioi-thieu" element={<Intro />} />
-          <Route path="/san-pham/:slug" element={<CatalogDetailPage variant="product" />} />
+          <Route
+            path="/san-pham/:slug"
+            element={<CatalogDetailPage variant="product" />}
+          />
           <Route path="/san-pham" element={<Products />} />
-          <Route path="/giai-phap/:slug" element={<CatalogDetailPage variant="solution" />} />
+          <Route
+            path="/giai-phap/:slug"
+            element={<CatalogDetailPage variant="solution" />}
+          />
           <Route path="/giai-phap" element={<Solutions />} />
           <Route path="/doi-tac" element={<PartnersPage />} />
           <Route path="/tin-tuc/:slug" element={<NewsDetailPage />} />
@@ -76,7 +87,7 @@ function AppShell() {
         </Routes>
       </div>
 
-      {useFixedFooterShell ? (
+      {showGlobalFooter ? (
         <div className="global-footer-fixed">
           <Footer />
         </div>
