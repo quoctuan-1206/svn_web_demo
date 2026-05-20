@@ -30,7 +30,11 @@ export const COUNTRIES = [
 ];
 
 /** Form liên hệ (dùng trên trang /lien-he và trong CTA homepage) */
-export default function ContactFormBlock({ formRef, source = "contact_page" }) {
+export default function ContactFormBlock({
+  formRef,
+  source = "contact_page",
+  cardClassName = "",
+}) {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
 
@@ -86,7 +90,10 @@ export default function ContactFormBlock({ formRef, source = "contact_page" }) {
   }
 
   return (
-    <div className={styles.formCard} ref={formRef}>
+    <div
+      className={[styles.formCard, cardClassName].filter(Boolean).join(" ")}
+      ref={formRef}
+    >
       <h2 className={styles.formTitle}>Contact</h2>
 
       <form className={styles.form} onSubmit={handleSubmit}>
