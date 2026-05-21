@@ -20,6 +20,24 @@ export default function Solutions() {
       .catch(() => {});
   }, []);
 
+  /** Khi track ngắn hơn viewport thì căn giữa (không giữ scrollLeft cũ sau resize). */
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+
+    const syncScroll = () => {
+      const track = el.firstElementChild;
+      if (!track) return;
+      if (track.scrollWidth <= el.clientWidth + 1) {
+        el.scrollLeft = 0;
+      }
+    };
+
+    syncScroll();
+    window.addEventListener("resize", syncScroll);
+    return () => window.removeEventListener("resize", syncScroll);
+  }, [solutions]);
+
   // Kéo chuột để lướt ngang qua các giải pháp khác.
   useEffect(() => {
     const el = viewportRef.current;

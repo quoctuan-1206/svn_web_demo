@@ -41,8 +41,10 @@ function AppShell() {
   const isArticleStyleDetail =
     /^\/tin-tuc\/.+|^\/san-pham\/.+|^\/giai-phap\/.+/.test(pathname);
   const useFixedFooterShell = !isAdminPage && !isArticleStyleDetail;
+  const isContactPage = pathname === "/lien-he";
   const hideGlobalFooterOnCta = isHomepage && activeSectionId === "lien-he";
-  const showGlobalFooter = useFixedFooterShell && !hideGlobalFooterOnCta;
+  const showGlobalFooter =
+    useFixedFooterShell && !hideGlobalFooterOnCta && !isContactPage;
 
   return (
     <>

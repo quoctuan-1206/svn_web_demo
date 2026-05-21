@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./CTA.module.css";
+import contactStyles from "../../../../pages/Contact.module.css";
 import ContactFormBlock from "../../../../pages/ContactFormBlock";
 
 const QUICK_LINKS = [
@@ -14,7 +15,6 @@ export default function CTA() {
   const [showForm, setShowForm] = useState(false);
   const formRef = useRef(null);
 
-  /** Nút mũi tên: bấm lần nữa khi form đang mở thì ẩn form */
   function toggleFormFromArrow() {
     setShowForm((wasOpen) => {
       if (wasOpen) return false;
@@ -34,11 +34,7 @@ export default function CTA() {
 
   return (
     <section className={styles.section} id="lien-he" aria-label="Liên hệ">
-      <div
-        className={`${styles.container} ${styles.shell} ${
-          showForm ? styles.shellOpen : ""
-        }`}
-      >
+      <div className={`${styles.container} ${styles.shell}`}>
         <header className={styles.headline}>
           <h2 className={styles.title}>Hãy để chúng tôi đồng hành cùng bạn</h2>
           <button
@@ -49,7 +45,6 @@ export default function CTA() {
             onClick={toggleFormFromArrow}
           >
             <svg
-              className={styles.scrollBtnIcon}
               width="18"
               height="18"
               viewBox="0 0 24 24"
@@ -72,7 +67,12 @@ export default function CTA() {
           aria-label="Biểu mẫu liên hệ"
         >
           {showForm ? (
-            <ContactFormBlock formRef={formRef} source="homepage_cta" />
+            <ContactFormBlock
+              formRef={formRef}
+              source="homepage_cta"
+              hideTitle
+              cardClassName={contactStyles.formCardCta}
+            />
           ) : null}
         </aside>
 

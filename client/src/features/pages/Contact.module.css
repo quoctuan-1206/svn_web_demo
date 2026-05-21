@@ -1,14 +1,23 @@
+/* Trang /lien-he: một viewport full-screen, không cuộn body */
 .page {
+  --contact-header: 88px;
+  --contact-lift-headline: clamp(48px, 7vh, 88px);
+  --contact-lift-links: clamp(40px, 6vh, 72px);
+
   position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
   min-height: 100dvh;
+  margin: 0;
+  padding: var(--contact-header) 0 0;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  align-items: flex-start;
-
-  padding-top: 0;
-  padding-bottom: 32px;
+  align-items: stretch;
 
   background-color: #000000;
   background-image: url("/images/bglienhe.png");
@@ -21,7 +30,6 @@
   content: "";
   position: absolute;
   inset: 0;
-
   background: linear-gradient(
     90deg,
     rgba(0, 0, 0, 0.72) 0%,
@@ -29,80 +37,399 @@
     rgba(0, 0, 0, 0.15) 68%,
     transparent 100%
   );
-
   pointer-events: none;
 }
 
-.page > * {
+.container {
   position: relative;
   z-index: 1;
-}
-
-/* Container */
-.pageInner {
+  flex: 1;
+  min-height: 0;
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-
   padding-inline: clamp(20px, 4vw, 40px);
-}
-
-/* Main layout — lưới 2 cột giống CTA; class khớp Contact.jsx */
-.shell {
-  width: 100%;
+  padding-bottom: clamp(72px, 12dvh, 136px);
+  box-sizing: border-box;
 
   display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: clamp(24px, 6vh, 80px) 0;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-.formOnly {
+.shell {
+  flex: 1;
+  min-height: 0;
   width: 100%;
-  max-width: 440px;
+  display: grid;
+  grid-template-columns: minmax(0, 700px) minmax(0, 1fr);
+  grid-template-rows: 1fr;
+  column-gap: clamp(16px, 4vw, 48px);
+  align-items: stretch;
+  align-content: end;
+  padding-top: 0;
+  margin-top: 0;
+  margin-bottom: clamp(16px, 3vh, 32px);
 }
 
-/* FORM CARD */
+/* Cột trái cố định: header không dịch khi bật/tắt form */
+.leftColumn {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.headline {
+  flex-shrink: 0;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  transform: translateY(calc(-1 * var(--contact-lift-headline)));
+}
+
+.formSlot {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: end;
+  width: 100%;
+  max-width: 500px;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.formSlotOpen {
+  max-height: min(
+    560px,
+    calc(100dvh - var(--contact-header) - clamp(72px, 12dvh, 136px) - 24px)
+  );
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.formSlot > div {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+}
+
+.formSlotOpen > div {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.formSlot > div form {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.leftRest {
+  flex-shrink: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.rightRest {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  min-width: 0;
+  min-height: 120px;
+  pointer-events: none;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.6vw, 33px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  flex: 1;
+  min-width: 0;
+}
+
+.scrollBtn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--green);
+  color: #ffffff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
+}
+
+.scrollBtnOpen {
+  transform: rotate(180deg);
+}
+
+.scrollBtn:hover {
+  filter: brightness(1.08);
+}
+
+.quickLinks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 56px;
+  max-width: 340px;
+  transform: translateY(calc(-1 * var(--contact-lift-links)));
+}
+
+.quickLink {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  opacity: 0.92;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.quickLink:hover {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+.company {
+  display: grid;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.companyTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.companyLine {
+  margin: 0;
+  font-size: 13px !important;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 660px;
+}
+
+.contactBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  margin-top: 6px;
+  margin-right: auto;
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
+}
+
+.contactBtn:hover {
+  filter: brightness(1.07);
+}
+
+.btnIcon {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  width: 16px;
+  height: 16px;
+}
+
+.rule {
+  margin: 28px 0 18px;
+  border: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.22);
+  max-width: 660px;
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  max-width: 660px;
+}
+
+.copy {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.socialRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.social {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0a0a0a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.social:hover {
+  transform: translateY(-2px);
+  opacity: 0.92;
+}
+
+/* —— Form (ContactFormBlock) —— */
+
 .formCard {
   width: 100%;
-
   min-height: clamp(620px, 78vh, 860px);
-
   padding: 28px 24px;
-
-  border-radius: 18px;
-
+  border-radius: 12px;
   background: rgba(8, 10, 12, 0.82);
-
   border: 1px solid rgba(255, 255, 255, 0.08);
-
   backdrop-filter: blur(12px);
-
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
-
   display: flex;
   flex-direction: column;
 }
 
+.formCardCta {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  overflow: visible;
+}
+
+.formCardCta .form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formCardCta .field {
+  gap: 5px;
+}
+
+.formCardCta .label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.formCardCta .control {
+  min-height: 42px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(12, 12, 12, 0.85);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.formCardCta select.control {
+  padding-right: 32px;
+}
+
+.formCardCta .textarea {
+  min-height: 100px;
+  border-radius: 12px;
+  padding: 12px 14px;
+  line-height: 1.4;
+}
+
+.formCardCta .consentRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.formCardCta .consentCheck {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.formCardCta .consentText {
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.formCardCta .formActions {
+  margin-top: 8px;
+}
+
+.formCardCta .submitBtn {
+  width: 100%;
+  border-radius: 12px;
+}
+
 .formTitle {
   margin: 0 0 20px;
-
   font-family: var(--font-display);
-
   font-size: 20px;
   font-weight: 800;
-
   color: #ffffff;
-
   letter-spacing: 0.02em;
 }
 
-/* FORM */
 .form {
   display: grid;
   gap: 16px;
-
   flex: 1;
 }
 
@@ -114,10 +441,8 @@
 .label {
   font-size: 11px;
   font-weight: 700;
-
   letter-spacing: 0.04em;
   text-transform: uppercase;
-
   color: rgba(255, 255, 255, 0.65);
 }
 
@@ -129,23 +454,14 @@
 .control {
   width: 100%;
   box-sizing: border-box;
-
   min-height: 44px;
-
   padding: 12px 14px;
-
   border-radius: 10px;
-
   border: 1px solid rgba(255, 255, 255, 0.12);
-
   background: rgba(0, 0, 0, 0.35);
-
   color: #f2f2f2;
-
   font-size: 14px;
-
   outline: none;
-
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease;
@@ -157,7 +473,6 @@
 
 .control:focus {
   border-color: rgba(166, 255, 0, 0.45);
-
   box-shadow: 0 0 0 2px rgba(166, 255, 0, 0.12);
 }
 
@@ -171,35 +486,24 @@
   resize: vertical;
 }
 
-/* BUTTON */
 .formActions {
   margin-top: auto;
-
   display: grid;
   gap: 8px;
 }
 
 .submitBtn {
   min-height: 48px;
-
   padding: 0 20px;
-
   border-radius: 999px;
   border: 0;
-
   background: var(--green);
-
   color: #ffffff;
-
   font-family: var(--font-display);
-
   font-weight: 800;
   font-size: 13px;
-
   letter-spacing: 0.04em;
-
   cursor: pointer;
-
   transition:
     transform 160ms ease,
     filter 160ms ease;
@@ -213,7 +517,6 @@
 .submitBtn:disabled {
   cursor: not-allowed;
   opacity: 0.65;
-
   transform: none;
   filter: none;
 }
@@ -233,4 +536,84 @@
   color: #ff8a8a;
 }
 
-/* CONTENT */
+@media (max-width: 900px) {
+  .page {
+    --contact-header: 70px;
+    --contact-lift-headline: 24px;
+    --contact-lift-links: 16px;
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+    overflow-y: auto;
+  }
+
+  .shell {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 4vw, 48px);
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+    flex: none;
+  }
+
+  .leftColumn {
+    order: 1;
+  }
+
+  .headline {
+    margin-bottom: 0;
+  }
+
+  .formSlot,
+  .formSlotOpen {
+    order: 2;
+    justify-self: stretch;
+    align-self: stretch;
+    max-width: none;
+  }
+
+  .formSlotOpen {
+    max-height: min(78dvh, calc(100dvh - 140px));
+  }
+
+  .headline,
+  .quickLinks {
+    transform: none;
+  }
+
+  .rightRest {
+    display: none;
+  }
+
+  .quickLinks {
+    max-width: none;
+  }
+
+  .rule,
+  .bottomRow {
+    max-width: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .page {
+    --contact-header: 70px;
+  }
+
+  .shell {
+    padding-top: 16px;
+  }
+
+  .company {
+    margin-top: 36px;
+  }
+
+  .quickLinks {
+    gap: 12px 28px;
+  }
+
+  .bottomRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

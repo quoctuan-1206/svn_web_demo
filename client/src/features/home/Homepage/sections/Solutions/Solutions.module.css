@@ -63,11 +63,13 @@
 
 .viewport {
   margin-top: clamp(36px, 5vw, 64px);
-  /* Mở rộng viewport ra hết hai mép section, rồi chừa 69px lề trong */
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  padding: 6px 69px 14px;
-  scroll-padding-left: 69px;
+  /* Full-bleed ngang nhưng lề đối xứng để không lệch so với tiêu đề */
+  width: 100vw;
+  max-width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  padding: 6px clamp(20px, 5vw, 69px) 14px;
+  scroll-padding-inline: clamp(20px, 5vw, 69px);
+  box-sizing: border-box;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
@@ -95,17 +97,19 @@
 }
 
 .track {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 387px;
-  column-gap: 102px;
+  display: flex;
+  flex-wrap: nowrap;
   align-items: stretch;
+  gap: clamp(24px, 5vw, 102px);
+  width: max-content;
+  margin-inline: auto;
 }
 
 .card {
   position: relative;
-  width: 387px;
-  height: 434px;
+  flex: 0 0 auto;
+  width: clamp(280px, 28vw, 387px);
+  height: clamp(320px, 42vh, 434px);
   border-radius: 18px;
   overflow: hidden;
   background: #ffffff;
@@ -114,7 +118,7 @@
     0 16px 40px rgba(2, 8, 23, 0.1),
     0 2px 8px rgba(2, 8, 23, 0.06);
   cursor: default;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
   transition:
     transform 200ms ease,
     border-color 200ms ease,
@@ -224,40 +228,9 @@
   transform: translateX(2px);
 }
 
-@media (max-width: 1100px) {
-  .viewport {
-    padding-left: 48px;
-    padding-right: 48px;
-    scroll-padding-left: 48px;
-  }
-
-  .track {
-    grid-auto-columns: 320px;
-    column-gap: 48px;
-  }
-
-  .card {
-    width: 320px;
-    height: 360px;
-  }
-}
-
 @media (max-width: 720px) {
   .viewport {
     margin-top: 36px;
-    padding-left: 20px;
-    padding-right: 20px;
-    scroll-padding-left: 20px;
-  }
-
-  .track {
-    grid-auto-columns: 280px;
-    column-gap: 16px;
-  }
-
-  .card {
-    width: 280px;
-    height: 320px;
   }
 
   .cardTitle {

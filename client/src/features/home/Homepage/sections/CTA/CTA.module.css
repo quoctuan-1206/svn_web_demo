@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: 32px;
+  padding: 0 0 32px;
   align-items: flex-start;
   background-color: #000000;
   background-image: url("/images/bglienhe.png");
@@ -68,31 +68,23 @@
   grid-column: 2;
   grid-row: 1;
   justify-self: end;
+  align-self: start;
   width: 100%;
-  max-width: 440px;
+  max-width: 500px;
   min-width: 0;
 }
 
-.shellOpen .formSlot {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  justify-self: center;
-  margin-inline: auto;
-}
-
-/* Giới hạn chiều cao form, cuộn bên trong — section không bị đẩy cao thêm */
+/* Form mở: cột phải, cao full vùng nội dung, cuộn bên trong */
 .formSlotOpen {
+  grid-column: 2;
   grid-row: 1 / -1;
+  justify-self: end;
   align-self: start;
   max-height: min(640px, calc(100dvh - 200px));
   display: flex;
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
-}
-
-.shellOpen .formSlotOpen {
-  grid-row: 1;
 }
 
 .formSlot > div {
@@ -330,17 +322,18 @@
     margin-bottom: 0;
   }
 
-  .formSlot {
+  .formSlot,
+  .formSlotOpen {
     grid-column: unset;
     grid-row: unset;
     order: 2;
     justify-self: stretch;
+    align-self: stretch;
     max-width: none;
     margin-left: 0;
   }
 
   .formSlotOpen {
-    align-self: stretch;
     max-height: min(78dvh, calc(100dvh - 140px));
   }
 

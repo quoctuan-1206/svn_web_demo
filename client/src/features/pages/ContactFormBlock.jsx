@@ -34,6 +34,8 @@ export default function ContactFormBlock({
   formRef,
   source = "contact_page",
   cardClassName = "",
+  hideTitle = false,
+  showMarketingConsent = false,
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
@@ -94,7 +96,7 @@ export default function ContactFormBlock({
       className={[styles.formCard, cardClassName].filter(Boolean).join(" ")}
       ref={formRef}
     >
-      <h2 className={styles.formTitle}>Contact</h2>
+      {!hideTitle ? <h2 className={styles.formTitle}>Contact</h2> : null}
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.field}>
@@ -209,6 +211,20 @@ export default function ContactFormBlock({
             required
           />
         </label>
+
+        {showMarketingConsent ? (
+          <label className={styles.consentRow}>
+            <input
+              type="checkbox"
+              name="marketingConsent"
+              className={styles.consentCheck}
+            />
+            <span className={styles.consentText}>
+              Tôi muốn nhận thông tin cập nhật về sản phẩm và dịch vụ của SVN
+              Automation.
+            </span>
+          </label>
+        ) : null}
 
         <div className={styles.formActions}>
           <button
