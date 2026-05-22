@@ -41,14 +41,14 @@
 
 .logo {
   display: block;
-  height: 28px;
+  height: 42px;
   width: auto;
 }
 
 .brandMark {
   font-family: var(--font-display);
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 2px;
   color: var(--green);
 }
@@ -78,7 +78,7 @@
 .link {
   font-family: var(--font-display);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.5px;
   padding: 6px 12px;
   background: transparent;
@@ -159,7 +159,7 @@
   padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .langBtn:hover {

@@ -2,8 +2,6 @@
   height: 100dvh;
   display: grid;
   align-items: center;
-
-  /* nền trắng */
   background-color: #ffffff;
   background-image: url("/images/bgnews.png");
   background-size: cover;
@@ -61,7 +59,7 @@
 
   font-size: clamp(32px, 4.2vw, 48px);
 
-  font-weight: 800;
+  font-weight: 700;
 
   letter-spacing: 0.2px;
 

@@ -13,7 +13,6 @@ export default function Products() {
       .then((r) => {
         const raw = Array.isArray(r.data) ? r.data : r.data?.data || [];
         const productItems = raw.filter((n) => n?.category === "product");
-        // Public API đã lọc isActive=true; ở đây chỉ cần lấy đúng category.
         setProducts(productItems.slice(0, 4));
       })
       .catch(() => {});

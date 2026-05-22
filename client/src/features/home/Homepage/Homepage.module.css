@@ -148,32 +148,3 @@ body {
 .page > section:not(#lien-he) p {
   font-size: 20px;
 }
-
-/* =========================
-   MOBILE
-   ========================= */
-
-@media (max-width: 768px) {
-  html:has([data-homepage-fullpage]) {
-    scroll-padding-top: 70px;
-  }
-
-  .page > section {
-    padding-top: 70px;
-    padding-bottom: 56px;
-  }
-
-  .page > section h1 {
-    font-size: 40px;
-  }
-
-  .page > section:not(#lien-he) p {
-    font-size: 16px;
-  }
-
-  :global(.sectionRouteBtn) {
-    height: 32px;
-    padding: 0 14px;
-    font-size: 11px;
-  }
-}

@@ -227,12 +227,10 @@ export default function NewsAdmin() {
 
   useEffect(() => {
     fetchNews(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     fetchNews(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const filteredItems = useMemo(() => {

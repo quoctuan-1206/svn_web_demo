@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import { useHomepageSection } from "../../../context/HomepageSectionContext";
 
-const LOGO_SRC = "/images/logo-27.11.png";
+const LOGO_SRC = "/images/SVN1.png";
 
 const NAV_ITEMS = [
   { to: "/ve-chung-toi", label: "Về" },
@@ -135,9 +135,6 @@ export default function Header() {
               placeholder="Tìm kiếm..."
               aria-label="Tìm kiếm"
             />
-            <button type="submit" className={styles.searchBtn} aria-label="Tìm">
-              ⌕
-            </button>
           </form>
 
           <button

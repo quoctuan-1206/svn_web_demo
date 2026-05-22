@@ -3,10 +3,6 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import styles from "./NewsRichEditor.module.css";
 
-/**
- * Soạn thảo HTML cho nội dung tin (kiểu Word cơ bản).
- * Ảnh: nút ảnh mở chọn file — upload qua `uploadImages` rồi chèn vào nội dung.
- */
 export default function NewsRichEditor({
   value,
   onChange,
