@@ -201,6 +201,18 @@
   overflow: hidden;
 }
 
+.excerpt {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(10, 10, 10, 0.62);
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .date {
   margin-top: 8px;
   font-size: 12px;

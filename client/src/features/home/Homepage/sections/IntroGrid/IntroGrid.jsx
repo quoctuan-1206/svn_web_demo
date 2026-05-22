@@ -1,32 +1,32 @@
-// IntroGrid.jsx
-
 import styles from "./IntroGrid.module.css";
-
-import img1 from "./img1.png";
-import img2 from "./img2.png";
-import img3 from "./img3.png";
-import img4 from "./img4.png";
-import img5 from "./img5.png";
-import img6 from "./img6.png";
-import img7 from "./img7.png";
-import img8 from "./img8.png";
-import img9 from "./img9.png";
-import img10 from "./img10.png";
-import img11 from "./img11.png";
-import img12 from "./img12.png";
 
 const ROWS = [
   {
     dir: "right",
-    images: [img1, img2, img3, img4],
+    images: [
+      "/images/img1.png",
+      "/images/img2.png",
+      "/images/img3.png",
+      "/images/img4.png",
+    ],
   },
   {
     dir: "left",
-    images: [img5, img6, img7, img8],
+    images: [
+      "/images/img5.png",
+      "/images/img6.png",
+      "/images/img7.png",
+      "/images/img8.png",
+    ],
   },
   {
     dir: "right",
-    images: [img9, img10, img11, img12],
+    images: [
+      "/images/img9.png",
+      "/images/img10.png",
+      "/images/img11.png",
+      "/images/img12.png",
+    ],
   },
 ];
 

@@ -1,40 +1,35 @@
 import styles from "./Partners.module.css";
 import { Link } from "react-router-dom";
-import INTERFACE from "./INTERFACE.png";
-import IPLUS from "./IPLUS.png";
-import JAKA from "./JAKA.png";
-import MICROSYS from "./MICROSYS.png";
-import MOUNTZ from "./MOUNTZ.png";
-import ROMARIC from "./ROMARIC.png";
+
 const PARTNER_ITEMS = [
   {
     lines: ["Collaborative Robots", "For industrial Automation"],
-    logo: JAKA,
+    logo: "/images/JAKA.png",
     logoAlt: "Collaborative Robots",
   },
   {
     lines: ["The World Leader In", "Force Measurement"],
-    logo: INTERFACE,
+    logo: "/images/INTERFACE.png",
     logoAlt: "The World Leader In Force Measurement",
   },
   {
     lines: ["Intelligent Mobile Robots", "For Smart Manufacturing"],
-    logo: IPLUS,
+    logo: "/images/IPLUS.png",
     logoAlt: "Intelligent Mobile Robots",
   },
   {
     lines: ["Leading Global Material", "Control System (MCS) Software"],
-    logo: ROMARIC,
+    logo: "/images/ROMARIC.png",
     logoAlt: "Leading Global Material Control System (MCS) Software",
   },
   {
     lines: ["Leading Around The Globe", "In Torque Products"],
-    logo: MOUNTZ,
+    logo: "/images/MOUNTZ.png",
     logoAlt: "Leading Around The Globe In Torque Products",
   },
   {
     lines: ["SCADA Visualization", "Software"],
-    logo: MICROSYS,
+    logo: "/images/MICROSYS.png",
     logoAlt: "SCADA Visualization Software",
   },
 ];
