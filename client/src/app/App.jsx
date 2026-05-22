@@ -24,6 +24,7 @@ import GlobalPresence from "../features/pages/GlobalPresence";
 import ServicesSupport from "../features/pages/ServicesSupport";
 import About from "../features/pages/About";
 import Overview from "../features/pages/Overview";
+import SearchPage from "../features/pages/Search";
 
 import AdminLayout from "../features/admin/components/AdminLayout";
 import LoginPage from "../features/admin/pages/LoginPage";
@@ -73,6 +74,7 @@ function AppShell() {
           <Route path="/dich-vu-ho-tro" element={<ServicesSupport />} />
           <Route path="/lien-he" element={<Contact />} />
           <Route path="/ve-chung-toi" element={<About />} />
+          <Route path="/tim-kiem" element={<SearchPage />} />
 
           {/* Admin */}
           <Route path="/admin/login" element={<LoginPage />} />

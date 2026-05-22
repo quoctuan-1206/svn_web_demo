@@ -32,7 +32,7 @@ body {
 
   width: 100%;
   height: 100dvh;
-  /* min-height: 100dvh; */
+  min-height: 100dvh;
   position: relative;
 
   /* Fullpage snap */
@@ -49,8 +49,8 @@ body {
   /* tránh tràn ngang */
   overflow-x: hidden;
 
-  /* nội dung dài thì tự scroll */
-  overflow-y: auto;
+  /* lock internal scrolling for full-screen snap */
+  overflow: hidden;
 }
 
 :global(.sectionRouteBtn) {

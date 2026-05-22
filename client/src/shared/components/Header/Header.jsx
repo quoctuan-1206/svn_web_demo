@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import { useHomepageSection } from "../../../context/HomepageSectionContext";
-import { filterSiteSearch } from "../../search/siteSearch";
-import { useSiteSearchIndex } from "../../search/useSiteSearchIndex";
 
 const LOGO_SRC = "/images/SVN1.png";
+const SEARCH_ICON_SRC = "/images/search.png";
 
 const NAV_ITEMS = [
   { to: "/ve-chung-toi", label: "Về" },
@@ -20,44 +19,17 @@ const NAV_ITEMS = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { activeSectionId } = useHomepageSection();
-  const { entries, loading: searchLoading } = useSiteSearchIndex();
-  const searchWrapRef = useRef(null);
 
   const activePath = useMemo(() => location.pathname, [location.pathname]);
   const isHomepage = activePath === "/";
-
-  const searchResults = useMemo(
-    () => filterSiteSearch(entries, query, 10),
-    [entries, query],
-  );
-
-  const showSearchPanel =
-    searchOpen && query.trim().length > 0 && (searchLoading || searchResults.length > 0);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    setSearchOpen(false);
-    setQuery("");
-  }, [location.pathname]);
-
-  useEffect(() => {
-    function onDocPointerDown(e) {
-      if (!searchWrapRef.current?.contains(e.target)) {
-        setSearchOpen(false);
-      }
-    }
-    document.addEventListener("pointerdown", onDocPointerDown);
-    return () => document.removeEventListener("pointerdown", onDocPointerDown);
   }, []);
 
   function scrollToSection(id) {
@@ -89,28 +61,6 @@ export default function Header() {
     if (item?.sectionId) goHomeThenScroll(item.sectionId);
   }
 
-  function goToSearchResult(result) {
-    if (!result) return;
-    setOpen(false);
-    setSearchOpen(false);
-    setQuery("");
-    if (result.sectionId) {
-      goHomeThenScroll(result.sectionId);
-      return;
-    }
-    navigate(result.to);
-  }
-
-  function handleSearchSubmit(e) {
-    e.preventDefault();
-    const first = searchResults[0];
-    if (first) {
-      goToSearchResult(first);
-      return;
-    }
-    if (query.trim()) setSearchOpen(true);
-  }
-
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <div className={`container ${styles.inner}`}>
@@ -128,7 +78,8 @@ export default function Header() {
                   ? activeSectionId && item.sectionId === activeSectionId
                     ? styles.active
                     : ""
-                  : activePath === item.to || activePath.startsWith(`${item.to}/`)
+                  : activePath === item.to ||
+                      activePath.startsWith(`${item.to}/`)
                     ? styles.active
                     : ""
               }`}
@@ -140,73 +91,25 @@ export default function Header() {
         </nav>
 
         <div className={styles.controls}>
-          <div className={styles.searchWrap} ref={searchWrapRef}>
-            <form
-              className={styles.search}
-              onSubmit={handleSearchSubmit}
-              role="search"
-            >
-              <input
-                className={styles.searchInput}
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setSearchOpen(true);
-                }}
-                onFocus={() => setSearchOpen(true)}
-                placeholder="Tìm kiếm ..."
-                aria-label="Tìm kiếm nội dung"
-                aria-expanded={showSearchPanel}
-                aria-controls="site-search-results"
-                aria-autocomplete="list"
-                autoComplete="off"
-              />
-            </form>
+          <Link
+            className={styles.searchLink}
+            to="/tim-kiem"
+            aria-label="Tìm kiếm"
+          >
+            <img
+              className={styles.searchIcon}
+              src={SEARCH_ICON_SRC}
+              alt=""
+              aria-hidden="true"
+            />
+            <span className={styles.searchText}>Tìm kiếm</span>
+          </Link>
 
-            {showSearchPanel ? (
-              <div
-                id="site-search-results"
-                className={styles.searchResults}
-                role="listbox"
-                aria-label="Kết quả tìm kiếm"
-              >
-                {searchLoading ? (
-                  <p className={styles.searchHint}>Đang tải dữ liệu…</p>
-                ) : (
-                  searchResults.map((result) => (
-                    <button
-                      key={`${result.type}-${result.id}`}
-                      type="button"
-                      role="option"
-                      className={styles.searchResult}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => goToSearchResult(result)}
-                    >
-                      <span className={styles.searchResultType}>
-                        {result.typeLabel}
-                      </span>
-                      <span className={styles.searchResultTitle}>
-                        {result.title}
-                      </span>
-                      {result.subtitle ? (
-                        <span className={styles.searchResultSub}>
-                          {result.subtitle}
-                        </span>
-                      ) : null}
-                    </button>
-                  ))
-                )}
-              </div>
-            ) : null}
-
-            {searchOpen && query.trim() && !searchLoading && !searchResults.length ? (
-              <div className={styles.searchResults} role="status">
-                <p className={styles.searchHint}>Không tìm thấy kết quả</p>
-              </div>
-            ) : null}
-          </div>
-
-          <button type="button" className={styles.langBtn} aria-label="Ngôn ngữ">
+          <button
+            type="button"
+            className={styles.langBtn}
+            aria-label="Ngôn ngữ"
+          >
             VI ▾
           </button>
 

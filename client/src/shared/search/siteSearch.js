@@ -107,6 +107,34 @@ function stripHtml(html) {
     .trim();
 }
 
+function truncateText(text, max = 220) {
+  const s = String(text ?? "").trim();
+  if (!s) return "";
+  if (s.length <= max) return s;
+  return `${s.slice(0, max).trim()}…`;
+}
+
+function pickItemImage(item) {
+  return (
+    item?.image ||
+    item?.thumbnail ||
+    item?.thumb ||
+    item?.cover ||
+    item?.coverImage ||
+    item?.heroImage ||
+    ""
+  );
+}
+
+function pickItemDescription(item) {
+  return truncateText(
+    item?.excerpt ||
+      item?.summary ||
+      item?.description ||
+      stripHtml(item?.content),
+  );
+}
+
 function joinHaystack(parts) {
   return normalizeSearchText(parts.filter(Boolean).join(" "));
 }
@@ -148,6 +176,8 @@ export async function fetchSiteSearchIndex() {
     typeLabel: TYPE_LABELS[entry.type],
     title: entry.label,
     subtitle: entry.to,
+    description: truncateText(entry.extra || entry.label),
+    image: "",
     to: entry.to,
     sectionId: entry.sectionId ?? null,
     haystack: staticEntryHaystack(entry),
@@ -174,6 +204,8 @@ export async function fetchSiteSearchIndex() {
           typeLabel: TYPE_LABELS[type],
           title: String(item.title || "").trim() || "Không có tiêu đề",
           subtitle: isSolution ? "Giải pháp" : "Sản phẩm",
+          description: pickItemDescription(item),
+          image: pickItemImage(item),
           to: catalogItemPath(item),
           sectionId: null,
           haystack: catalogEntryHaystack(item),
@@ -192,6 +224,8 @@ export async function fetchSiteSearchIndex() {
           typeLabel: TYPE_LABELS.news,
           title: String(item.title || "").trim() || "Không có tiêu đề",
           subtitle: "Tin tức",
+          description: pickItemDescription(item),
+          image: pickItemImage(item),
           to: newsArticlePath(item),
           sectionId: null,
           haystack: newsEntryHaystack(item),
@@ -231,4 +265,52 @@ export function filterSiteSearch(entries, query, limit = 10) {
     .map(({ entry }) => entry);
 
   return matched;
+}
+
+const CATALOG_TYPES = ["product", "solution", "news"];
+
+function shuffleArray(items) {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/** 5 mục ngẫu nhiên, ưu tiên có đủ sản phẩm / giải pháp / tin tức khi dữ liệu cho phép */
+export function pickRandomSearchSuggestions(entries, limit = 5) {
+  const pool = entries.filter((e) => CATALOG_TYPES.includes(e.type));
+  if (!pool.length) return [];
+
+  const buckets = {
+    product: shuffleArray(pool.filter((e) => e.type === "product")),
+    solution: shuffleArray(pool.filter((e) => e.type === "solution")),
+    news: shuffleArray(pool.filter((e) => e.type === "news")),
+  };
+
+  const picked = [];
+  const seen = new Set();
+
+  function take(entry) {
+    if (!entry || picked.length >= limit) return;
+    const key = `${entry.type}:${entry.id}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    picked.push(entry);
+  }
+
+  for (const type of CATALOG_TYPES) {
+    if (buckets[type].length) take(buckets[type].shift());
+  }
+
+  const rest = shuffleArray(
+    CATALOG_TYPES.flatMap((type) => buckets[type]),
+  );
+  for (const entry of rest) {
+    if (picked.length >= limit) break;
+    take(entry);
+  }
+
+  return shuffleArray(picked).slice(0, limit);
 }

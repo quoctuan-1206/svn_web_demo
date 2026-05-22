@@ -9,7 +9,9 @@
   background-repeat: no-repeat;
   color: #0a0a0a;
 }
-
+.section :global(.container) {
+  padding-top: 100px;
+}
 .container {
   position: relative;
 
@@ -82,9 +84,9 @@
 
   color: rgba(10, 10, 10, 0.7);
 
-  font-size: 24px;
-
-  line-height: 1.35;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .list {

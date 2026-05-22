@@ -13,6 +13,10 @@
   color: #0a0a0a;
 }
 
+.section :global(.container) {
+  padding-top: 100px;
+}
+
 .titleRow {
   display: flex;
   align-items: center;
@@ -69,6 +73,7 @@
   text-align: center;
   color: #334155;
   font-size: 24px;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: none;
 }

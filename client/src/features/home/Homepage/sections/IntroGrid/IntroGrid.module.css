@@ -4,6 +4,9 @@
   width: 100%;
   height: 100vh;
 
+  --row-gap: 20px;
+  --image-gap: 20px;
+
   overflow: hidden;
   background: #0f1216;
 
@@ -41,7 +44,7 @@
   flex-direction: column;
   justify-content: center;
 
-  gap: 24px;
+  gap: var(--row-gap);
 }
 
 .row {
@@ -60,7 +63,7 @@
 
 .track {
   display: flex;
-  gap: 24px;
+  gap: var(--image-gap);
 
   width: max-content;
 
@@ -96,23 +99,23 @@
     0 10px 30px rgba(0, 0, 0, 0.28),
     0 30px 60px rgba(0, 0, 0, 0.18);
 
-  transform: rotate(1.5deg);
+  transform: none;
 }
 
 .cell img {
   width: 100%;
   height: 100%;
 
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 
   user-select: none;
 
-  transition: transform 0.8s ease;
+  transition: none;
 }
 
 .cell:hover img {
-  transform: scale(1.08);
+  transform: none;
 }
 
 .row:nth-child(2) {
@@ -177,8 +180,9 @@
 .title {
   margin: 0;
   font-size: clamp(24px, 3.6vw, 44px);
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.1em;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 @keyframes introScrollLeft {
@@ -210,12 +214,12 @@
 
 @media (max-width: 768px) {
   .marquee {
-    gap: 16px;
+    gap: var(--row-gap);
     transform: translate(-50%, -50%) rotate(-4deg) scale(1.03);
   }
 
   .track {
-    gap: 16px;
+    gap: var(--image-gap);
   }
 
   .cell {
@@ -223,6 +227,11 @@
     height: 208px;
 
     border-radius: 16px;
+  }
+
+  .section {
+    --row-gap: 20px;
+    --image-gap: 20px;
   }
 
   .row:nth-child(1),
