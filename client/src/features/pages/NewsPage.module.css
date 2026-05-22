@@ -3,6 +3,37 @@
   color: #0a0a0a;
 }
 
+.pageHero {
+  text-align: center;
+  overflow: visible;
+}
+
+.heroTitle {
+  margin: 0;
+  padding: 4px 0 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-size: clamp(28px, 3.6vw, 52px);
+  line-height: 1.25;
+  overflow: visible;
+}
+
+.heroTitle .headingPrimary {
+  display: inline;
+  background: linear-gradient(90deg, #007cfe, #1480a3, #218365, #75c01f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.heroTitle .headingSecondary {
+  color: #0f172a;
+}
+
 .contentShell {
   max-width: 1320px;
 }

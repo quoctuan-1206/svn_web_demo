@@ -120,17 +120,17 @@ export default function DownloadPage() {
 
   return (
     <main className={`page ${styles.page}`}>
-      <section className="page-hero">
+      <section className={`page-hero ${styles.hero}`}>
         <div className="container">
-          <h1>
-            Tài liệu <span>PDF</span>
+          <h1 className={styles.heroTitle}>
+            <span className={styles.headingPrimary}>Tài liệu</span> PDF
           </h1>
           <p className="page-desc">
             Xuất nội dung sản phẩm, giải pháp và tin tức thành file PDF để lưu
             hoặc chia sẻ. Chọn mục bên dưới hoặc mở trang chi tiết để tải.
           </p>
         </div>
-      </section>
+      </section>  
 
       <section className={`page-content ${styles.content}`}>
         <div className={`container ${styles.shell}`}>

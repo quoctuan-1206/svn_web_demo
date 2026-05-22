@@ -11,6 +11,25 @@
   max-width: 960px;
 }
 
+.hero {
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: clamp(32px, 5vw, 56px);
+  margin-bottom: 16px;
+  color: #0a0a0a;
+}
+
+.heroTitle .headingPrimary {
+  display: inline-block;
+  background: linear-gradient(90deg, #007cfe, #1480a3, #218365, #75c01f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;

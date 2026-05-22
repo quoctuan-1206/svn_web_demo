@@ -121,6 +121,15 @@ export default function Products() {
 
   return (
     <main className={`page ${styles.page}`}>
+      <section className={`page-hero ${styles.pageHero}`}>
+        <div className="container">
+          <h1 className={styles.heroTitle}>
+            <span className={styles.headingPrimary}>Sản phẩm</span>{" "}
+            <span className={styles.headingSecondary}>Công nghệ</span>
+          </h1>
+        </div>
+      </section>
+
       <section className="page-content">
         <div className={`container ${styles.contentShell}`}>
           <div className={styles.filtersRow} aria-label="Bộ lọc sản phẩm">
