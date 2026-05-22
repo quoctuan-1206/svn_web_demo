@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "./NewsDetailPage.module.css";
-import { newsArticlePath } from "../../utils/newsArticlePath";
+import { newsArticlePath } from "../../utils/contentPaths";
 import { ArticleBody } from "./ArticleBody";
 
 function formatDate(value) {
@@ -131,7 +131,9 @@ export default function NewsDetailPage() {
               className={styles.date}
               dateTime={article.publishedAt || article.createdAt}
             >
-              {formatDate(article.publishedAt || article.date || article.createdAt)}
+              {formatDate(
+                article.publishedAt || article.date || article.createdAt,
+              )}
             </time>
           </header>
 
@@ -146,7 +148,11 @@ export default function NewsDetailPage() {
               >
                 {illustrationUrls.map((url, idx) => (
                   <figure key={`${url}-${idx}`} className={styles.figure}>
-                    <img src={url} alt="" loading={idx === 0 ? "eager" : "lazy"} />
+                    <img
+                      src={url}
+                      alt=""
+                      loading={idx === 0 ? "eager" : "lazy"}
+                    />
                   </figure>
                 ))}
               </div>

@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "./NewsDetailPage.module.css";
-import { catalogItemPath } from "../../utils/catalogItemPath";
+import { catalogItemPath } from "../../utils/contentPaths";
 import { ArticleBody } from "./ArticleBody";
-
-
 
 function formatDate(value) {
   if (!value) return "";
@@ -39,7 +37,8 @@ export default function CatalogDetailPage({ variant }) {
 
   const listPath = variant === "solution" ? "/giai-phap" : "/san-pham";
   const listLabel = variant === "solution" ? "Giải pháp" : "Sản phẩm";
-  const relatedTitle = variant === "solution" ? "Giải pháp khác" : "Sản phẩm khác";
+  const relatedTitle =
+    variant === "solution" ? "Giải pháp khác" : "Sản phẩm khác";
 
   const bodySource = useMemo(() => {
     if (!item) return "";
@@ -148,7 +147,10 @@ export default function CatalogDetailPage({ variant }) {
           <header className={styles.header}>
             <h1 className={styles.title}>{item.title}</h1>
             {leadText ? <p className={styles.excerpt}>{leadText}</p> : null}
-            <time className={styles.date} dateTime={item.updatedAt || item.createdAt}>
+            <time
+              className={styles.date}
+              dateTime={item.updatedAt || item.createdAt}
+            >
               {formatDate(item.updatedAt || item.createdAt)}
             </time>
           </header>

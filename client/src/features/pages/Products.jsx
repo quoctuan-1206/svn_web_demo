@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./PageCommon.css";
-import { catalogItemPath } from "../../utils/catalogItemPath";
+import { catalogItemPath } from "../../utils/contentPaths";
 import styles from "./NewsPage.module.css";
 
 const PAGE_SIZE = 12;
@@ -287,21 +287,6 @@ export default function Products() {
                     >
                       ›
                     </button>
-                  </div>
-                </div>
-
-                <div className={styles.touchStrip} aria-label="Get in touch">
-                  <div className={styles.touchInner}>
-                    <div className={styles.touchTitle}>
-                      Get in Touch with Us
-                    </div>
-                    <Link
-                      className={styles.touchBtn}
-                      to="/lien-he"
-                      aria-label="Contact us"
-                    >
-                      Contact us <span aria-hidden="true">→</span>
-                    </Link>
                   </div>
                 </div>
               </>

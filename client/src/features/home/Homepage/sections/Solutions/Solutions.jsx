@@ -2,7 +2,7 @@ import styles from "./Solutions.module.css";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { catalogItemPath } from "../../../../../utils/catalogItemPath";
+import { catalogItemPath } from "../../../../../utils/contentPaths";
 
 export default function Solutions() {
   const [solutions, setSolutions] = useState([]);

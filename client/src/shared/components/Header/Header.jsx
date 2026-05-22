@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import { useHomepageSection } from "../../../context/HomepageSectionContext";
+import { filterSiteSearch } from "../../search/siteSearch";
+import { useSiteSearchIndex } from "../../search/useSiteSearchIndex";
 
 const LOGO_SRC = "/images/SVN1.png";
 
@@ -11,33 +13,51 @@ const NAV_ITEMS = [
   { to: "/giai-phap", label: "Giải Pháp", sectionId: "giai-phap" },
   { to: "/doi-tac", label: "Đối Tác", sectionId: "doi-tac" },
   { to: "/tin-tuc", label: "Tin Tức", sectionId: "tin-tuc" },
-  { to: "/tai-ve", label: "Tải Về", sectionId: "tai-ve" },
+  { to: "/tai-ve", label: "Tải Về" },
   { to: "/lien-he", label: "Liên Hệ", sectionId: "lien-he" },
 ];
-
-function normalize(s) {
-  return (s ?? "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
-}
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { activeSectionId } = useHomepageSection();
+  const { entries, loading: searchLoading } = useSiteSearchIndex();
+  const searchWrapRef = useRef(null);
 
   const activePath = useMemo(() => location.pathname, [location.pathname]);
   const isHomepage = activePath === "/";
+
+  const searchResults = useMemo(
+    () => filterSiteSearch(entries, query, 10),
+    [entries, query],
+  );
+
+  const showSearchPanel =
+    searchOpen && query.trim().length > 0 && (searchLoading || searchResults.length > 0);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    setSearchOpen(false);
+    setQuery("");
+  }, [location.pathname]);
+
+  useEffect(() => {
+    function onDocPointerDown(e) {
+      if (!searchWrapRef.current?.contains(e.target)) {
+        setSearchOpen(false);
+      }
+    }
+    document.addEventListener("pointerdown", onDocPointerDown);
+    return () => document.removeEventListener("pointerdown", onDocPointerDown);
   }, []);
 
   function scrollToSection(id) {
@@ -52,52 +72,49 @@ export default function Header() {
       scrollToSection(id);
       return;
     }
-
     navigate("/", { replace: false });
     window.setTimeout(() => scrollToSection(id), 0);
   }
 
   function handleNav(item) {
     setOpen(false);
-
-    // On Homepage: scroll to the corresponding section.
-    // On other pages: go to the corresponding route page.
     if (location.pathname === "/" && item?.sectionId) {
       scrollToSection(item.sectionId);
       return;
     }
-
     if (item?.to) {
       navigate(item.to);
       return;
     }
-
     if (item?.sectionId) goHomeThenScroll(item.sectionId);
+  }
+
+  function goToSearchResult(result) {
+    if (!result) return;
+    setOpen(false);
+    setSearchOpen(false);
+    setQuery("");
+    if (result.sectionId) {
+      goHomeThenScroll(result.sectionId);
+      return;
+    }
+    navigate(result.to);
   }
 
   function handleSearchSubmit(e) {
     e.preventDefault();
-    const q = normalize(query);
-    if (!q) return;
-
-    const match =
-      NAV_ITEMS.find((s) => normalize(s.label) === q) ||
-      NAV_ITEMS.find((s) => normalize(s.label).includes(q)) ||
-      NAV_ITEMS.find((s) => normalize(s.to).includes(q));
-
-    if (!match) return;
-    setOpen(false);
-    if (match.sectionId) {
-      goHomeThenScroll(match.sectionId);
+    const first = searchResults[0];
+    if (first) {
+      goToSearchResult(first);
       return;
     }
-    navigate(match.to);
+    if (query.trim()) setSearchOpen(true);
   }
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <div className={`container ${styles.inner}`}>
-        <Link className={styles.brand} to="/" aria-label="Go to home">
+        <Link className={styles.brand} to="/" aria-label="Về trang chủ">
           <img className={styles.logo} src={LOGO_SRC} alt="SVN Automation" />
         </Link>
 
@@ -111,7 +128,7 @@ export default function Header() {
                   ? activeSectionId && item.sectionId === activeSectionId
                     ? styles.active
                     : ""
-                  : activePath === item.to
+                  : activePath === item.to || activePath.startsWith(`${item.to}/`)
                     ? styles.active
                     : ""
               }`}
@@ -123,25 +140,73 @@ export default function Header() {
         </nav>
 
         <div className={styles.controls}>
-          <form
-            className={styles.search}
-            onSubmit={handleSearchSubmit}
-            role="search"
-          >
-            <input
-              className={styles.searchInput}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Tìm kiếm..."
-              aria-label="Tìm kiếm"
-            />
-          </form>
+          <div className={styles.searchWrap} ref={searchWrapRef}>
+            <form
+              className={styles.search}
+              onSubmit={handleSearchSubmit}
+              role="search"
+            >
+              <input
+                className={styles.searchInput}
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setSearchOpen(true);
+                }}
+                onFocus={() => setSearchOpen(true)}
+                placeholder="Tìm kiếm ..."
+                aria-label="Tìm kiếm nội dung"
+                aria-expanded={showSearchPanel}
+                aria-controls="site-search-results"
+                aria-autocomplete="list"
+                autoComplete="off"
+              />
+            </form>
 
-          <button
-            type="button"
-            className={styles.langBtn}
-            aria-label="Language"
-          >
+            {showSearchPanel ? (
+              <div
+                id="site-search-results"
+                className={styles.searchResults}
+                role="listbox"
+                aria-label="Kết quả tìm kiếm"
+              >
+                {searchLoading ? (
+                  <p className={styles.searchHint}>Đang tải dữ liệu…</p>
+                ) : (
+                  searchResults.map((result) => (
+                    <button
+                      key={`${result.type}-${result.id}`}
+                      type="button"
+                      role="option"
+                      className={styles.searchResult}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => goToSearchResult(result)}
+                    >
+                      <span className={styles.searchResultType}>
+                        {result.typeLabel}
+                      </span>
+                      <span className={styles.searchResultTitle}>
+                        {result.title}
+                      </span>
+                      {result.subtitle ? (
+                        <span className={styles.searchResultSub}>
+                          {result.subtitle}
+                        </span>
+                      ) : null}
+                    </button>
+                  ))
+                )}
+              </div>
+            ) : null}
+
+            {searchOpen && query.trim() && !searchLoading && !searchResults.length ? (
+              <div className={styles.searchResults} role="status">
+                <p className={styles.searchHint}>Không tìm thấy kết quả</p>
+              </div>
+            ) : null}
+          </div>
+
+          <button type="button" className={styles.langBtn} aria-label="Ngôn ngữ">
             VI ▾
           </button>
 
@@ -149,7 +214,7 @@ export default function Header() {
             type="button"
             className={styles.burger}
             onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
+            aria-label="Mở/đóng menu"
             aria-expanded={open}
           >
             <span />

@@ -42,4 +42,5 @@ Thumbs.db
 .vscode/
 .idea/
 
-.seedAdmin.js
+# Local admin seed script (credentials) 
+server/scripts/seedAdmin.js

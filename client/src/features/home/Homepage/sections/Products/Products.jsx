@@ -2,7 +2,7 @@ import styles from "./Products.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { catalogItemPath } from "../../../../../utils/catalogItemPath";
+import { catalogItemPath } from "../../../../../utils/contentPaths";
 
 export default function Products() {
   const [products, setProducts] = useState([]);

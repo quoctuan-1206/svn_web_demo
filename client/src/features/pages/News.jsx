@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./PageCommon.css";
-import { newsArticlePath } from "../../utils/newsArticlePath";
+import { newsArticlePath } from "../../utils/contentPaths";
 import styles from "./NewsPage.module.css";
 
 const PAGE_SIZE = 12;
@@ -221,111 +221,106 @@ export default function News() {
 
           {news.length ? (
             filteredNews.length ? (
-            <>
-              <div className={styles.grid} aria-label="News grid">
-                {visible.map((n) => (
-                  <Link
-                    key={n._id || n.id}
-                    to={newsArticlePath(n)}
-                    className={styles.card}
-                    aria-label={n.title}
-                  >
-                    <div className={styles.media} aria-hidden="true">
-                      {pickImage(n) ? (
-                        <img
-                          className={styles.img}
-                          src={pickImage(n)}
-                          alt=""
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className={styles.imgFallback} />
-                      )}
-                    </div>
-
-                    <div className={styles.meta}>
-                      <div className={styles.kicker}>{pickCategoryLabel(n)}</div>
-                      <h2 className={styles.title}>{n.title}</h2>
-                      <div className={styles.date}>
-                        {formatDate(n.publishedAt || n.date || n.createdAt)}
+              <>
+                <div className={styles.grid} aria-label="News grid">
+                  {visible.map((n) => (
+                    <Link
+                      key={n._id || n.id}
+                      to={newsArticlePath(n)}
+                      className={styles.card}
+                      aria-label={n.title}
+                    >
+                      <div className={styles.media} aria-hidden="true">
+                        {pickImage(n) ? (
+                          <img
+                            className={styles.img}
+                            src={pickImage(n)}
+                            alt=""
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className={styles.imgFallback} />
+                        )}
                       </div>
+
+                      <div className={styles.meta}>
+                        <div className={styles.kicker}>
+                          {pickCategoryLabel(n)}
+                        </div>
+                        <h2 className={styles.title}>{n.title}</h2>
+                        <div className={styles.date}>
+                          {formatDate(n.publishedAt || n.date || n.createdAt)}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+
+                <div className={styles.pagerRow} aria-label="Pagination row">
+                  <div className={styles.pager} aria-label="Pagination">
+                    <button
+                      type="button"
+                      className={styles.ctrl}
+                      aria-label="Trang trước"
+                      disabled={!canNavigate}
+                      onClick={goPrev}
+                    >
+                      ‹
+                    </button>
+
+                    <div className={styles.pageNums} aria-label="Pages">
+                      {Array.from({ length: Math.min(totalPages, 5) }).map(
+                        (_, idx) => {
+                          const p = idx + 1;
+                          const active = p === page;
+                          return (
+                            <button
+                              key={p}
+                              type="button"
+                              className={`${styles.pageNum} ${
+                                active ? styles.pageNumActive : ""
+                              }`}
+                              onClick={() => setPage(p)}
+                              aria-current={active ? "page" : undefined}
+                              disabled={!canNavigate}
+                            >
+                              {p}
+                            </button>
+                          );
+                        },
+                      )}
+                      {totalPages > 5 ? (
+                        <>
+                          <span className={styles.ellipsis} aria-hidden="true">
+                            …
+                          </span>
+                          <button
+                            type="button"
+                            className={`${styles.pageNum} ${
+                              page === totalPages ? styles.pageNumActive : ""
+                            }`}
+                            onClick={() => setPage(totalPages)}
+                            disabled={!canNavigate}
+                            aria-label={`Trang ${totalPages}`}
+                          >
+                            {totalPages}
+                          </button>
+                        </>
+                      ) : null}
                     </div>
-                  </Link>
-                ))}
-              </div>
 
-              <div className={styles.pagerRow} aria-label="Pagination row">
-                <div className={styles.pager} aria-label="Pagination">
-                  <button
-                    type="button"
-                    className={styles.ctrl}
-                    aria-label="Trang trước"
-                    disabled={!canNavigate}
-                    onClick={goPrev}
-                  >
-                    ‹
-                  </button>
-
-                  <div className={styles.pageNums} aria-label="Pages">
-                    {Array.from({ length: Math.min(totalPages, 5) }).map((_, idx) => {
-                      const p = idx + 1;
-                      const active = p === page;
-                      return (
-                        <button
-                          key={p}
-                          type="button"
-                          className={`${styles.pageNum} ${
-                            active ? styles.pageNumActive : ""
-                          }`}
-                          onClick={() => setPage(p)}
-                          aria-current={active ? "page" : undefined}
-                          disabled={!canNavigate}
-                        >
-                          {p}
-                        </button>
-                      );
-                    })}
-                    {totalPages > 5 ? (
-                      <>
-                        <span className={styles.ellipsis} aria-hidden="true">
-                          …
-                        </span>
-                        <button
-                          type="button"
-                          className={`${styles.pageNum} ${
-                            page === totalPages ? styles.pageNumActive : ""
-                          }`}
-                          onClick={() => setPage(totalPages)}
-                          disabled={!canNavigate}
-                          aria-label={`Trang ${totalPages}`}
-                        >
-                          {totalPages}
-                        </button>
-                      </>
-                    ) : null}
+                    <button
+                      type="button"
+                      className={styles.ctrl}
+                      aria-label="Trang sau"
+                      disabled={!canNavigate}
+                      onClick={goNext}
+                    >
+                      ›
+                    </button>
                   </div>
-
-                  <button
-                    type="button"
-                    className={styles.ctrl}
-                    aria-label="Trang sau"
-                    disabled={!canNavigate}
-                    onClick={goNext}
-                  >
-                    ›
-                  </button>
                 </div>
-              </div>
-
-              <div className={styles.touchStrip} aria-label="Get in touch">
-                <div className={styles.touchInner}>
-                  <div className={styles.touchTitle}>Get in Touch with Us</div>
-                  <Link className={styles.touchBtn} to="/lien-he" aria-label="Contact us">
-                    Contact us <span aria-hidden="true">→</span>
-                  </Link>
-                </div>
-              </div>
-            </>
+              </>
             ) : (
               <p className={styles.emptyState}>
                 Không tìm thấy tin tức phù hợp với bộ lọc hiện tại.

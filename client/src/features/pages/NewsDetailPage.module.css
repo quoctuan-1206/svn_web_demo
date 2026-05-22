@@ -74,6 +74,10 @@
   color: rgba(10, 10, 10, 0.78);
 }
 
+.headerActions {
+  margin-top: 18px;
+}
+
 .date {
   display: block;
   font-size: 13px;

@@ -1,6 +1,6 @@
 import styles from "./News.module.css";
 import { Link } from "react-router-dom";
-import { newsArticlePath } from "../../../../../utils/newsArticlePath";
+import { newsArticlePath } from "../../../../../utils/contentPaths";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 

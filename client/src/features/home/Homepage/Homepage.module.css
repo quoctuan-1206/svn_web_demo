@@ -145,6 +145,6 @@ body {
   font-size: 64px;
   margin: 0;
 }
-.page > section:not(#lien-he) p {
+.page > section#lien-he p {
   font-size: 13px;
 }
