@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const PARTNER_ITEMS = [
   {
     lines: ["Collaborative Robots", "For industrial Automation"],
-    logo: "/images/jaka.png",
+    logo: "/images/jakalogo.png",
     logoAlt: "Collaborative Robots",
   },
   {

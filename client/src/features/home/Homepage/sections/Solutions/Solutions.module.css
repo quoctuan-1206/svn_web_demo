@@ -111,7 +111,7 @@
   flex: 0 0 auto;
   width: clamp(280px, 28vw, 387px);
   height: clamp(320px, 42vh, 434px);
-  border-radius: 18px;
+  border-radius: 8px;
   overflow: hidden;
   background: #ffffff;
   border: 2px solid rgba(2, 8, 23, 0.12);
@@ -180,7 +180,7 @@
 .cardTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.01em;
   color: #ffffff;
   font-size: clamp(15px, 1.05vw, 22px);

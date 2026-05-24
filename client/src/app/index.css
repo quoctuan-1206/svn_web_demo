@@ -1,5 +1,10 @@
+@import "./fonts.css";
 @import "tailwindcss";
 @import "../features/admin/admin.css";
+
+@theme {
+  --font-sans: "BR Omega", sans-serif;
+}
 
 :root {
   --black: #0a0a0a;
@@ -14,10 +19,8 @@
   --green-glow: rgba(117, 192, 31, 0.4);
   --blue: #007cfe;
   --accent: #75c01f;
-  --font-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial,
-    "Noto Sans", "Liberation Sans", sans-serif;
+  --font-display: "BR Omega", sans-serif;
+  --font-body: "BR Omega", sans-serif;
 }
 
 *,
@@ -29,12 +32,13 @@
 
 html {
   scroll-behavior: smooth;
+  font-family: var(--font-body);
 }
 
 body {
   background: #ffffff;
   color: #0f172a;
-  font-family: var(--font-body);
+  font-family: inherit;
   font-size: 15px;
   line-height: 1.6;
   overflow-x: hidden;
@@ -77,9 +81,16 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-display);
+  font-family: inherit;
   font-weight: 700;
   letter-spacing: 0.02em;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
 .section-title {

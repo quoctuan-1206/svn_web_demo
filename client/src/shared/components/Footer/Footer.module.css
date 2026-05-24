@@ -1,7 +1,7 @@
 .footer {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
   border-top: 1px solid rgba(255, 255, 255, 0.04);
-  height: 50px;
+  height: 46.87px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -53,7 +53,9 @@
 .nav a {
   color: var(--white-dim);
   text-decoration: none;
-  font-size: 16px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 300;
   transition:
     color 160ms ease,
     transform 160ms ease;
