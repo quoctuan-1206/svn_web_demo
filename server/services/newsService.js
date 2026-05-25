@@ -5,6 +5,10 @@ const { uniqueSlug } = require('../utils/slug');
 const { httpError } = require('../utils/httpError');
 const { parsePagination, paginatedResult } = require('../utils/pagination');
 const { unlinkUploadedImage, normalizeImageForResponse } = require('../utils/uploadUtils');
+const {
+  buildEnglishFields,
+  shouldAutoTranslate,
+} = require('../utils/translate');
 
 const MAX_GALLERY_IMAGES = 20;
 
@@ -113,11 +117,21 @@ async function createNews({ body, file, publicUploadUrl }) {
   const gallery = parseGalleryInput(body?.gallery);
   assertGalleryLimit(gallery);
 
-  const doc = await News.create({
+  const vi = {
     title: String(title).trim(),
+    excerpt: excerpt != null ? String(excerpt) : '',
+    content: content != null ? String(content) : '',
+  };
+  const en = await buildEnglishFields(vi, {
+    enabled: shouldAutoTranslate(body),
+  });
+
+  const doc = await News.create({
+    ...vi,
+    ...en,
     slug: await uniqueSlug(News, title, 'news'),
-    excerpt: excerpt != null ? String(excerpt) : undefined,
-    content: content != null ? String(content) : undefined,
+    excerpt: vi.excerpt || undefined,
+    content: vi.content || undefined,
     image: file ? publicUploadUrl(file.filename) : undefined,
     gallery: gallery?.length ? gallery : undefined,
     publishedAt: parsePublishedAt(publishedAt),
@@ -183,6 +197,15 @@ async function updateNews({ id, body, file, publicUploadUrl, uploadDir }) {
     await Promise.all(
       removedGallery.map((url) => unlinkUploadedImage({ uploadDir, imageUrl: url })),
     );
+  }
+
+  if (shouldAutoTranslate(body)) {
+    const en = await buildEnglishFields({
+      title: existing.title,
+      excerpt: existing.excerpt,
+      content: existing.content,
+    });
+    Object.assign(existing, en);
   }
 
   await existing.save();

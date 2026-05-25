@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Download } from "lucide-react";
 import styles from "./PdfDownloadButton.module.css";
 import { exportContentPdf } from "../../../utils/exportContentPdf";
@@ -22,6 +23,7 @@ export default function PdfDownloadButton({
   className = "",
   compact = false,
 }) {
+  const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -40,8 +42,8 @@ export default function PdfDownloadButton({
       const message =
         err instanceof Error && err.message
           ? err.message
-          : "Không tạo được PDF. Thử lại.";
-      setError(message.startsWith("Không") ? message : `Không tạo được PDF: ${message}`);
+          : t("common.pdfError");
+      setError(message);
     } finally {
       setBusy(false);
     }
@@ -57,7 +59,7 @@ export default function PdfDownloadButton({
         aria-busy={busy}
       >
         <Download size={compact ? 14 : 16} aria-hidden />
-        {busy ? "Đang tạo PDF…" : "Tải PDF"}
+        {busy ? t("common.generatingPdf") : t("common.downloadPdf")}
       </button>
       {error ? (
         <span className={styles.error} role="alert">

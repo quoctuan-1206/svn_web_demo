@@ -1,3 +1,5 @@
+import i18n from "../i18n";
+
 /** Chuyển HTML / plain text thành khối văn bản cho pdfmake (kèm ảnh khi có thể). */
 
 function decodeEntities(text) {
@@ -172,7 +174,7 @@ export async function htmlToPdfBlocks(body) {
   if (!raw) {
     return [
       {
-        text: "Nội dung đang được cập nhật.",
+        text: i18n.t("pdf.updating"),
         style: "body",
         color: "#64748b",
       },

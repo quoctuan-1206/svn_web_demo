@@ -1,22 +1,25 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "./Header.module.css";
+import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import { useHomepageSection } from "../../../context/HomepageSectionContext";
 
 const LOGO_SRC = "/images/SVN1.png";
 const SEARCH_ICON_SRC = "/images/search.png";
 
 const NAV_ITEMS = [
-  { to: "/ve-chung-toi", label: "Về" },
-  { to: "/san-pham", label: "Sản Phẩm", sectionId: "san-pham" },
-  { to: "/giai-phap", label: "Giải Pháp", sectionId: "giai-phap" },
-  { to: "/doi-tac", label: "Đối Tác", sectionId: "doi-tac" },
-  { to: "/tin-tuc", label: "Tin Tức", sectionId: "tin-tuc" },
-  { to: "/tai-ve", label: "Tải Về" },
-  { to: "/lien-he", label: "Liên Hệ", sectionId: "lien-he" },
+  { to: "/ve-chung-toi", labelKey: "nav.about" },
+  { to: "/san-pham", labelKey: "nav.products", sectionId: "san-pham" },
+  { to: "/giai-phap", labelKey: "nav.solutions", sectionId: "giai-phap" },
+  { to: "/doi-tac", labelKey: "nav.partners", sectionId: "doi-tac" },
+  { to: "/tin-tuc", labelKey: "nav.news", sectionId: "tin-tuc" },
+  { to: "/tai-ve", labelKey: "nav.download" },
+  { to: "/lien-he", labelKey: "nav.contact", sectionId: "lien-he" },
 ];
 
 export default function Header() {
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const location = useLocation();
@@ -64,7 +67,11 @@ export default function Header() {
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <div className={`container ${styles.inner}`}>
-        <Link className={styles.brand} to="/" aria-label="Về trang chủ">
+        <Link
+          className={styles.brand}
+          to="/"
+          aria-label={t("header.brandAria")}
+        >
           <img className={styles.logo} src={LOGO_SRC} alt="SVN Automation" />
         </Link>
 
@@ -85,7 +92,7 @@ export default function Header() {
               }`}
               onClick={() => handleNav(item)}
             >
-              {item.label}
+              {t(item.labelKey)}
             </button>
           ))}
         </nav>
@@ -94,7 +101,7 @@ export default function Header() {
           <Link
             className={styles.searchLink}
             to="/tim-kiem"
-            aria-label="Tìm kiếm"
+            aria-label={t("header.search")}
           >
             <img
               className={styles.searchIcon}
@@ -102,22 +109,16 @@ export default function Header() {
               alt=""
               aria-hidden="true"
             />
-            <span className={styles.searchText}>Tìm kiếm</span>
+            <span className={styles.searchText}>{t("header.search")}</span>
           </Link>
 
-          <button
-            type="button"
-            className={styles.langBtn}
-            aria-label="Ngôn ngữ"
-          >
-            VI ▾
-          </button>
+          <LanguageSwitcher />
 
           <button
             type="button"
             className={styles.burger}
             onClick={() => setOpen((v) => !v)}
-            aria-label="Mở/đóng menu"
+            aria-label={t("header.menuToggle")}
             aria-expanded={open}
           >
             <span />

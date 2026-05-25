@@ -1,20 +1,31 @@
 import { catalogItemPath, newsArticlePath } from "../../utils/contentPaths";
+import {
+  localizedField,
+  pickLocalizedLead,
+  searchHaystack,
+} from "../../i18n/localizeContent";
 
 /** Trang & mục cố định trong dự án */
 export const STATIC_SEARCH_ENTRIES = [
-  { id: "home", type: "page", label: "Trang chủ", to: "/", sectionId: null },
+  {
+    id: "home",
+    type: "page",
+    labelKey: "search.pages.home",
+    to: "/",
+    sectionId: null,
+  },
   {
     id: "overview",
     type: "page",
-    label: "Tổng quan",
+    labelKey: "search.pages.overview",
     to: "/tong-quan",
     sectionId: null,
-    extra: "tong quan svn automation",
+    extra: "tong quan svn automation overview",
   },
   {
     id: "about",
     type: "page",
-    label: "Về chúng tôi",
+    labelKey: "search.pages.about",
     to: "/ve-chung-toi",
     sectionId: null,
     extra: "gioi thieu about",
@@ -22,31 +33,31 @@ export const STATIC_SEARCH_ENTRIES = [
   {
     id: "products",
     type: "page",
-    label: "Sản phẩm",
+    labelKey: "search.pages.products",
     to: "/san-pham",
     sectionId: "san-pham",
-    extra: "san pham catalog",
+    extra: "san pham catalog products",
   },
   {
     id: "solutions",
     type: "page",
-    label: "Giải pháp",
+    labelKey: "search.pages.solutions",
     to: "/giai-phap",
     sectionId: "giai-phap",
-    extra: "giai phap automation",
+    extra: "giai phap automation solutions",
   },
   {
     id: "partners",
     type: "page",
-    label: "Đối tác",
+    labelKey: "search.pages.partners",
     to: "/doi-tac",
     sectionId: "doi-tac",
-    extra: "doi tac partner",
+    extra: "doi tac partner partners",
   },
   {
     id: "news",
     type: "page",
-    label: "Tin tức",
+    labelKey: "search.pages.news",
     to: "/tin-tuc",
     sectionId: "tin-tuc",
     extra: "tin tuc news",
@@ -54,15 +65,15 @@ export const STATIC_SEARCH_ENTRIES = [
   {
     id: "download",
     type: "page",
-    label: "Tải về",
+    labelKey: "search.pages.download",
     to: "/tai-ve",
     sectionId: null,
-    extra: "tai ve download tai lieu",
+    extra: "tai ve download tai lieu pdf",
   },
   {
     id: "global",
     type: "page",
-    label: "Hiện diện toàn cầu",
+    labelKey: "search.pages.global",
     to: "/hien-dien-toan-cau",
     sectionId: null,
     extra: "global presence",
@@ -70,27 +81,20 @@ export const STATIC_SEARCH_ENTRIES = [
   {
     id: "services",
     type: "page",
-    label: "Dịch vụ & Hỗ trợ",
+    labelKey: "search.pages.services",
     to: "/dich-vu-ho-tro",
     sectionId: null,
-    extra: "dich vu ho tro support",
+    extra: "dich vu ho tro support services",
   },
   {
     id: "contact",
     type: "page",
-    label: "Liên hệ",
+    labelKey: "search.pages.contact",
     to: "/lien-he",
     sectionId: "lien-he",
     extra: "lien he contact form",
   },
 ];
-
-const TYPE_LABELS = {
-  page: "Trang",
-  product: "Sản phẩm",
-  solution: "Giải pháp",
-  news: "Tin tức",
-};
 
 export function normalizeSearchText(value) {
   return String(value ?? "")
@@ -126,61 +130,87 @@ function pickItemImage(item) {
   );
 }
 
-function pickItemDescription(item) {
-  return truncateText(
-    item?.excerpt ||
-      item?.summary ||
-      item?.description ||
-      stripHtml(item?.content),
-  );
+function pickItemDescription(item, locale = "vi") {
+  return truncateText(pickLocalizedLead(item, locale));
 }
 
 function joinHaystack(parts) {
   return normalizeSearchText(parts.filter(Boolean).join(" "));
 }
 
-function staticEntryHaystack(entry) {
+function staticEntryHaystack(entry, t) {
+  const label = entry.labelKey ? t(entry.labelKey) : entry.label || "";
   return joinHaystack([
-    entry.label,
+    label,
     entry.extra,
     entry.to,
-    TYPE_LABELS[entry.type],
+    t(`search.type.${entry.type}`),
   ]);
 }
 
 function catalogEntryHaystack(item) {
   return joinHaystack([
-    item.title,
-    item.slug,
-    item.excerpt,
-    item.description,
-    stripHtml(item.content),
+    searchHaystack(item, [
+      "title",
+      "slug",
+      "excerpt",
+      "description",
+      "summary",
+      "content",
+    ]),
     item.category,
   ]);
 }
 
 function newsEntryHaystack(item) {
   return joinHaystack([
-    item.title,
-    item.slug,
-    item.excerpt,
-    stripHtml(item.content),
+    searchHaystack(item, ["title", "slug", "excerpt", "content"]),
   ]);
 }
 
-/** @returns {Promise<Array<{ id: string, type: string, typeLabel: string, title: string, subtitle?: string, to: string, sectionId?: string|null, haystack: string }>>} */
-export async function fetchSiteSearchIndex() {
+/** Áp nhãn theo locale hiện tại (UI), giữ haystack đã build lúc fetch. */
+export function applySearchLocale(entries, t, locale = "vi") {
+  return entries.map((entry) => {
+    if (entry.labelKey) {
+      return {
+        ...entry,
+        title: t(entry.labelKey),
+        typeLabel: t(`search.type.${entry.type}`),
+        description: truncateText(entry.extra || t(entry.labelKey)),
+      };
+    }
+    if (entry.sourceItem) {
+      const item = entry.sourceItem;
+      const title =
+        localizedField(item, "title", locale) || t("common.untitled");
+      const typeLabel = t(`search.type.${entry.type}`);
+      return {
+        ...entry,
+        title,
+        typeLabel,
+        subtitle: typeLabel,
+        description: pickItemDescription(item, locale),
+      };
+    }
+    return entry;
+  });
+}
+
+/** @returns {Promise<Array<object>>} */
+export async function fetchSiteSearchIndex(t) {
+  const translate = typeof t === "function" ? t : (key) => key;
   const entries = STATIC_SEARCH_ENTRIES.map((entry) => ({
     id: entry.id,
     type: entry.type,
-    typeLabel: TYPE_LABELS[entry.type],
-    title: entry.label,
+    labelKey: entry.labelKey,
+    typeLabel: translate(`search.type.${entry.type}`),
+    title: translate(entry.labelKey),
     subtitle: entry.to,
-    description: truncateText(entry.extra || entry.label),
+    description: truncateText(entry.extra || translate(entry.labelKey)),
     image: "",
     to: entry.to,
     sectionId: entry.sectionId ?? null,
-    haystack: staticEntryHaystack(entry),
+    haystack: staticEntryHaystack(entry, translate),
   }));
 
   try {
@@ -201,14 +231,15 @@ export async function fetchSiteSearchIndex() {
         entries.push({
           id: String(item._id || item.id || item.slug || item.title),
           type,
-          typeLabel: TYPE_LABELS[type],
-          title: String(item.title || "").trim() || "Không có tiêu đề",
-          subtitle: isSolution ? "Giải pháp" : "Sản phẩm",
-          description: pickItemDescription(item),
+          typeLabel: translate(`search.type.${type}`),
+          title: String(item.title || "").trim() || translate("common.untitled"),
+          subtitle: translate(`search.type.${type}`),
+          description: pickItemDescription(item, "vi"),
           image: pickItemImage(item),
           to: catalogItemPath(item),
           sectionId: null,
           haystack: catalogEntryHaystack(item),
+          sourceItem: item,
         });
       }
     }
@@ -221,14 +252,15 @@ export async function fetchSiteSearchIndex() {
         entries.push({
           id: String(item._id || item.id || item.slug || item.title),
           type: "news",
-          typeLabel: TYPE_LABELS.news,
-          title: String(item.title || "").trim() || "Không có tiêu đề",
-          subtitle: "Tin tức",
-          description: pickItemDescription(item),
+          typeLabel: translate("search.type.news"),
+          title: String(item.title || "").trim() || translate("common.untitled"),
+          subtitle: translate("search.type.news"),
+          description: pickItemDescription(item, "vi"),
           image: pickItemImage(item),
           to: newsArticlePath(item),
           sectionId: null,
           haystack: newsEntryHaystack(item),
+          sourceItem: item,
         });
       }
     }

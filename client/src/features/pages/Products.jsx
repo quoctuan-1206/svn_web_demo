@@ -1,28 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./PageCommon.css";
 import { catalogItemPath } from "../../utils/contentPaths";
 import styles from "./NewsPage.module.css";
+import { localizedField, searchHaystack } from "../../i18n/localizeContent";
+import { formatLocaleDate } from "../../i18n/localeDate";
 
 const PAGE_SIZE = 12;
-
-function formatDate(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
 
 function pickDate(p) {
   return p?.updatedAt || p?.createdAt || p?.date || 0;
 }
 
 export default function Products() {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === "en" ? "en" : "vi";
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,12 +43,14 @@ export default function Products() {
 
     const q = searchQuery.trim().toLowerCase();
     if (q) {
-      arr = arr.filter((p) => {
-        const haystack = [p?.title, p?.summary, p?.excerpt, p?.description]
-          .map((v) => String(v || "").toLowerCase())
-          .join(" ");
-        return haystack.includes(q);
-      });
+      arr = arr.filter((p) =>
+        searchHaystack(p, [
+          "title",
+          "summary",
+          "excerpt",
+          "description",
+        ]).includes(q),
+      );
     }
 
     if (dateFrom) {
@@ -124,15 +120,22 @@ export default function Products() {
       <section className={`page-hero ${styles.pageHero}`}>
         <div className="container">
           <h1 className={styles.heroTitle}>
-            <span className={styles.headingPrimary}>Sản phẩm</span>{" "}
-            <span className={styles.headingSecondary}>Công nghệ</span>
+            <span className={styles.headingPrimary}>
+              {t("pages.products.titlePrimary")}
+            </span>{" "}
+            <span className={styles.headingSecondary}>
+              {t("pages.products.titleSecondary")}
+            </span>
           </h1>
         </div>
       </section>
 
       <section className="page-content">
         <div className={`container ${styles.contentShell}`}>
-          <div className={styles.filtersRow} aria-label="Bộ lọc sản phẩm">
+          <div
+            className={styles.filtersRow}
+            aria-label={t("pages.products.filterAria")}
+          >
             <div className={`${styles.filterField} ${styles.filterSearch}`}>
               <svg
                 className={styles.searchIcon}
@@ -150,10 +153,10 @@ export default function Products() {
               <input
                 type="text"
                 className={styles.filterInput}
-                placeholder="Tìm kiếm sản phẩm..."
+                placeholder={t("pages.products.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Tìm kiếm sản phẩm"
+                aria-label={t("pages.products.searchAria")}
               />
             </div>
 
@@ -163,7 +166,7 @@ export default function Products() {
                 className={styles.filterInput}
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                aria-label="Từ ngày"
+                aria-label={t("common.fromDate")}
               />
               <span className={styles.dateSeparator} aria-hidden="true">
                 –
@@ -173,7 +176,7 @@ export default function Products() {
                 className={styles.filterInput}
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                aria-label="Đến ngày"
+                aria-label={t("common.toDate")}
               />
             </div>
 
@@ -182,10 +185,10 @@ export default function Products() {
                 className={styles.filterInput}
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                aria-label="Sắp xếp"
+                aria-label={t("common.sort")}
               >
-                <option value="newest">Mới nhất</option>
-                <option value="oldest">Cũ nhất</option>
+                <option value="newest">{t("common.newest")}</option>
+                <option value="oldest">{t("common.oldest")}</option>
               </select>
             </div>
 
@@ -194,22 +197,24 @@ export default function Products() {
               className={styles.resetBtn}
               onClick={resetFilters}
               disabled={!hasActiveFilter}
-              aria-label="Đặt lại bộ lọc"
+              aria-label={t("common.resetFilters")}
             >
-              Đặt lại
+              {t("common.reset")}
             </button>
           </div>
 
           {products.length ? (
             filteredProducts.length ? (
               <>
-                <div className={styles.grid} aria-label="Products grid">
-                  {visible.map((p) => (
+                <div className={styles.grid} aria-label={t("pages.products.gridAria")}>
+                  {visible.map((p) => {
+                    const title = localizedField(p, "title", locale);
+                    return (
                     <Link
                       key={p._id || p.id}
                       to={catalogItemPath(p)}
                       className={styles.card}
-                      aria-label={p.title}
+                      aria-label={title}
                     >
                       <div className={styles.media} aria-hidden="true">
                         {p.image ? (
@@ -224,14 +229,15 @@ export default function Products() {
                         )}
                       </div>
                       <div className={styles.meta}>
-                        <div className={styles.kicker}>Sản phẩm</div>
-                        <h2 className={styles.title}>{p.title}</h2>
+                        <div className={styles.kicker}>{t("catalog.product")}</div>
+                        <h2 className={styles.title}>{title}</h2>
                         <div className={styles.date}>
-                          {formatDate(pickDate(p))}
+                          {formatLocaleDate(pickDate(p))}
                         </div>
                       </div>
                     </Link>
-                  ))}
+                  );
+                  })}
                 </div>
 
                 <div className={styles.pagerRow} aria-label="Pagination row">
@@ -239,7 +245,7 @@ export default function Products() {
                     <button
                       type="button"
                       className={styles.ctrl}
-                      aria-label="Trang trước"
+                      aria-label={t("common.prevPage")}
                       disabled={!canNavigate}
                       onClick={goPrev}
                     >
@@ -279,7 +285,7 @@ export default function Products() {
                             }`}
                             onClick={() => setPage(totalPages)}
                             disabled={!canNavigate}
-                            aria-label={`Trang ${totalPages}`}
+                            aria-label={t("common.pageN", { n: totalPages })}
                           >
                             {totalPages}
                           </button>
@@ -290,7 +296,7 @@ export default function Products() {
                     <button
                       type="button"
                       className={styles.ctrl}
-                      aria-label="Trang sau"
+                      aria-label={t("common.nextPage")}
                       disabled={!canNavigate}
                       onClick={goNext}
                     >
@@ -301,12 +307,12 @@ export default function Products() {
               </>
             ) : (
               <p className={styles.emptyState}>
-                Không tìm thấy sản phẩm phù hợp với bộ lọc hiện tại.
+                {t("pages.products.emptyFilter")}
               </p>
             )
           ) : (
             <p className={styles.emptyState}>
-              Chưa có sản phẩm nào được hiển thị.
+              {t("pages.products.emptyList")}
             </p>
           )}
         </div>

@@ -3,21 +3,15 @@ import { Link } from "react-router-dom";
 import { newsArticlePath } from "../../../../../utils/contentPaths";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import { localizedField } from "../../../../../i18n/localizeContent";
+import { formatLocaleDate } from "../../../../../i18n/localeDate";
 
 const PAGE_SIZE = 3;
 
-function formatDate(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
-
 export default function News() {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === "en" ? "en" : "vi";
   const [items, setItems] = useState([]);
   const [slide, setSlide] = useState(0);
 
@@ -56,7 +50,7 @@ export default function News() {
   const canNavigate = items.length > PAGE_SIZE;
 
   return (
-    <section className={styles.section} id="tin-tuc" aria-label="News">
+    <section className={styles.section} id="tin-tuc" aria-label={t("home.newsAria")}>
       <div className={`container ${styles.container}`}>
         <header className={styles.header}>
           <div className={styles.titleRow}>
@@ -64,29 +58,33 @@ export default function News() {
               <Link
                 to="/tin-tuc"
                 className={styles.titleLink}
-                aria-label="Tới trang Tin tức"
+                aria-label={t("home.newsLinkAria")}
               >
-                We Go{" "}
-                <span className={styles.headingPrimary}>The Extra Mile</span>
+                {t("home.newsTitlePrefix")}{" "}
+                <span className={styles.headingPrimary}>
+                  {t("home.newsTitleHighlight")}
+                </span>
               </Link>
             </h2>
           </div>
-          <p className={styles.sub}>To help you keep the world in motion</p>
-          <p className={styles.sub}>Together, we Accompany the Future</p>
+          <p className={styles.sub}>{t("home.newsSub1")}</p>
+          <p className={styles.sub}>{t("home.newsSub2")}</p>
         </header>
 
         <div className={styles.list} aria-label="Latest posts">
-          {visible.map((p, i) => (
+          {visible.map((p, i) => {
+            const title = localizedField(p, "title", locale);
+            return (
             <Link
               key={`${slide}-${p._id || p.id || i}`}
               to={newsArticlePath(p)}
               className={`${styles.item} ${styles.itemLink}`}
             >
               <div className={styles.date}>
-                {formatDate(p.publishedAt || p.date)}
+                {formatLocaleDate(p.publishedAt || p.date)}
               </div>
               <h3 className={styles.itemTitle}>
-                {String(p.title || "")
+                {String(title || "")
                   .split("\n")
                   .map((line, j) => (
                     <span key={j} className={styles.titleLine}>
@@ -95,7 +93,8 @@ export default function News() {
                   ))}
               </h3>
             </Link>
-          ))}
+          );
+          })}
         </div>
 
         <div className={styles.controlsRow} aria-label="News controls">
@@ -103,7 +102,7 @@ export default function News() {
             <button
               type="button"
               className={styles.ctrl}
-              aria-label="Tin trước"
+              aria-label={t("home.newsPrev")}
               disabled={!canNavigate}
               onClick={goPrev}
             >
@@ -112,7 +111,7 @@ export default function News() {
             <button
               type="button"
               className={styles.ctrl}
-              aria-label="Tin sau"
+              aria-label={t("home.newsNext")}
               disabled={!canNavigate}
               onClick={goNext}
             >

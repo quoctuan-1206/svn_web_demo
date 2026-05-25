@@ -1,8 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "./Footer.module.css";
 import { useHomepageSection } from "../../../context/HomepageSectionContext";
 
 export default function Footer({ withId = true } = {}) {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const { activeSectionId } = useHomepageSection();
   const isHomepage = pathname === "/";
@@ -12,23 +14,7 @@ export default function Footer({ withId = true } = {}) {
     <footer className={styles.footer} id={withId ? "footer" : undefined}>
       <div className={styles.compact}>
         <div className={`container ${styles.row}`}>
-          <nav className={styles.nav} aria-label="Footer navigation">
-            {/*
-            <Link
-              className={`${styles.link} ${
-                isHomepage
-                  ? activeSectionId === "hero"
-                    ? styles.active
-                    : ""
-                  : isActive("/tong-quan")
-                    ? styles.active
-                    : ""
-              }`}
-              to="/tong-quan"
-            >
-              Tổng Quan
-            </Link>
-            */}
+          <nav className={styles.nav} aria-label={t("footer.aria")}>
             <Link
               className={`${styles.link} ${
                 isHomepage
@@ -41,7 +27,7 @@ export default function Footer({ withId = true } = {}) {
               }`}
               to="/"
             >
-              Tổng Quan
+              {t("footer.overview")}
             </Link>
             <Link
               className={`${styles.link} ${
@@ -55,7 +41,7 @@ export default function Footer({ withId = true } = {}) {
               }`}
               to="/san-pham"
             >
-              Sản Phẩm
+              {t("footer.products")}
             </Link>
             <Link
               className={`${styles.link} ${
@@ -69,35 +55,19 @@ export default function Footer({ withId = true } = {}) {
               }`}
               to="/giai-phap"
             >
-              Giải Pháp
+              {t("footer.solutions")}
             </Link>
-            {/*
-            <Link
-              className={`${styles.link} ${isActive("/hien-dien-toan-cau") ? styles.active : ""}`}
-              to="/hien-dien-toan-cau"
-            >
-              Hiện Diện Toàn Cầu
-            </Link>
-            */}
             <Link
               className={`${styles.link} ${isActive("/hien-dien-toan-cau") ? styles.active : ""}`}
               to="/"
             >
-              Hiện Diện Toàn Cầu
+              {t("footer.global")}
             </Link>
-            {/*
-            <Link
-              className={`${styles.link} ${isActive("/dich-vu-ho-tro") ? styles.active : ""}`}
-              to="/dich-vu-ho-tro"
-            >
-              Dịch Vụ &amp; Hỗ Trợ
-            </Link>
-            */}
             <Link
               className={`${styles.link} ${isActive("/dich-vu-ho-tro") ? styles.active : ""}`}
               to="/"
             >
-              Dịch Vụ &amp; Hỗ Trợ
+              {t("footer.services")}
             </Link>
             <Link
               className={`${styles.link} ${
@@ -111,7 +81,7 @@ export default function Footer({ withId = true } = {}) {
               }`}
               to="/tin-tuc"
             >
-              Tin Tức
+              {t("footer.news")}
             </Link>
           </nav>
         </div>

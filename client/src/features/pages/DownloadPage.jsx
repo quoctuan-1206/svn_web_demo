@@ -1,29 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import "./PageCommon.css";
 import styles from "./DownloadPage.module.css";
 import PdfDownloadButton from "../../shared/components/PdfDownloadButton/PdfDownloadButton";
 import { catalogItemPath, newsArticlePath } from "../../utils/contentPaths";
+import { localizedField } from "../../i18n/localizeContent";
+import { formatLocaleDate } from "../../i18n/localeDate";
 
-const TABS = [
-  { id: "all", label: "Tất cả" },
-  { id: "product", label: "Sản phẩm" },
-  { id: "solution", label: "Giải pháp" },
-  { id: "news", label: "Tin tức" },
-];
-
-function formatDate(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
+const TAB_IDS = ["all", "product", "solution", "news"];
 
 function pickDate(item, kind) {
   if (kind === "news") {
@@ -33,10 +20,23 @@ function pickDate(item, kind) {
 }
 
 export default function DownloadPage() {
+  const { t, i18n } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
   const [tab, setTab] = useState("all");
   const [query, setQuery] = useState("");
+
+  const tabs = useMemo(
+    () =>
+      TAB_IDS.map((id) => ({
+        id,
+        label:
+          id === "all"
+            ? t("catalog.all")
+            : t(`catalog.${id === "news" ? "news" : id}`),
+      })),
+    [t, i18n.language],
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -61,8 +61,7 @@ export default function DownloadPage() {
           .map((p) => ({
             id: String(p._id || p.id || p.slug),
             kind: p?.category === "solution" ? "solution" : "product",
-            typeLabel: p?.category === "solution" ? "Giải pháp" : "Sản phẩm",
-            title: p?.title || "Không có tiêu đề",
+            title: p?.title,
             date: pickDate(p, "product"),
             to: catalogItemPath(p),
             raw: p,
@@ -73,8 +72,7 @@ export default function DownloadPage() {
           .map((n) => ({
             id: String(n._id || n.id || n.slug),
             kind: "news",
-            typeLabel: "Tin tức",
-            title: n?.title || "Không có tiêu đề",
+            title: n?.title,
             date: pickDate(n, "news"),
             to: newsArticlePath(n),
             raw: n,
@@ -92,8 +90,19 @@ export default function DownloadPage() {
     };
   }, []);
 
+  const locale = i18n.language === "en" ? "en" : "vi";
+
+  const displayItems = useMemo(() => {
+    return items.map((entry) => ({
+      ...entry,
+      typeLabel: t(`catalog.${entry.kind}`),
+      title:
+        localizedField(entry.raw, "title", locale) || t("common.untitled"),
+    }));
+  }, [items, t, locale]);
+
   const filtered = useMemo(() => {
-    let list = items.slice();
+    let list = displayItems.slice();
     if (tab !== "all") list = list.filter((i) => i.kind === tab);
     const q = query.trim().toLowerCase();
     if (q) {
@@ -110,27 +119,27 @@ export default function DownloadPage() {
       return db - da;
     });
     return list;
-  }, [items, tab, query]);
+  }, [displayItems, tab, query]);
 
   const counts = useMemo(() => {
-    const c = { all: items.length, product: 0, solution: 0, news: 0 };
-    for (const i of items) c[i.kind] = (c[i.kind] || 0) + 1;
+    const c = { all: displayItems.length, product: 0, solution: 0, news: 0 };
+    for (const i of displayItems) c[i.kind] = (c[i.kind] || 0) + 1;
     return c;
-  }, [items]);
+  }, [displayItems]);
 
   return (
     <main className={`page ${styles.page}`}>
       <section className={`page-hero ${styles.hero}`}>
         <div className="container">
           <h1 className={styles.heroTitle}>
-            <span className={styles.headingPrimary}>Tài liệu</span> PDF
+            <span className={styles.headingPrimary}>
+              {t("pages.download.titlePrimary")}
+            </span>{" "}
+            {t("pages.download.titleSuffix")}
           </h1>
-          <p className="page-desc">
-            Xuất nội dung sản phẩm, giải pháp và tin tức thành file PDF để lưu
-            hoặc chia sẻ. Chọn mục bên dưới hoặc mở trang chi tiết để tải.
-          </p>
+          <p className="page-desc">{t("pages.download.desc")}</p>
         </div>
-      </section>  
+      </section>
 
       <section className={`page-content ${styles.content}`}>
         <div className={`container ${styles.shell}`}>
@@ -138,19 +147,21 @@ export default function DownloadPage() {
             <div
               className={styles.tabs}
               role="tablist"
-              aria-label="Loại tài liệu"
+              aria-label={t("pages.download.tabsAria")}
             >
-              {TABS.map((t) => (
+              {tabs.map((tabItem) => (
                 <button
-                  key={t.id}
+                  key={tabItem.id}
                   type="button"
                   role="tab"
-                  aria-selected={tab === t.id}
-                  className={`${styles.tab} ${tab === t.id ? styles.tabActive : ""}`}
-                  onClick={() => setTab(t.id)}
+                  aria-selected={tab === tabItem.id}
+                  className={`${styles.tab} ${tab === tabItem.id ? styles.tabActive : ""}`}
+                  onClick={() => setTab(tabItem.id)}
                 >
-                  {t.label}
-                  <span className={styles.tabCount}>{counts[t.id] ?? 0}</span>
+                  {tabItem.label}
+                  <span className={styles.tabCount}>
+                    {counts[tabItem.id] ?? 0}
+                  </span>
                 </button>
               ))}
             </div>
@@ -161,19 +172,19 @@ export default function DownloadPage() {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Tìm theo tên…"
-                aria-label="Tìm tài liệu"
+                placeholder={t("pages.download.searchPlaceholder")}
+                aria-label={t("pages.download.searchAria")}
               />
             </label>
           </div>
 
           {loading ? (
-            <p className={styles.state}>Đang tải danh sách…</p>
+            <p className={styles.state}>{t("pages.download.loading")}</p>
           ) : filtered.length === 0 ? (
             <p className={styles.state}>
               {items.length === 0
-                ? "Chưa có nội dung để tải."
-                : "Không có kết quả phù hợp."}
+                ? t("pages.download.empty")
+                : t("pages.download.noResults")}
             </p>
           ) : (
             <ul className={styles.list}>
@@ -186,13 +197,13 @@ export default function DownloadPage() {
                     </h2>
                     {entry.date ? (
                       <time className={styles.rowDate} dateTime={entry.date}>
-                        {formatDate(entry.date)}
+                        {formatLocaleDate(entry.date)}
                       </time>
                     ) : null}
                   </div>
                   <div className={styles.rowActions}>
                     <Link className={styles.viewLink} to={entry.to}>
-                      Xem chi tiết
+                      {t("common.viewDetail")}
                     </Link>
                     <PdfDownloadButton
                       item={entry.raw}

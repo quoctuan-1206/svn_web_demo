@@ -2,9 +2,16 @@ import styles from "./Solutions.module.css";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { catalogItemPath } from "../../../../../utils/contentPaths";
+import {
+  localizedField,
+  pickLocalizedLead,
+} from "../../../../../i18n/localizeContent";
 
 export default function Solutions() {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === "en" ? "en" : "vi";
   const [solutions, setSolutions] = useState([]);
   const viewportRef = useRef(null);
 
@@ -122,55 +129,66 @@ export default function Solutions() {
   }, []);
 
   return (
-    <section className={styles.section} id="giai-phap" aria-label="Solutions">
+    <section
+      className={styles.section}
+      id="giai-phap"
+      aria-label={t("home.solutionsAria")}
+    >
       <div className="container">
         <div className={styles.titleRow}>
           <h2 className={styles.heading}>
             <Link
               to="/giai-phap"
               className={styles.headingLink}
-              aria-label="Tới trang Giải pháp"
+              aria-label={t("home.solutionsLinkAria")}
             >
-              <span className={styles.headingPrimary}>Giải pháp Tự động hóa</span>{" "}
-              <span className={styles.headingSecondary}>Chuyên sâu</span>
+              <span className={styles.headingPrimary}>
+                {t("home.solutionsTitlePrimary")}
+              </span>{" "}
+              <span className={styles.headingSecondary}>
+                {t("home.solutionsTitleSecondary")}
+              </span>
             </Link>
           </h2>
         </div>
-        <p className={styles.sub}>
-          Dựa trên Nền tảng Kinh nghiệm Thực chiến (Industry Know-how)
-        </p>
+        <p className={styles.sub}>{t("home.solutionsSub")}</p>
 
         <div
           className={styles.viewport}
           ref={viewportRef}
-          aria-label="Giải pháp nổi bật"
+          aria-label={t("home.solutionsCarouselAria")}
           role="region"
         >
           <div className={styles.track}>
-            {solutions.map((s) => (
+            {solutions.map((s) => {
+              const title = localizedField(s, "title", locale);
+              const desc = pickLocalizedLead(s, locale);
+              return (
               <article
                 key={s._id || s.id || s.title}
                 className={styles.card}
-                aria-label={s.title}
+                aria-label={title}
               >
                 <img
                   className={styles.img}
                   src={s.image || s.img}
-                  alt={s.title || "Solution"}
+                  alt={title || t("catalog.solution")}
                   loading="lazy"
                 />
                 <div className={styles.overlay} aria-hidden="true" />
 
                 <div className={styles.panel}>
-                  <h3 className={styles.cardTitle}>{s.title}</h3>
+                  <h3 className={styles.cardTitle}>{title}</h3>
                   <span className={styles.divider} aria-hidden="true" />
-                  <p className={styles.cardDesc}>{s.description || s.desc}</p>
+                  <p className={styles.cardDesc}>{desc}</p>
                   <Link className={styles.cardLink} to={catalogItemPath(s)}>
-                    Khám phá thêm <span aria-hidden="true">›</span>
+                    {t("common.exploreMore")}{" "}
+                    <span aria-hidden="true">›</span>
                   </Link>
                 </div>
               </article>
-            ))}
+            );
+            })}
           </div>
         </div>
       </div>

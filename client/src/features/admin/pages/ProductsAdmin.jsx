@@ -87,6 +87,7 @@ export default function ProductsAdmin() {
   const [category, setCategory] = useState("product");
   const [order, setOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
+  const [autoTranslateEn, setAutoTranslateEn] = useState(true);
   const [existingImageUrl, setExistingImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
 
@@ -287,6 +288,7 @@ export default function ProductsAdmin() {
     fd.append("order", String(order ?? 0));
     fd.append("isActive", String(Boolean(isActive)));
     if (imageFile) fd.append("image", imageFile);
+    fd.append("autoTranslateEn", String(autoTranslateEn));
 
     try {
       const resp = await fetch(
@@ -464,6 +466,34 @@ export default function ProductsAdmin() {
                     className={[
                       "inline-block h-5 w-5 transform rounded-full bg-white shadow transition",
                       isActive ? "translate-x-6" : "translate-x-1",
+                    ].join(" ")}
+                  />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border border-teal-200 bg-teal-50/60 px-4 py-3">
+                <div>
+                  <div className="text-sm font-semibold text-slate-900">
+                    Tự động dịch tiếng Anh
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    Khi lưu, hệ thống dịch tiêu đề và nội dung sang EN cho
+                    website
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAutoTranslateEn((v) => !v)}
+                  className={[
+                    "relative inline-flex h-7 w-12 items-center rounded-full transition",
+                    autoTranslateEn ? "bg-teal-500" : "bg-slate-200",
+                  ].join(" ")}
+                  aria-label="Bật tắt dịch tự động"
+                >
+                  <span
+                    className={[
+                      "inline-block h-5 w-5 transform rounded-full bg-white shadow transition",
+                      autoTranslateEn ? "translate-x-6" : "translate-x-1",
                     ].join(" ")}
                   />
                 </button>

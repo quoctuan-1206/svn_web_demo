@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./Contact.module.css";
 
 export const PURPOSES = [
@@ -8,6 +9,14 @@ export const PURPOSES = [
   "Careers",
   "Other",
 ];
+
+const PURPOSE_LABEL_KEYS = {
+  "Need support/services": "contactForm.purposeSupport",
+  "Request a quote": "contactForm.purposeQuote",
+  Partnership: "contactForm.purposePartner",
+  Careers: "contactForm.purposeCareers",
+  Other: "contactForm.purposeOther",
+};
 
 export const INDUSTRIES = [
   "Automotive",
@@ -37,6 +46,7 @@ export default function ContactFormBlock({
   hideTitle = false,
   showMarketingConsent = false,
 }) {
+  const { t } = useTranslation();
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
 
@@ -70,13 +80,13 @@ export default function ContactFormBlock({
       if (!res.ok) {
         setMessage({
           type: "error",
-          text: json?.message || "Gửi không thành công. Thử lại sau.",
+          text: json?.message || t("contactForm.error"),
         });
         return;
       }
       setMessage({
         type: "ok",
-        text: "Đã gửi yêu cầu. Chúng tôi sẽ liên hệ lại sớm.",
+        text: t("contactForm.success"),
       });
       form.reset();
       const purposeSelect = form.querySelector('[name="purpose"]');
@@ -84,7 +94,7 @@ export default function ContactFormBlock({
     } catch {
       setMessage({
         type: "error",
-        text: "Lỗi mạng. Kiểm tra kết nối và thử lại.",
+        text: t("contactForm.networkError"),
       });
     } finally {
       setSubmitting(false);
@@ -96,12 +106,15 @@ export default function ContactFormBlock({
       className={[styles.formCard, cardClassName].filter(Boolean).join(" ")}
       ref={formRef}
     >
-      {!hideTitle ? <h2 className={styles.formTitle}>Contact</h2> : null}
+      {!hideTitle ? (
+        <h2 className={styles.formTitle}>{t("contactForm.title")}</h2>
+      ) : null}
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.field}>
           <span className={styles.label}>
-            Purpose of Contact<span className={styles.req}>*</span>
+            {t("contactForm.purpose")}
+            <span className={styles.req}>*</span>
           </span>
           <select
             name="purpose"
@@ -111,7 +124,7 @@ export default function ContactFormBlock({
           >
             {PURPOSES.map((p) => (
               <option key={p} value={p}>
-                {p}
+                {t(PURPOSE_LABEL_KEYS[p] || p)}
               </option>
             ))}
           </select>
@@ -119,61 +132,65 @@ export default function ContactFormBlock({
 
         <label className={styles.field}>
           <span className={styles.label}>
-            Full Name<span className={styles.req}>*</span>
+            {t("contactForm.fullName")}
+            <span className={styles.req}>*</span>
           </span>
           <input
             name="fullName"
             className={styles.control}
             type="text"
-            placeholder="Your First names and Last name"
+            placeholder={t("contactForm.placeholderName")}
             required
           />
         </label>
 
         <label className={styles.field}>
           <span className={styles.label}>
-            Email<span className={styles.req}>*</span>
+            {t("contactForm.email")}
+            <span className={styles.req}>*</span>
           </span>
           <input
             name="email"
             className={styles.control}
             type="email"
-            placeholder="Business Email Address"
+            placeholder={t("contactForm.placeholderEmail")}
             required
           />
         </label>
 
         <label className={styles.field}>
           <span className={styles.label}>
-            Company Name<span className={styles.req}>*</span>
+            {t("contactForm.company")}
+            <span className={styles.req}>*</span>
           </span>
           <input
             name="companyName"
             className={styles.control}
             type="text"
-            placeholder="Your Company Name"
+            placeholder={t("contactForm.placeholderCompany")}
             required
           />
         </label>
 
         <label className={styles.field}>
           <span className={styles.label}>
-            Job Title<span className={styles.req}>*</span>
+            {t("contactForm.jobTitle")}
+            <span className={styles.req}>*</span>
           </span>
           <input
             name="jobTitle"
             className={styles.control}
             type="text"
-            placeholder="Your Job Title"
+            placeholder={t("contactForm.placeholderJob")}
             required
           />
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Industry</span>
+          <span className={styles.label}>{t("contactForm.industry")}</span>
           <select name="industry" className={styles.control} defaultValue="">
             <option value="" disabled>
-              Select Your Industry
+              {t("contactForm.selectIndustry")}
             </option>
             {INDUSTRIES.map((i) => (
               <option key={i} value={i}>
@@ -185,11 +202,12 @@ export default function ContactFormBlock({
 
         <label className={styles.field}>
           <span className={styles.label}>
-            Country Name<span className={styles.req}>*</span>
+            {t("contactForm.country")}
+            <span className={styles.req}>*</span>
           </span>
           <select name="country" className={styles.control} defaultValue="" required>
             <option value="" disabled>
-              Select Your Country
+              {t("contactForm.selectCountry")}
             </option>
             {COUNTRIES.map((c) => (
               <option key={c} value={c}>
@@ -201,12 +219,13 @@ export default function ContactFormBlock({
 
         <label className={styles.field}>
           <span className={styles.label}>
-            Business needs<span className={styles.req}>*</span>
+            {t("contactForm.needs")}
+            <span className={styles.req}>*</span>
           </span>
           <textarea
             name="businessNeeds"
             className={`${styles.control} ${styles.textarea}`}
-            placeholder="Tell us more about your business needs"
+            placeholder={t("contactForm.placeholderNeeds")}
             rows={4}
             required
           />
@@ -220,8 +239,7 @@ export default function ContactFormBlock({
               className={styles.consentCheck}
             />
             <span className={styles.consentText}>
-              Tôi muốn nhận thông tin cập nhật về sản phẩm và dịch vụ của SVN
-              Automation.
+              {t("contactForm.consent")}
             </span>
           </label>
         ) : null}
@@ -232,14 +250,14 @@ export default function ContactFormBlock({
             className={styles.submitBtn}
             disabled={submitting}
           >
-            {submitting ? "Đang gửi…" : "Gửi yêu cầu"}
+            {submitting ? t("contactForm.submitting") : t("contactForm.submit")}
           </button>
           {message?.type === "ok" ? (
             <div className={styles.formMessageOk}>{message.text}</div>
           ) : message?.type === "error" ? (
             <div className={styles.formMessageErr}>{message.text}</div>
           ) : (
-            <div className={styles.hint}>Điền thông tin và gửi.</div>
+            <div className={styles.hint}>{t("contactForm.hint")}</div>
           )}
         </div>
       </form>

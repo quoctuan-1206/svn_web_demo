@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   filterSiteSearch,
   pickRandomSearchSuggestions,
@@ -13,6 +14,7 @@ const PAGE_SIZE = 10;
 const SUGGESTION_COUNT = 5;
 
 export default function SearchPage() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [suggestions, setSuggestions] = useState([]);
@@ -86,7 +88,7 @@ export default function SearchPage() {
   return (
     <main className={`page ${styles.page}`}>
       <div className={`container ${styles.wrap}`}>
-        <h1 className={styles.title}>Chúng tôi có thể giúp bạn tìm gì?</h1>
+        <h1 className={styles.title}>{t("pages.search.title")}</h1>
 
         <div className={styles.searchBlock} role="search">
           <label className={styles.searchField}>
@@ -100,30 +102,34 @@ export default function SearchPage() {
               className={styles.searchInput}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Bạn cần tìm gì?"
-              aria-label="Tìm kiếm nội dung"
+              placeholder={t("pages.search.placeholder")}
+              aria-label={t("pages.search.aria")}
               autoComplete="off"
             />
           </label>
-          <p className={styles.hint}>Nhập chủ đề, dịch vụ hoặc sản phẩm</p>
+          <p className={styles.hint}>{t("pages.search.hint")}</p>
         </div>
 
         {hasQuery && !loading && total > 0 ? (
           <p className={styles.summary}>
-            Hiển thị {rangeStart}–{rangeEnd} trong {total} kết quả
+            {t("pages.search.summary", {
+              start: rangeStart,
+              end: rangeEnd,
+              total,
+            })}
           </p>
         ) : null}
 
         {showSuggestions ? (
-          <p className={styles.summary}>Gợi ý: sản phẩm, giải pháp và tin tức</p>
+          <p className={styles.summary}>{t("pages.search.suggestions")}</p>
         ) : null}
 
         {loading ? (
-          <p className={styles.status}>Đang tải dữ liệu...</p>
+          <p className={styles.status}>{t("pages.search.loading")}</p>
         ) : null}
 
         {showEmpty ? (
-          <p className={styles.status}>Không tìm thấy kết quả phù hợp.</p>
+          <p className={styles.status}>{t("pages.search.empty")}</p>
         ) : null}
 
         {displayItems.length > 0 ? (
@@ -164,17 +170,17 @@ export default function SearchPage() {
         ) : null}
 
         {hasQuery && !loading && canPaginate ? (
-          <nav className={styles.pager} aria-label="Phân trang kết quả">
+          <nav className={styles.pager} aria-label={t("pages.search.pagerAria")}>
             <button
               type="button"
               className={styles.pagerBtn}
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
             >
-              Trước
+              {t("common.prev")}
             </button>
             <span className={styles.pagerMeta}>
-              Trang {page} / {totalPages}
+              {t("common.pageOf", { page, total: totalPages })}
             </span>
             <button
               type="button"
@@ -182,7 +188,7 @@ export default function SearchPage() {
               disabled={page >= totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             >
-              Sau
+              {t("common.next")}
             </button>
           </nav>
         ) : null}

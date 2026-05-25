@@ -1,34 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import styles from "./NewsDetailPage.module.css";
 import { catalogItemPath } from "../../utils/contentPaths";
 import { ArticleBody } from "./ArticleBody";
-
-function formatDate(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function formatDateShort(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
+import { localizedField } from "../../i18n/localizeContent";
+import { formatLocaleDate } from "../../i18n/localeDate";
 
 /** @param {{ variant: "product" | "solution" }} props */
 export default function CatalogDetailPage({ variant }) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === "en" ? "en" : "vi";
   const { slug } = useParams();
   const [item, setItem] = useState(null);
   const [related, setRelated] = useState([]);
@@ -36,26 +19,38 @@ export default function CatalogDetailPage({ variant }) {
   const [error, setError] = useState("");
 
   const listPath = variant === "solution" ? "/giai-phap" : "/san-pham";
-  const listLabel = variant === "solution" ? "Giải pháp" : "Sản phẩm";
-  const relatedTitle =
-    variant === "solution" ? "Giải pháp khác" : "Sản phẩm khác";
+  const listLabel = t(
+    variant === "solution" ? "catalog.solution" : "catalog.product",
+  );
+  const relatedTitle = t(
+    variant === "solution"
+      ? "detail.relatedSolutions"
+      : "detail.relatedProducts",
+  );
 
   const bodySource = useMemo(() => {
     if (!item) return "";
-    const c = String(item.content || "").trim();
+    const c = localizedField(item, "content", locale);
     if (c) return c;
-    return String(item.description || "").trim();
-  }, [item]);
+    return localizedField(item, "description", locale);
+  }, [item, locale]);
 
   const leadText = useMemo(() => {
     if (!item) return "";
-    return String(item.excerpt || item.description || "").trim();
-  }, [item]);
+    return (
+      localizedField(item, "excerpt", locale) ||
+      localizedField(item, "description", locale)
+    );
+  }, [item, locale]);
+
+  const displayTitle = item
+    ? localizedField(item, "title", locale) || t("common.untitled")
+    : "";
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!slug) {
-      setError("Thiếu đường dẫn.");
+      setError(t("detail.missingSlug"));
       setLoading(false);
       return;
     }
@@ -73,7 +68,7 @@ export default function CatalogDetailPage({ variant }) {
         const data = res.data;
         if (data?.category && data.category !== variant) {
           setItem(null);
-          setError("Nội dung không thuộc mục này.");
+          setError(t("detail.wrongCategory"));
           return;
         }
         setItem(data);
@@ -81,7 +76,7 @@ export default function CatalogDetailPage({ variant }) {
       .catch(() => {
         if (cancelled) return;
         setItem(null);
-        setError("Không tìm thấy hoặc đã ẩn.");
+        setError(t("detail.notFoundHidden"));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -114,7 +109,7 @@ export default function CatalogDetailPage({ variant }) {
   if (loading) {
     return (
       <main className={styles.page}>
-        <div className={`container ${styles.state}`}>Đang tải…</div>
+        <div className={`container ${styles.state}`}>{t("detail.loading")}</div>
       </main>
     );
   }
@@ -123,9 +118,9 @@ export default function CatalogDetailPage({ variant }) {
     return (
       <main className={styles.page}>
         <div className={`container ${styles.state}`}>
-          <p>{error || "Không tìm thấy."}</p>
+          <p>{error || t("detail.notFound")}</p>
           <Link className={styles.backLink} to={listPath}>
-            ← Quay lại {listLabel}
+            ← {t("detail.backTo", { label: listLabel })}
           </Link>
         </div>
       </main>
@@ -138,29 +133,38 @@ export default function CatalogDetailPage({ variant }) {
         <div className="container">
           <Link to={listPath}>{listLabel}</Link>
           <span aria-hidden="true"> / </span>
-          <span className={styles.breadcrumbCurrent}>Chi tiết</span>
+          <span className={styles.breadcrumbCurrent}>
+            {t("detail.breadcrumbDetail")}
+          </span>
         </div>
       </div>
 
       <div className={`container ${styles.layout}`}>
         <article className={styles.main}>
           <header className={styles.header}>
-            <h1 className={styles.title}>{item.title}</h1>
+            <h1 className={styles.title}>{displayTitle}</h1>
             {leadText ? <p className={styles.excerpt}>{leadText}</p> : null}
             <time
               className={styles.date}
               dateTime={item.updatedAt || item.createdAt}
             >
-              {formatDate(item.updatedAt || item.createdAt)}
+              {formatLocaleDate(item.updatedAt || item.createdAt, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </time>
           </header>
 
-          <section className={styles.content} aria-label="Nội dung chính">
+          <section
+            className={styles.content}
+            aria-label={t("detail.mainContentAria")}
+          >
             <ArticleBody content={bodySource} />
           </section>
         </article>
 
-        <aside className={styles.sidebar} aria-label="Liên quan">
+        <aside className={styles.sidebar} aria-label={t("detail.relatedAria")}>
           <h2 className={styles.sidebarTitle}>{relatedTitle}</h2>
           <ul className={styles.relatedList}>
             {related.map((rel) => (
@@ -177,19 +181,21 @@ export default function CatalogDetailPage({ variant }) {
                   )}
                   <div className={styles.relatedMeta}>
                     <span className={styles.relatedDate}>
-                      {formatDateShort(rel.updatedAt || rel.createdAt)}
+                      {formatLocaleDate(rel.updatedAt || rel.createdAt)}
                     </span>
-                    <span className={styles.relatedTitle}>{rel.title}</span>
+                    <span className={styles.relatedTitle}>
+                      {localizedField(rel, "title", locale)}
+                    </span>
                   </div>
                 </Link>
               </li>
             ))}
           </ul>
           {related.length === 0 ? (
-            <p className={styles.sidebarEmpty}>Chưa có mục liên quan.</p>
+            <p className={styles.sidebarEmpty}>{t("detail.noRelated")}</p>
           ) : null}
           <Link className={styles.allNews} to={listPath}>
-            Tất cả {listLabel.toLowerCase()} →
+            {t("detail.viewAll", { label: listLabel })}
           </Link>
         </aside>
       </div>

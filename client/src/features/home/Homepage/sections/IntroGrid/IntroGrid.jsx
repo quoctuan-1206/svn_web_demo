@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import styles from "./IntroGrid.module.css";
 
 const ROWS = [
@@ -31,8 +32,13 @@ const ROWS = [
 ];
 
 export default function IntroGrid() {
+  const { t } = useTranslation();
   return (
-    <section className={styles.section} id="gioi-thieu" aria-label="Giới thiệu">
+    <section
+      className={styles.section}
+      id="gioi-thieu"
+      aria-label={t("home.introAria")}
+    >
       <div className={styles.marqueeMask} aria-hidden="true">
         <div className={styles.marquee}>
           {ROWS.map((row, idx) => (
@@ -56,8 +62,8 @@ export default function IntroGrid() {
 
       <div className={styles.overlay} />
       <div className={styles.content}>
-        <h2 className={styles.title}>Other People Make Machines Task</h2>
-        <h2 className={styles.title}>WE MAKE THEM SING</h2>
+        <h2 className={styles.title}>{t("home.introLine1")}</h2>
+        <h2 className={styles.title}>{t("home.introLine2")}</h2>
       </div>
     </section>
   );
