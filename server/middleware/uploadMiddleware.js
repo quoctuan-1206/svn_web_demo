@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const { httpError } = require('../utils/httpError');
+const { publicUploadBase } = require('../config/env');
 
 const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
 
@@ -36,7 +38,7 @@ const upload = multer({
       cb(null, true);
       return;
     }
-    cb(new Error('Only JPG, PNG and WEBP images are allowed'));
+    cb(httpError(400, 'Only JPG, PNG and WEBP images are allowed'));
   },
 });
 
@@ -47,7 +49,7 @@ function publicUploadUrl(filename) {
   if (name.startsWith(up)) name = name.slice(up.length);
   name = name.replace(/^uploads\//, '').replace(/^\//, '');
   // Mặc định URL tương đối: cùng origin với Vite (proxy /uploads → API) hoặc app phục vụ tĩnh + API
-  const base = process.env.PUBLIC_UPLOAD_BASE;
+  const base = publicUploadBase;
   if (base) {
     const normalizedBase = String(base).replace(/\/$/, '');
     return `${normalizedBase}/${name}`;

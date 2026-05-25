@@ -126,16 +126,15 @@ export default function Solutions() {
       <div className="container">
         <div className={styles.titleRow}>
           <h2 className={styles.heading}>
-            <span className={styles.headingPrimary}>Giải pháp Tự động hóa</span>{" "}
-            <span className={styles.headingSecondary}>Chuyên sâu</span>
+            <Link
+              to="/giai-phap"
+              className={styles.headingLink}
+              aria-label="Tới trang Giải pháp"
+            >
+              <span className={styles.headingPrimary}>Giải pháp Tự động hóa</span>{" "}
+              <span className={styles.headingSecondary}>Chuyên sâu</span>
+            </Link>
           </h2>
-          <Link
-            className="sectionRouteBtn"
-            to="/giai-phap"
-            aria-label="Tới trang Giải pháp"
-          >
-            ⭢
-          </Link>
         </div>
         <p className={styles.sub}>
           Dựa trên Nền tảng Kinh nghiệm Thực chiến (Industry Know-how)

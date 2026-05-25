@@ -23,16 +23,15 @@ export default function Products() {
       <div className="container">
         <div className={styles.titleRow}>
           <h2 className={styles.heading}>
-            <span className={styles.headingPrimary}>Sản phẩm</span>{" "}
-            <span className={styles.headingSecondary}>Công nghệ</span>
+            <Link
+              to="/san-pham"
+              className={styles.headingLink}
+              aria-label="Tới trang Sản phẩm"
+            >
+              <span className={styles.headingPrimary}>Sản phẩm</span>{" "}
+              <span className={styles.headingSecondary}>Công nghệ</span>
+            </Link>
           </h2>
-          <Link
-            className="sectionRouteBtn"
-            to="/san-pham"
-            aria-label="Tới trang Sản phẩm"
-          >
-            ⭢
-          </Link>
         </div>
         <p className={styles.sub}>Thiết bị &amp; Nền tảng</p>
 

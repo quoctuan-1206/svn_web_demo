@@ -1,4 +1,4 @@
-import PageShell from "../../shared/layouts/PageShell/PageShell";
+import "./PageCommon.css";
 
 export default function Overview() {
   return (

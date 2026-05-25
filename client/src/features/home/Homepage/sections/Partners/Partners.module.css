@@ -1,10 +1,10 @@
 .section {
   position: relative;
-  min-height: 720px;
+  height: 100%;
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: 70px 0 60px;
+  padding: calc(var(--homepage-header-h, 56px) + 20px) 0 24px;
   background-color: #f8f8f8;
   background-image: url("/images/bgdoitac.png");
   background-size: cover;
@@ -27,6 +27,7 @@
   font-size: clamp(42px, 4vw, 58px);
   line-height: 1.05;
   color: #000;
+  padding-top: 50px;
 }
 
 .headingPrimary {

@@ -1,8 +1,12 @@
 const ContactLead = require('../models/ContactLead');
+const { httpError } = require('../utils/httpError');
+const { parsePagination, paginatedResult } = require('../utils/pagination');
 
-function normalizeString(v) {
-  if (v == null) return '';
-  return String(v).trim();
+const ALLOWED_SOURCES = new Set(['contact_page', 'homepage_cta', 'site']);
+
+function normalizeString(value) {
+  if (value == null) return '';
+  return String(value).trim();
 }
 
 async function createLead(body) {
@@ -17,9 +21,7 @@ async function createLead(body) {
   const source = normalizeString(body?.source) || 'site';
 
   if (!purpose || !fullName || !email || !companyName || !jobTitle || !country || !businessNeeds) {
-    const e = new Error('Missing required fields');
-    e.statusCode = 400;
-    throw e;
+    throw httpError(400, 'Missing required fields');
   }
 
   const doc = await ContactLead.create({
@@ -31,29 +33,24 @@ async function createLead(body) {
     industry: industry || undefined,
     country,
     businessNeeds,
-    source: ['contact_page', 'homepage_cta', 'site'].includes(source) ? source : 'site',
+    source: ALLOWED_SOURCES.has(source) ? source : 'site',
   });
 
   return doc.toObject();
 }
 
 async function listLeads({ page, limit }) {
-  const safePage = Math.max(1, parseInt(page, 10) || 1);
-  const safeLimit = Math.min(100, Math.max(1, parseInt(limit, 10) || 50));
-  const skip = (safePage - 1) * safeLimit;
+  const { page: safePage, limit: safeLimit, skip } = parsePagination(
+    { page, limit },
+    { defaultLimit: 50 },
+  );
 
   const [items, total] = await Promise.all([
     ContactLead.find({}).sort({ createdAt: -1 }).skip(skip).limit(safeLimit).lean(),
     ContactLead.countDocuments({}),
   ]);
 
-  return {
-    data: items,
-    page: safePage,
-    limit: safeLimit,
-    total,
-    pages: Math.ceil(total / safeLimit) || 1,
-  };
+  return paginatedResult({ items, total, page: safePage, limit: safeLimit });
 }
 
 module.exports = { createLead, listLeads };

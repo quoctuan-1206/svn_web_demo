@@ -1,8 +1,9 @@
-html:has([data-homepage-fullpage]) {
+/* Một lần cuộn = đúng một viewport (scroll snap trên document) */
+html:has([data-homepage-fullpage]),
+body:has([data-homepage-fullpage]) {
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
-
-  scroll-padding-top: 88px;
+  scroll-padding: 0;
 }
 
 body:has([data-homepage-fullpage]) {
@@ -10,47 +11,33 @@ body:has([data-homepage-fullpage]) {
   color: #0a0a0a;
 }
 
-/* reset */
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-/* wrapper */
 .page {
   width: 100%;
   background: #ffffff;
+  --homepage-header-h: 56px;
 }
 
-/* =========================
-   SECTION FULL SCREEN
-   ========================= */
-
+/* Mỗi section = đúng 1 màn hình, không cộng padding làm vượt viewport */
 .page > section {
   box-sizing: border-box;
-
   width: 100%;
   height: 100dvh;
+  max-height: 100dvh;
   min-height: 100dvh;
+  flex-shrink: 0;
   position: relative;
-
-  /* Fullpage snap */
+  display: block;
+  padding: 0;
+  overflow: hidden;
   scroll-snap-align: start;
   scroll-snap-stop: always;
+}
 
-  /* Layout */
-  display: block;
-
-  /* nếu có navbar fixed */
-  padding-top: 88px;
-  padding-bottom: 56px;
-
-  /* tránh tràn ngang */
-  overflow-x: hidden;
-
-  /* lock internal scrolling for full-screen snap */
-  overflow: hidden;
+.page > section:not(#hero) :global(.container) {
+  box-sizing: border-box;
+  max-height: 100%;
+  padding-top: calc(var(--homepage-header-h) + 20px);
+  padding-bottom: 24px;
 }
 
 :global(.sectionRouteBtn) {
@@ -110,41 +97,27 @@ body {
   z-index: 60;
 }
 
-/* =========================
-   HERO SECTION
-   ========================= */
-
 .page > section#hero {
-  padding-top: 0;
+  padding: 0;
 }
 
-/* News: do not allow internal scrolling */
-.page > section#tin-tuc {
-  overflow-y: hidden;
-}
 
-/* IntroGrid: full viewport collage, no internal scrolling */
-.page > section#gioi-thieu {
-  overflow-y: hidden;
-}
-
-/* CTA: một viewport, không cuộn trong section; flex căn nội dung + ít padding đáy hơn các section khác */
 .page > section#lien-he {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  overflow-y: hidden;
   padding-bottom: clamp(12px, 2.5dvh, 28px);
 }
 
-/* =========================
-   CONTENT STYLE
-   ========================= */
+.page > section#lien-he :global(.container) {
+  padding-bottom: 12px;
+}
 
 .page > section h1 {
   font-size: 64px;
   margin: 0;
 }
+
 .page > section#lien-he p {
   font-size: 13px;
 }

@@ -13,6 +13,7 @@ export default function Footer({ withId = true } = {}) {
       <div className={styles.compact}>
         <div className={`container ${styles.row}`}>
           <nav className={styles.nav} aria-label="Footer navigation">
+            {/*
             <Link
               className={`${styles.link} ${
                 isHomepage
@@ -24,6 +25,21 @@ export default function Footer({ withId = true } = {}) {
                     : ""
               }`}
               to="/tong-quan"
+            >
+              Tổng Quan
+            </Link>
+            */}
+            <Link
+              className={`${styles.link} ${
+                isHomepage
+                  ? activeSectionId === "hero"
+                    ? styles.active
+                    : ""
+                  : isActive("/tong-quan")
+                    ? styles.active
+                    : ""
+              }`}
+              to="/"
             >
               Tổng Quan
             </Link>
@@ -55,15 +71,31 @@ export default function Footer({ withId = true } = {}) {
             >
               Giải Pháp
             </Link>
+            {/*
             <Link
               className={`${styles.link} ${isActive("/hien-dien-toan-cau") ? styles.active : ""}`}
               to="/hien-dien-toan-cau"
             >
               Hiện Diện Toàn Cầu
             </Link>
+            */}
+            <Link
+              className={`${styles.link} ${isActive("/hien-dien-toan-cau") ? styles.active : ""}`}
+              to="/"
+            >
+              Hiện Diện Toàn Cầu
+            </Link>
+            {/*
             <Link
               className={`${styles.link} ${isActive("/dich-vu-ho-tro") ? styles.active : ""}`}
               to="/dich-vu-ho-tro"
+            >
+              Dịch Vụ &amp; Hỗ Trợ
+            </Link>
+            */}
+            <Link
+              className={`${styles.link} ${isActive("/dich-vu-ho-tro") ? styles.active : ""}`}
+              to="/"
             >
               Dịch Vụ &amp; Hỗ Trợ
             </Link>

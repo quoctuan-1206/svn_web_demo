@@ -42,5 +42,9 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Local admin seed script (credentials) 
+# Local admin seed script (credentials)
 server/scripts/seedAdmin.js
+
+# User uploads (keep folder via .gitkeep if needed)
+server/uploads/*
+!server/uploads/.gitkeep

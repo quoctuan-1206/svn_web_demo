@@ -38,7 +38,7 @@ export function HomepageSectionProvider({ children }) {
       {
         root: null,
         threshold: [0.45, 0.55, 0.65],
-        rootMargin: "-88px 0px -56px 0px",
+        rootMargin: "-56px 0px 0px 0px",
       },
     );
 

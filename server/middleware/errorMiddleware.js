@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-
-const isProd = process.env.NODE_ENV === 'production';
+const { isProd } = require('../config/env');
 
 function notFoundHandler(req, res, next) {
   const err = new Error(`Cannot ${req.method} ${req.originalUrl}`);

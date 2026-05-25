@@ -1,5 +1,5 @@
 .section {
-  height: 100dvh;
+  height: 100%;
   display: grid;
   align-items: center;
   background-color: #ffffff;
@@ -10,7 +10,7 @@
   color: #0a0a0a;
 }
 .section :global(.container) {
-  padding-top: 100px;
+  padding-top: calc(var(--homepage-header-h, 56px) + 20px);
 }
 .container {
   position: relative;
@@ -57,17 +57,29 @@
 }
 
 .title {
+  margin: 0;
+  padding-top: 150px;
+}
+
+.titleLink {
   font-family: var(--font-display);
-
   font-size: clamp(32px, 4.2vw, 48px);
-
   font-weight: 700;
-
   letter-spacing: 0.2px;
-
   line-height: 1.05;
-
   color: #0a0a0a;
+  text-decoration: none;
+  transition: opacity 180ms ease;
+}
+
+.titleLink:hover {
+  opacity: 0.88;
+}
+
+.titleLink:focus-visible {
+  outline: 3px solid rgba(0, 124, 254, 0.45);
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 
 .headingPrimary {
@@ -85,7 +97,7 @@
   color: rgba(10, 10, 10, 0.7);
 
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
 }
 
@@ -135,7 +147,7 @@
 
   font-family: var(--font-display);
   font-size: clamp(15px, 1.1vw, 18px);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
 

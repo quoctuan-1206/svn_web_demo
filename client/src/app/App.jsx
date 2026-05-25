@@ -46,12 +46,15 @@ function AppShell() {
   const hideGlobalFooterOnCta = isHomepage && activeSectionId === "lien-he";
   const showGlobalFooter =
     useFixedFooterShell && !hideGlobalFooterOnCta && !isContactPage;
+  /** Homepage fullpage snap: không padding đáy (tránh lệch section); footer vẫn fixed */
+  const contentShellClass =
+    showGlobalFooter && !isHomepage ? "has-fixed-footer" : undefined;
 
   return (
     <>
       {!isAdminPage ? <Header /> : null}
 
-      <div className={showGlobalFooter ? "has-fixed-footer" : undefined}>
+      <div className={contentShellClass}>
         <Routes>
           {/* Public */}
           <Route path="/" element={<Homepage />} />

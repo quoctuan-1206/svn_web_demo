@@ -61,16 +61,15 @@ export default function News() {
         <header className={styles.header}>
           <div className={styles.titleRow}>
             <h2 className={styles.title}>
-              We Go{" "}
-              <span className={styles.headingPrimary}>The Extra Mile</span>
+              <Link
+                to="/tin-tuc"
+                className={styles.titleLink}
+                aria-label="Tới trang Tin tức"
+              >
+                We Go{" "}
+                <span className={styles.headingPrimary}>The Extra Mile</span>
+              </Link>
             </h2>
-            <Link
-              className="sectionRouteBtn"
-              to="/tin-tuc"
-              aria-label="Tới trang Tin tức"
-            >
-              ⭢
-            </Link>
           </div>
           <p className={styles.sub}>To help you keep the world in motion</p>
           <p className={styles.sub}>Together, we Accompany the Future</p>

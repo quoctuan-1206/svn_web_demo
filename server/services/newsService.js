@@ -1,23 +1,21 @@
-const slugify = require("slugify");
-const News = require("../models/News");
-const { parseBool } = require("../utils/parse");
-const {
-  unlinkUploadedImage,
-  normalizeImageForResponse,
-} = require("../utils/uploadUtils");
+const News = require('../models/News');
+const { parseBool } = require('../utils/parse');
+const { isObjectId } = require('../utils/mongo');
+const { uniqueSlug } = require('../utils/slug');
+const { httpError } = require('../utils/httpError');
+const { parsePagination, paginatedResult } = require('../utils/pagination');
+const { unlinkUploadedImage, normalizeImageForResponse } = require('../utils/uploadUtils');
 
 const MAX_GALLERY_IMAGES = 20;
 
-function isObjectId24(id) {
-  return typeof id === "string" && /^[a-fA-F0-9]{24}$/.test(id);
-}
-
 function parseGalleryInput(raw) {
-  if (raw == null || raw === "") return undefined;
+  if (raw == null || raw === '') return undefined;
+
   if (Array.isArray(raw)) {
     return raw.map((s) => String(s).trim()).filter(Boolean);
   }
-  if (typeof raw === "string") {
+
+  if (typeof raw === 'string') {
     try {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
@@ -27,20 +25,23 @@ function parseGalleryInput(raw) {
       // comma-separated URLs
     }
     return raw
-      .split(",")
+      .split(',')
       .map((s) => s.trim())
       .filter(Boolean);
   }
+
   return undefined;
 }
 
 function mapNewsItem({ publicUploadUrl, item }) {
   if (!item) return null;
+
   const gallery = Array.isArray(item.gallery)
     ? item.gallery
-        .map((g) => normalizeImageForResponse({ publicUploadUrl, image: g }))
+        .map((url) => normalizeImageForResponse({ publicUploadUrl, image: url }))
         .filter(Boolean)
     : [];
+
   return {
     ...item,
     image: normalizeImageForResponse({ publicUploadUrl, image: item.image }),
@@ -48,22 +49,23 @@ function mapNewsItem({ publicUploadUrl, item }) {
   };
 }
 
-async function uniqueSlugFromTitle(title) {
-  let base = slugify(String(title), { lower: true, strict: true });
-  if (!base) base = "news";
-  let candidate = base;
-  let n = 1;
-  while (await News.exists({ slug: candidate })) {
-    candidate = `${base}-${n}`;
-    n += 1;
+function assertGalleryLimit(gallery) {
+  if (gallery && gallery.length > MAX_GALLERY_IMAGES) {
+    throw httpError(400, `gallery exceeds ${MAX_GALLERY_IMAGES} images`);
   }
-  return candidate;
+}
+
+function parsePublishedAt(value) {
+  if (!value) return undefined;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw httpError(400, 'publishedAt is invalid');
+  }
+  return date;
 }
 
 async function listNews({ isAdmin, publicUploadUrl, page, limit }) {
-  const safePage = Math.max(1, parseInt(page, 10) || 1);
-  const safeLimit = Math.min(100, Math.max(1, parseInt(limit, 10) || 10));
-  const skip = (safePage - 1) * safeLimit;
+  const { page: safePage, limit: safeLimit, skip } = parsePagination({ page, limit });
   const filter = isAdmin ? {} : { isPublished: true };
 
   const [items, total] = await Promise.all([
@@ -76,14 +78,7 @@ async function listNews({ isAdmin, publicUploadUrl, page, limit }) {
   ]);
 
   const data = items.map((item) => mapNewsItem({ publicUploadUrl, item }));
-
-  return {
-    data,
-    page: safePage,
-    limit: safeLimit,
-    total,
-    pages: Math.ceil(total / safeLimit) || 1,
-  };
+  return paginatedResult({ items: data, total, page: safePage, limit: safeLimit });
 }
 
 async function getNewsById({ id, isAdmin, publicUploadUrl }) {
@@ -94,7 +89,7 @@ async function getNewsById({ id, isAdmin, publicUploadUrl }) {
 }
 
 async function getNewsBySlug({ slug, isAdmin, publicUploadUrl }) {
-  const s = String(slug || "").trim();
+  const s = String(slug || '').trim();
   if (!s) return null;
   const item = await News.findOne({ slug: s }).lean();
   if (!item) return null;
@@ -103,7 +98,7 @@ async function getNewsBySlug({ slug, isAdmin, publicUploadUrl }) {
 }
 
 async function getNewsOne({ param, isAdmin, publicUploadUrl }) {
-  if (isObjectId24(param)) {
+  if (isObjectId(param)) {
     return getNewsById({ id: param, isAdmin, publicUploadUrl });
   }
   return getNewsBySlug({ slug: param, isAdmin, publicUploadUrl });
@@ -112,41 +107,21 @@ async function getNewsOne({ param, isAdmin, publicUploadUrl }) {
 async function createNews({ body, file, publicUploadUrl }) {
   const { title, excerpt, content, publishedAt } = body || {};
   if (!title || !String(title).trim()) {
-    const e = new Error("title is required");
-    e.statusCode = 400;
-    throw e;
-  }
-
-  const slug = await uniqueSlugFromTitle(title);
-  const image = file ? publicUploadUrl(file.filename) : undefined;
-  const isPublished = parseBool(body?.isPublished, false);
-
-  let publishedAtDate;
-  if (publishedAt) {
-    publishedAtDate = new Date(publishedAt);
-    if (Number.isNaN(publishedAtDate.getTime())) {
-      const e = new Error("publishedAt is invalid");
-      e.statusCode = 400;
-      throw e;
-    }
+    throw httpError(400, 'title is required');
   }
 
   const gallery = parseGalleryInput(body?.gallery);
-  if (gallery && gallery.length > MAX_GALLERY_IMAGES) {
-    const e = new Error(`gallery exceeds ${MAX_GALLERY_IMAGES} images`);
-    e.statusCode = 400;
-    throw e;
-  }
+  assertGalleryLimit(gallery);
 
   const doc = await News.create({
     title: String(title).trim(),
-    slug,
+    slug: await uniqueSlug(News, title, 'news'),
     excerpt: excerpt != null ? String(excerpt) : undefined,
     content: content != null ? String(content) : undefined,
-    image,
+    image: file ? publicUploadUrl(file.filename) : undefined,
     gallery: gallery?.length ? gallery : undefined,
-    publishedAt: publishedAtDate,
-    isPublished,
+    publishedAt: parsePublishedAt(publishedAt),
+    isPublished: parseBool(body?.isPublished, false),
   });
 
   return mapNewsItem({ publicUploadUrl, item: doc.toObject() });
@@ -160,9 +135,7 @@ async function updateNews({ id, body, file, publicUploadUrl, uploadDir }) {
 
   if (title !== undefined) {
     if (!String(title).trim()) {
-      const e = new Error("title cannot be empty");
-      e.statusCode = 400;
-      throw e;
+      throw httpError(400, 'title cannot be empty');
     }
     existing.title = String(title).trim();
   }
@@ -171,11 +144,7 @@ async function updateNews({ id, body, file, publicUploadUrl, uploadDir }) {
     const s = String(slug).trim();
     if (s && s !== existing.slug) {
       const taken = await News.exists({ slug: s, _id: { $ne: existing._id } });
-      if (taken) {
-        const e = new Error("slug already in use");
-        e.statusCode = 400;
-        throw e;
-      }
+      if (taken) throw httpError(400, 'slug already in use');
       existing.slug = s;
     }
   }
@@ -185,30 +154,19 @@ async function updateNews({ id, body, file, publicUploadUrl, uploadDir }) {
 
   let removedGallery = [];
   if (body?.gallery !== undefined) {
-    const g = parseGalleryInput(body.gallery);
-    if (g && g.length > MAX_GALLERY_IMAGES) {
-      const e = new Error(`gallery exceeds ${MAX_GALLERY_IMAGES} images`);
-      e.statusCode = 400;
-      throw e;
-    }
+    const nextGallery = parseGalleryInput(body.gallery) || [];
+    assertGalleryLimit(nextGallery);
+
     const prevGallery = Array.isArray(existing.gallery) ? existing.gallery : [];
-    const nextGallery = g?.length ? g : [];
     removedGallery = prevGallery.filter((url) => !nextGallery.includes(url));
     existing.gallery = nextGallery;
   }
 
   if (publishedAt !== undefined) {
-    if (publishedAt === "" || publishedAt === null) {
-      existing.publishedAt = undefined;
-    } else {
-      const d = new Date(publishedAt);
-      if (Number.isNaN(d.getTime())) {
-        const e = new Error("publishedAt is invalid");
-        e.statusCode = 400;
-        throw e;
-      }
-      existing.publishedAt = d;
-    }
+    existing.publishedAt =
+      publishedAt === '' || publishedAt === null
+        ? undefined
+        : parsePublishedAt(publishedAt);
   }
 
   if (body?.isPublished !== undefined) {
@@ -223,9 +181,7 @@ async function updateNews({ id, body, file, publicUploadUrl, uploadDir }) {
 
   if (removedGallery.length) {
     await Promise.all(
-      removedGallery.map((url) =>
-        unlinkUploadedImage({ uploadDir, imageUrl: url }),
-      ),
+      removedGallery.map((url) => unlinkUploadedImage({ uploadDir, imageUrl: url })),
     );
   }
 
@@ -236,21 +192,22 @@ async function updateNews({ id, body, file, publicUploadUrl, uploadDir }) {
 async function deleteNews({ id, uploadDir }) {
   const existing = await News.findById(id);
   if (!existing) return false;
+
   await unlinkUploadedImage({ uploadDir, imageUrl: existing.image });
+
   const gallery = Array.isArray(existing.gallery) ? existing.gallery : [];
   if (gallery.length) {
     await Promise.all(
       gallery.map((url) => unlinkUploadedImage({ uploadDir, imageUrl: url })),
     );
   }
+
   await existing.deleteOne();
   return true;
 }
 
 module.exports = {
   listNews,
-  getNewsById,
-  getNewsBySlug,
   getNewsOne,
   createNews,
   updateNews,

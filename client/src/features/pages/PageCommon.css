@@ -3,11 +3,6 @@
   min-height: 100vh;
 }
 
-/* Trang list có hero: tránh chồng padding section global + header cố định */
-.page:has(> .page-hero) {
-  padding-top: 70px;
-}
-
 main.page > section.page-hero {
   padding: 36px 0 44px;
 }

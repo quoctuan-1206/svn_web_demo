@@ -84,7 +84,7 @@ async function getPdfMake() {
 export async function exportContentPdf(doc) {
   if (!doc?.title) throw new Error("Thiếu nội dung PDF.");
 
-  const bodyBlocks = await htmlToPdfBlocks(doc.body);
+  const bodyBlocks = htmlToPdfBlocks(doc.body);
   const hasText =
     doc.title ||
     doc.excerpt ||

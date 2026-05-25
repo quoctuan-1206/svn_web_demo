@@ -167,7 +167,7 @@ async function htmlDomToBlocks(html) {
  * @param {string} body
  * @returns {Array<{ text: string, style?: string, margin?: number[], [key: string]: unknown }>}
  */
-export async function htmlToPdfBlocks(body) {
+export function htmlToPdfBlocks(body) {
   const raw = String(body || "").trim();
   if (!raw) {
     return [

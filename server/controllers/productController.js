@@ -1,80 +1,49 @@
+const asyncHandler = require('../utils/asyncHandler');
+const { uploadContext } = require('../utils/uploadContext');
 const productService = require('../services/productService');
-const upload = require('../middleware/uploadMiddleware');
+const { httpError } = require('../utils/httpError');
 
-function isAdmin(req) {
-  return Boolean(req.user);
-}
+const list = asyncHandler(async (req, res) => {
+  const data = await productService.listProducts(uploadContext(req));
+  res.json(data);
+});
 
-async function list(req, res) {
-  try {
-    const data = await productService.listProducts({
-      isAdmin: isAdmin(req),
-      publicUploadUrl: upload.publicUploadUrl,
-    });
-    return res.json(data);
-  } catch (err) {
-    return res.status(500).json({ message: err.message || 'Failed to list products' });
-  }
-}
+const getById = asyncHandler(async (req, res) => {
+  const item = await productService.getProductOne({
+    param: req.params.id,
+    ...uploadContext(req),
+  });
+  if (!item) throw httpError(404, 'Product not found');
+  res.json(item);
+});
 
-async function getById(req, res) {
-  try {
-    const param = req.params.id;
-    const item = await productService.getProductOne({
-      param,
-      isAdmin: isAdmin(req),
-      publicUploadUrl: upload.publicUploadUrl,
-    });
-    if (!item) return res.status(404).json({ message: 'Product not found' });
-    return res.json(item);
-  } catch (err) {
-    return res.status(400).json({ message: err.message || 'Invalid id' });
-  }
-}
+const create = asyncHandler(async (req, res) => {
+  const doc = await productService.createProduct({
+    body: req.body,
+    file: req.file,
+    publicUploadUrl: uploadContext(req).publicUploadUrl,
+  });
+  res.status(201).json(doc);
+});
 
-async function create(req, res) {
-  try {
-    const doc = await productService.createProduct({
-      body: req.body,
-      file: req.file,
-      publicUploadUrl: upload.publicUploadUrl,
-    });
-    return res.status(201).json(doc);
-  } catch (err) {
-    const status = err?.statusCode || 500;
-    return res.status(status).json({ message: err.message || 'Failed to create product' });
-  }
-}
+const update = asyncHandler(async (req, res) => {
+  const doc = await productService.updateProduct({
+    id: req.params.id,
+    body: req.body,
+    file: req.file,
+    ...uploadContext(req),
+  });
+  if (!doc) throw httpError(404, 'Product not found');
+  res.json(doc);
+});
 
-async function update(req, res) {
-  try {
-    const doc = await productService.updateProduct({
-      id: req.params.id,
-      body: req.body,
-      file: req.file,
-      publicUploadUrl: upload.publicUploadUrl,
-      uploadDir: upload.UPLOAD_DIR,
-    });
-    if (!doc) return res.status(404).json({ message: 'Product not found' });
-    return res.json(doc);
-  } catch (err) {
-    const status = err?.statusCode || 400;
-    return res.status(status).json({ message: err.message || 'Failed to update product' });
-  }
-}
-
-async function remove(req, res) {
-  try {
-    const ok = await productService.deleteProduct({
-      id: req.params.id,
-      uploadDir: upload.UPLOAD_DIR,
-    });
-    if (!ok) return res.status(404).json({ message: 'Product not found' });
-    return res.status(204).send();
-  } catch (err) {
-    return res.status(400).json({ message: err.message || 'Failed to delete product' });
-  }
-}
+const remove = asyncHandler(async (req, res) => {
+  const ok = await productService.deleteProduct({
+    id: req.params.id,
+    uploadDir: uploadContext(req).uploadDir,
+  });
+  if (!ok) throw httpError(404, 'Product not found');
+  res.status(204).send();
+});
 
 module.exports = { list, getById, create, update, remove };
-

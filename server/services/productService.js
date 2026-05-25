@@ -1,11 +1,9 @@
-const slugify = require('slugify');
 const Product = require('../models/Product');
 const { parseBool, parseNumber } = require('../utils/parse');
+const { isObjectId } = require('../utils/mongo');
+const { uniqueSlug } = require('../utils/slug');
+const { httpError } = require('../utils/httpError');
 const { unlinkUploadedImage, normalizeImageForResponse } = require('../utils/uploadUtils');
-
-function isObjectId24(id) {
-  return typeof id === 'string' && /^[a-fA-F0-9]{24}$/.test(id);
-}
 
 function mapProductItem({ publicUploadUrl, item }) {
   if (!item) return null;
@@ -15,22 +13,10 @@ function mapProductItem({ publicUploadUrl, item }) {
   };
 }
 
-async function uniqueSlugFromTitle(title) {
-  let base = slugify(String(title), { lower: true, strict: true });
-  if (!base) base = 'item';
-  let candidate = base;
-  let n = 1;
-  while (await Product.exists({ slug: candidate })) {
-    candidate = `${base}-${n}`;
-    n += 1;
-  }
-  return candidate;
-}
-
 async function listProducts({ isAdmin, publicUploadUrl }) {
   const filter = isAdmin ? {} : { isActive: true };
   const items = await Product.find(filter).sort({ order: 1, createdAt: -1 }).lean();
-  return items.map((p) => mapProductItem({ publicUploadUrl, item: p }));
+  return items.map((item) => mapProductItem({ publicUploadUrl, item }));
 }
 
 async function getProductById({ id, isAdmin, publicUploadUrl }) {
@@ -50,7 +36,7 @@ async function getProductBySlug({ slug, isAdmin, publicUploadUrl }) {
 }
 
 async function getProductOne({ param, isAdmin, publicUploadUrl }) {
-  if (isObjectId24(param)) {
+  if (isObjectId(param)) {
     return getProductById({ id: param, isAdmin, publicUploadUrl });
   }
   return getProductBySlug({ slug: param, isAdmin, publicUploadUrl });
@@ -59,30 +45,22 @@ async function getProductOne({ param, isAdmin, publicUploadUrl }) {
 async function createProduct({ body, file, publicUploadUrl }) {
   const { title, description, excerpt, content, category } = body || {};
   if (!title || !String(title).trim()) {
-    const e = new Error('title is required');
-    e.statusCode = 400;
-    throw e;
+    throw httpError(400, 'title is required');
   }
-
-  const order = parseNumber(body?.order, 0);
-  const isActive = parseBool(body?.isActive, true);
-  const image = file ? publicUploadUrl(file.filename) : undefined;
-  const slug = await uniqueSlugFromTitle(title);
 
   const doc = await Product.create({
     title: String(title).trim(),
-    slug,
+    slug: await uniqueSlug(Product, title, 'item'),
     excerpt: excerpt != null ? String(excerpt) : undefined,
     content: content != null ? String(content) : undefined,
     description: description != null ? String(description) : undefined,
     category: category || undefined,
-    order,
-    isActive,
-    image,
+    order: parseNumber(body?.order, 0),
+    isActive: parseBool(body?.isActive, true),
+    image: file ? publicUploadUrl(file.filename) : undefined,
   });
 
-  const o = doc.toObject();
-  return mapProductItem({ publicUploadUrl, item: o });
+  return mapProductItem({ publicUploadUrl, item: doc.toObject() });
 }
 
 async function updateProduct({ id, body, file, publicUploadUrl, uploadDir }) {
@@ -93,15 +71,14 @@ async function updateProduct({ id, body, file, publicUploadUrl, uploadDir }) {
 
   if (title !== undefined) {
     if (!String(title).trim()) {
-      const e = new Error('title cannot be empty');
-      e.statusCode = 400;
-      throw e;
+      throw httpError(400, 'title cannot be empty');
     }
     existing.title = String(title).trim();
     if (!existing.slug) {
-      existing.slug = await uniqueSlugFromTitle(existing.title);
+      existing.slug = await uniqueSlug(Product, existing.title, 'item');
     }
   }
+
   if (description !== undefined) existing.description = String(description);
   if (excerpt !== undefined) existing.excerpt = excerpt != null ? String(excerpt) : undefined;
   if (content !== undefined) existing.content = content != null ? String(content) : undefined;
@@ -116,13 +93,13 @@ async function updateProduct({ id, body, file, publicUploadUrl, uploadDir }) {
   }
 
   await existing.save();
-  const o = existing.toObject();
-  return mapProductItem({ publicUploadUrl, item: o });
+  return mapProductItem({ publicUploadUrl, item: existing.toObject() });
 }
 
 async function deleteProduct({ id, uploadDir }) {
   const existing = await Product.findById(id);
   if (!existing) return false;
+
   await unlinkUploadedImage({ uploadDir, imageUrl: existing.image });
   await existing.deleteOne();
   return true;
@@ -130,7 +107,6 @@ async function deleteProduct({ id, uploadDir }) {
 
 module.exports = {
   listProducts,
-  getProductById,
   getProductOne,
   createProduct,
   updateProduct,
