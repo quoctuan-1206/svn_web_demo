@@ -4,6 +4,10 @@ const { isObjectId } = require('../utils/mongo');
 const { uniqueSlug } = require('../utils/slug');
 const { httpError } = require('../utils/httpError');
 const { unlinkUploadedImage, normalizeImageForResponse } = require('../utils/uploadUtils');
+const {
+  buildEnglishFields,
+  shouldAutoTranslate,
+} = require('../utils/translate');
 
 function mapProductItem({ publicUploadUrl, item }) {
   if (!item) return null;
@@ -48,12 +52,23 @@ async function createProduct({ body, file, publicUploadUrl }) {
     throw httpError(400, 'title is required');
   }
 
-  const doc = await Product.create({
+  const vi = {
     title: String(title).trim(),
+    excerpt: excerpt != null ? String(excerpt) : '',
+    content: content != null ? String(content) : '',
+    description: description != null ? String(description) : '',
+  };
+  const en = await buildEnglishFields(vi, {
+    enabled: shouldAutoTranslate(body),
+  });
+
+  const doc = await Product.create({
+    ...vi,
+    ...en,
     slug: await uniqueSlug(Product, title, 'item'),
-    excerpt: excerpt != null ? String(excerpt) : undefined,
-    content: content != null ? String(content) : undefined,
-    description: description != null ? String(description) : undefined,
+    excerpt: vi.excerpt || undefined,
+    content: vi.content || undefined,
+    description: vi.description || undefined,
     category: category || undefined,
     order: parseNumber(body?.order, 0),
     isActive: parseBool(body?.isActive, true),
@@ -90,6 +105,16 @@ async function updateProduct({ id, body, file, publicUploadUrl, uploadDir }) {
     const prevImage = existing.image;
     existing.image = publicUploadUrl(file.filename);
     await unlinkUploadedImage({ uploadDir, imageUrl: prevImage });
+  }
+
+  if (shouldAutoTranslate(body)) {
+    const en = await buildEnglishFields({
+      title: existing.title,
+      excerpt: existing.excerpt,
+      content: existing.content,
+      description: existing.description,
+    });
+    Object.assign(existing, en);
   }
 
   await existing.save();

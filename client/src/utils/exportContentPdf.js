@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import { htmlToPdfBlocks } from "./htmlToPdfBlocks";
 
 const PDF_STYLES = {
@@ -117,7 +118,7 @@ export async function exportContentPdf(doc) {
     styles: PDF_STYLES,
     content: [
       { text: "SVN Automation", style: "brand" },
-      { text: "svn-automation.com", style: "site" },
+      { text: i18n.t("pdf.brandSite"), style: "site" },
       { text: doc.typeLabel, style: "eyebrow" },
       {
         canvas: [
@@ -152,7 +153,7 @@ export async function exportContentPdf(doc) {
         margin: [0, 20, 0, 8],
       },
       {
-        text: "© SVN Automation — Tài liệu văn bản xuất từ website",
+        text: i18n.t("pdf.footer"),
         style: "footer",
       },
     ],

@@ -1,50 +1,42 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import styles from "./NewsDetailPage.module.css";
 import { newsArticlePath } from "../../utils/contentPaths";
 import { ArticleBody } from "./ArticleBody";
-
-function formatDate(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function formatDateShort(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
+import { localizedField } from "../../i18n/localizeContent";
+import { formatLocaleDate } from "../../i18n/localeDate";
 
 export default function NewsDetailPage() {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === "en" ? "en" : "vi";
   const { slug } = useParams();
   const [article, setArticle] = useState(null);
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  /** Chỉ gallery — không hiển thị ảnh đại diện ở phần minh họa chi tiết */
   const illustrationUrls = useMemo(() => {
     if (!article) return [];
     const gallery = Array.isArray(article.gallery) ? article.gallery : [];
     return [...new Set(gallery.filter(Boolean))];
   }, [article]);
 
+  const displayTitle = article
+    ? localizedField(article, "title", locale) || t("common.untitled")
+    : "";
+  const displayExcerpt = article
+    ? localizedField(article, "excerpt", locale)
+    : "";
+  const bodySource = article
+    ? localizedField(article, "content", locale)
+    : "";
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!slug) {
-      setError("Thiếu đường dẫn bài viết.");
+      setError(t("detail.missingNewsSlug"));
       setLoading(false);
       return;
     }
@@ -64,7 +56,7 @@ export default function NewsDetailPage() {
       .catch(() => {
         if (cancelled) return;
         setArticle(null);
-        setError("Không tìm thấy bài viết hoặc đã gỡ xuống.");
+        setError(t("detail.notFoundNews"));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -73,7 +65,7 @@ export default function NewsDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, t]);
 
   useEffect(() => {
     if (!article?._id && !article?.id) return;
@@ -89,10 +81,12 @@ export default function NewsDetailPage() {
       .catch(() => {});
   }, [article?._id, article?.id]);
 
+  const newsLabel = t("catalog.news");
+
   if (loading) {
     return (
       <main className={styles.page}>
-        <div className={`container ${styles.state}`}>Đang tải…</div>
+        <div className={`container ${styles.state}`}>{t("detail.loading")}</div>
       </main>
     );
   }
@@ -101,9 +95,9 @@ export default function NewsDetailPage() {
     return (
       <main className={styles.page}>
         <div className={`container ${styles.state}`}>
-          <p>{error || "Không tìm thấy bài viết."}</p>
+          <p>{error || t("detail.notFound")}</p>
           <Link className={styles.backLink} to="/tin-tuc">
-            ← Quay lại Tin tức
+            ← {t("detail.backToNews")}
           </Link>
         </div>
       </main>
@@ -114,31 +108,37 @@ export default function NewsDetailPage() {
     <main className={styles.page}>
       <div className={styles.breadcrumb}>
         <div className="container">
-          <Link to="/tin-tuc">Tin tức</Link>
+          <Link to="/tin-tuc">{newsLabel}</Link>
           <span aria-hidden="true"> / </span>
-          <span className={styles.breadcrumbCurrent}>Chi tiết</span>
+          <span className={styles.breadcrumbCurrent}>
+            {t("detail.breadcrumbDetail")}
+          </span>
         </div>
       </div>
 
       <div className={`container ${styles.layout}`}>
         <article className={styles.main}>
           <header className={styles.header}>
-            <h1 className={styles.title}>{article.title}</h1>
-            {article.excerpt ? (
-              <p className={styles.excerpt}>{article.excerpt}</p>
+            <h1 className={styles.title}>{displayTitle}</h1>
+            {displayExcerpt ? (
+              <p className={styles.excerpt}>{displayExcerpt}</p>
             ) : null}
             <time
               className={styles.date}
               dateTime={article.publishedAt || article.createdAt}
             >
-              {formatDate(
+              {formatLocaleDate(
                 article.publishedAt || article.date || article.createdAt,
+                { year: "numeric", month: "long", day: "numeric" },
               )}
             </time>
           </header>
 
           {illustrationUrls.length > 0 ? (
-            <section className={styles.gallery} aria-label="Hình ảnh minh họa">
+            <section
+              className={styles.gallery}
+              aria-label={t("detail.galleryAria")}
+            >
               <div
                 className={
                   illustrationUrls.length === 1
@@ -159,13 +159,16 @@ export default function NewsDetailPage() {
             </section>
           ) : null}
 
-          <section className={styles.content} aria-label="Nội dung chính">
-            <ArticleBody content={article.content} />
+          <section
+            className={styles.content}
+            aria-label={t("detail.mainContentAria")}
+          >
+            <ArticleBody content={bodySource} />
           </section>
         </article>
 
-        <aside className={styles.sidebar} aria-label="Tin liên quan">
-          <h2 className={styles.sidebarTitle}>Tin liên quan</h2>
+        <aside className={styles.sidebar} aria-label={t("detail.relatedNews")}>
+          <h2 className={styles.sidebarTitle}>{t("detail.relatedNews")}</h2>
           <ul className={styles.relatedList}>
             {related.map((item) => (
               <li key={item._id || item.id}>
@@ -181,21 +184,23 @@ export default function NewsDetailPage() {
                   )}
                   <div className={styles.relatedMeta}>
                     <span className={styles.relatedDate}>
-                      {formatDateShort(
+                      {formatLocaleDate(
                         item.publishedAt || item.date || item.createdAt,
                       )}
                     </span>
-                    <span className={styles.relatedTitle}>{item.title}</span>
+                    <span className={styles.relatedTitle}>
+                      {localizedField(item, "title", locale)}
+                    </span>
                   </div>
                 </Link>
               </li>
             ))}
           </ul>
           {related.length === 0 ? (
-            <p className={styles.sidebarEmpty}>Chưa có tin liên quan.</p>
+            <p className={styles.sidebarEmpty}>{t("detail.noRelated")}</p>
           ) : null}
           <Link className={styles.allNews} to="/tin-tuc">
-            Tất cả tin tức →
+            {t("detail.viewAllNews")}
           </Link>
         </aside>
       </div>

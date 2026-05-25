@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "./Contact.module.css";
 import ContactFormBlock from "./ContactFormBlock";
 
 const QUICK_LINKS = [
-  { to: "/", label: "Trang chủ" },
-  { to: "/san-pham", label: "Sản phẩm" },
-  { to: "/tin-tuc", label: "Tin tức" },
-  { to: "/lien-he", label: "Liên hệ" },
+  { to: "/", labelKey: "home.quickHome" },
+  { to: "/san-pham", labelKey: "home.quickProducts" },
+  { to: "/tin-tuc", labelKey: "home.quickNews" },
+  { to: "/lien-he", labelKey: "home.quickContact" },
 ];
 
 export default function Contact() {
+  const { t } = useTranslation();
   const [showForm, setShowForm] = useState(true);
   const formRef = useRef(null);
 
@@ -50,19 +52,17 @@ export default function Contact() {
       className={styles.page}
       data-contact-fullpage
       id="lien-he"
-      aria-label="Liên hệ"
+      aria-label={t("pages.contact.aria")}
     >
       <div className={`${styles.container} ${styles.shell}`}>
         <div className={styles.leftColumn}>
           <header className={styles.headline}>
-            <h1 className={styles.title}>
-              Hãy để chúng tôi đồng hành cùng bạn
-            </h1>
+            <h1 className={styles.title}>{t("pages.contact.title")}</h1>
             <button
               type="button"
               className={`${styles.scrollBtn} ${showForm ? styles.scrollBtnOpen : ""}`}
               aria-expanded={showForm}
-              aria-label={showForm ? "Đóng form liên hệ" : "Mở form liên hệ"}
+              aria-label={showForm ? t("home.closeForm") : t("home.openForm")}
               onClick={toggleFormFromArrow}
             >
               <svg
@@ -84,23 +84,21 @@ export default function Contact() {
           </header>
 
           <div className={styles.leftRest}>
-            <nav className={styles.quickLinks} aria-label="Liên kết nhanh">
+            <nav
+              className={styles.quickLinks}
+              aria-label={t("home.quickLinksAria")}
+            >
               {QUICK_LINKS.map((item) => (
                 <Link key={item.to} className={styles.quickLink} to={item.to}>
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               ))}
             </nav>
 
             <div className={styles.company}>
               <div className={styles.companyTitle}>SVN AUTOMATION CO., LTD</div>
-              <p className={styles.companyLine}>
-                Địa chỉ: Số 9 đường Đinh Thị Thi, Khu Nhà ở Đông Nam, Phường
-                Hiệp Bình, Thành phố Hồ Chí Minh, Việt Nam
-              </p>
-              <p className={styles.companyLine}>
-                Điện thoại liên hệ: (+84) 286 282 1235
-              </p>
+              <p className={styles.companyLine}>{t("home.contactAddress")}</p>
+              <p className={styles.companyLine}>{t("home.contactPhone")}</p>
               <button
                 type="button"
                 className={styles.contactBtn}
@@ -117,15 +115,15 @@ export default function Contact() {
                     />
                   </svg>
                 </span>
-                Liên hệ với chúng tôi
+                {t("home.contactUsBtn")}
               </button>
             </div>
 
             <hr className={styles.rule} />
 
             <div className={styles.bottomRow}>
-              <p className={styles.copy}>Bản quyền © 2024 SVN Automation.</p>
-              <div className={styles.socialRow} aria-label="Mạng xã hội">
+              <p className={styles.copy}>{t("home.copyright")}</p>
+              <div className={styles.socialRow} aria-label={t("home.socialAria")}>
                 <a
                   className={styles.social}
                   href="https://www.facebook.com/SVNAutomation"
@@ -184,7 +182,7 @@ export default function Contact() {
 
         <aside
           className={`${styles.formSlot} ${showForm ? styles.formSlotOpen : ""}`}
-          aria-label="Biểu mẫu liên hệ"
+          aria-label={t("home.formAria")}
         >
           {showForm ? (
             <ContactFormBlock

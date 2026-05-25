@@ -1,5 +1,6 @@
 import styles from "./Partners.module.css";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const PARTNER_ITEMS = [
   {
@@ -35,21 +36,25 @@ const PARTNER_ITEMS = [
 ];
 
 export default function Partners() {
+  const { t } = useTranslation();
+
   return (
     <section
       className={styles.section}
       id="doi-tac"
-      aria-label="Đối tác được chứng nhận"
+      aria-label={t("home.partnersAria")}
     >
       <div className="container">
         <header className={styles.header}>
           <h2 className={styles.title}>
-            <span className={styles.headingPrimary}>Đối tác</span> được chứng
-            nhận
+            <span className={styles.headingPrimary}>
+              {t("home.partnersTitlePrimary")}
+            </span>{" "}
+            {t("home.partnersTitleSecondary")}
           </h2>
         </header>
 
-        <div className={styles.grid} aria-label="Partner highlights">
+        <div className={styles.grid} aria-label={t("home.partnersGridAria")}>
           {PARTNER_ITEMS.map(({ lines, logo, logoAlt }) => (
             <div key={lines.join(" ")} className={styles.item}>
               {logo ? (
@@ -71,9 +76,9 @@ export default function Partners() {
           <Link
             className={styles.cta}
             to="/doi-tac"
-            aria-label="Explore partners"
+            aria-label={t("home.partnersCtaAria")}
           >
-            Explore our Global Delivery Model{" "}
+            {t("home.partnersCta")}{" "}
             <span className={styles.ctaArrow}>›</span>
           </Link>
         </div>

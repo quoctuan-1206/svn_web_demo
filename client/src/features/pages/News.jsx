@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./PageCommon.css";
 import { newsArticlePath } from "../../utils/contentPaths";
 import styles from "./NewsPage.module.css";
+import { localizedField, searchHaystack } from "../../i18n/localizeContent";
+import { formatLocaleDate } from "../../i18n/localeDate";
 
 const PAGE_SIZE = 12;
 
@@ -15,7 +18,7 @@ function pickCategoryLabel(p) {
     p?.label ||
     (Array.isArray(p?.tags) ? p.tags[0] : "");
   const v = String(raw || "").trim();
-  return v || "News";
+  return v || "";
 }
 
 function pickImage(p) {
@@ -30,22 +33,13 @@ function pickImage(p) {
   );
 }
 
-function formatDate(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
-
 function pickDate(n) {
   return n?.publishedAt || n?.date || n?.createdAt || 0;
 }
 
 export default function News() {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === "en" ? "en" : "vi";
   const [news, setNews] = useState([]);
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,18 +65,15 @@ export default function News() {
 
     const q = searchQuery.trim().toLowerCase();
     if (q) {
-      arr = arr.filter((n) => {
-        const haystack = [
-          n?.title,
-          n?.summary,
-          n?.excerpt,
-          n?.description,
-          pickCategoryLabel(n),
-        ]
-          .map((v) => String(v || "").toLowerCase())
-          .join(" ");
-        return haystack.includes(q);
-      });
+      arr = arr.filter((n) =>
+        searchHaystack(n, [
+          "title",
+          "summary",
+          "excerpt",
+          "description",
+          "content",
+        ]).includes(q),
+      );
     }
 
     if (dateFrom) {
@@ -152,15 +143,22 @@ export default function News() {
       <section className={`page-hero ${styles.pageHero}`}>
         <div className="container">
           <h1 className={styles.heroTitle}>
-            <span className={styles.headingPrimary}>Tin tức</span>{" "}
-            <span className={styles.headingSecondary}>mới</span>
+            <span className={styles.headingPrimary}>
+              {t("pages.news.titlePrimary")}
+            </span>{" "}
+            <span className={styles.headingSecondary}>
+              {t("pages.news.titleSecondary")}
+            </span>
           </h1>
         </div>
       </section>
 
       <section className="page-content">
         <div className={`container ${styles.contentShell}`}>
-          <div className={styles.filtersRow} aria-label="Bộ lọc tin tức">
+          <div
+            className={styles.filtersRow}
+            aria-label={t("pages.news.filterAria")}
+          >
             <div className={`${styles.filterField} ${styles.filterSearch}`}>
               <svg
                 className={styles.searchIcon}
@@ -178,10 +176,10 @@ export default function News() {
               <input
                 type="text"
                 className={styles.filterInput}
-                placeholder="Tìm kiếm tin tức..."
+                placeholder={t("pages.news.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Tìm kiếm tin tức"
+                aria-label={t("pages.news.searchAria")}
               />
             </div>
 
@@ -191,7 +189,7 @@ export default function News() {
                 className={styles.filterInput}
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                aria-label="Từ ngày"
+                aria-label={t("common.fromDate")}
               />
               <span className={styles.dateSeparator} aria-hidden="true">
                 –
@@ -201,7 +199,7 @@ export default function News() {
                 className={styles.filterInput}
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                aria-label="Đến ngày"
+                aria-label={t("common.toDate")}
               />
             </div>
 
@@ -210,10 +208,10 @@ export default function News() {
                 className={styles.filterInput}
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                aria-label="Sắp xếp"
+                aria-label={t("common.sort")}
               >
-                <option value="newest">Mới nhất</option>
-                <option value="oldest">Cũ nhất</option>
+                <option value="newest">{t("common.newest")}</option>
+                <option value="oldest">{t("common.oldest")}</option>
               </select>
             </div>
 
@@ -222,22 +220,24 @@ export default function News() {
               className={styles.resetBtn}
               onClick={resetFilters}
               disabled={!hasActiveFilter}
-              aria-label="Đặt lại bộ lọc"
+              aria-label={t("common.resetFilters")}
             >
-              Đặt lại
+              {t("common.reset")}
             </button>
           </div>
 
           {news.length ? (
             filteredNews.length ? (
               <>
-                <div className={styles.grid} aria-label="News grid">
-                  {visible.map((n) => (
+                <div className={styles.grid} aria-label={t("pages.news.gridAria")}>
+                  {visible.map((n) => {
+                    const title = localizedField(n, "title", locale);
+                    return (
                     <Link
                       key={n._id || n.id}
                       to={newsArticlePath(n)}
                       className={styles.card}
-                      aria-label={n.title}
+                      aria-label={title}
                     >
                       <div className={styles.media} aria-hidden="true">
                         {pickImage(n) ? (
@@ -254,15 +254,18 @@ export default function News() {
 
                       <div className={styles.meta}>
                         <div className={styles.kicker}>
-                          {pickCategoryLabel(n)}
+                          {pickCategoryLabel(n) || t("catalog.news")}
                         </div>
-                        <h2 className={styles.title}>{n.title}</h2>
+                        <h2 className={styles.title}>{title}</h2>
                         <div className={styles.date}>
-                          {formatDate(n.publishedAt || n.date || n.createdAt)}
+                          {formatLocaleDate(
+                            n.publishedAt || n.date || n.createdAt,
+                          )}
                         </div>
                       </div>
                     </Link>
-                  ))}
+                  );
+                  })}
                 </div>
 
                 <div className={styles.pagerRow} aria-label="Pagination row">
@@ -270,7 +273,7 @@ export default function News() {
                     <button
                       type="button"
                       className={styles.ctrl}
-                      aria-label="Trang trước"
+                      aria-label={t("common.prevPage")}
                       disabled={!canNavigate}
                       onClick={goPrev}
                     >
@@ -310,7 +313,7 @@ export default function News() {
                             }`}
                             onClick={() => setPage(totalPages)}
                             disabled={!canNavigate}
-                            aria-label={`Trang ${totalPages}`}
+                            aria-label={t("common.pageN", { n: totalPages })}
                           >
                             {totalPages}
                           </button>
@@ -321,7 +324,7 @@ export default function News() {
                     <button
                       type="button"
                       className={styles.ctrl}
-                      aria-label="Trang sau"
+                      aria-label={t("common.nextPage")}
                       disabled={!canNavigate}
                       onClick={goNext}
                     >
@@ -332,13 +335,11 @@ export default function News() {
               </>
             ) : (
               <p className={styles.emptyState}>
-                Không tìm thấy tin tức phù hợp với bộ lọc hiện tại.
+                {t("pages.news.emptyFilter")}
               </p>
             )
           ) : (
-            <p className={styles.emptyState}>
-              Chưa có tin tức / sự kiện nào được thêm.
-            </p>
+            <p className={styles.emptyState}>{t("pages.news.emptyList")}</p>
           )}
         </div>
       </section>

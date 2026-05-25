@@ -1,17 +1,19 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "./CTA.module.css";
 import contactStyles from "../../../../pages/Contact.module.css";
 import ContactFormBlock from "../../../../pages/ContactFormBlock";
 
 const QUICK_LINKS = [
-  { to: "/", label: "Trang chủ" },
-  { to: "/san-pham", label: "Sản phẩm" },
-  { to: "/tin-tuc", label: "Tin tức" },
-  { to: "/lien-he", label: "Liên hệ" },
+  { to: "/", labelKey: "home.quickHome" },
+  { to: "/san-pham", labelKey: "home.quickProducts" },
+  { to: "/tin-tuc", labelKey: "home.quickNews" },
+  { to: "/lien-he", labelKey: "home.quickContact" },
 ];
 
 export default function CTA() {
+  const { t } = useTranslation();
   const [showForm, setShowForm] = useState(false);
   const formRef = useRef(null);
 
@@ -33,15 +35,15 @@ export default function CTA() {
   }
 
   return (
-    <section className={styles.section} id="lien-he" aria-label="Liên hệ">
+    <section className={styles.section} id="lien-he" aria-label={t("home.contactAria")}>
       <div className={`${styles.container} ${styles.shell}`}>
         <header className={styles.headline}>
-          <h2 className={styles.title}>Hãy để chúng tôi đồng hành cùng bạn</h2>
+          <h2 className={styles.title}>{t("home.contactTitle")}</h2>
           <button
             type="button"
             className={`${styles.scrollBtn} ${showForm ? styles.scrollBtnOpen : ""}`}
             aria-expanded={showForm}
-            aria-label={showForm ? "Đóng form liên hệ" : "Mở form liên hệ"}
+            aria-label={showForm ? t("home.closeForm") : t("home.openForm")}
             onClick={toggleFormFromArrow}
           >
             <svg
@@ -64,7 +66,7 @@ export default function CTA() {
 
         <aside
           className={`${styles.formSlot} ${showForm ? styles.formSlotOpen : ""}`}
-          aria-label="Biểu mẫu liên hệ"
+          aria-label={t("home.formAria")}
         >
           {showForm ? (
             <ContactFormBlock
@@ -77,22 +79,17 @@ export default function CTA() {
         </aside>
 
         <div className={styles.leftRest}>
-          <nav className={styles.quickLinks} aria-label="Liên kết nhanh">
+          <nav className={styles.quickLinks} aria-label={t("home.quickLinksAria")}>
             {QUICK_LINKS.map((item) => (
               <Link key={item.to} className={styles.quickLink} to={item.to}>
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
           </nav>
           <div className={styles.company}>
             <div className={styles.companyTitle}>SVN AUTOMATION CO., LTD</div>
-            <p className={styles.companyLine}>
-              Địa chỉ: Số 9 đường Đinh Thị Thi, Khu Nhà ở Đông Nam, Phường Hiệp
-              Bình, Thành phố Hồ Chí Minh, Việt Nam
-            </p>
-            <p className={styles.companyLine}>
-              Điện thoại liên hệ: (+84) 286 282 1235
-            </p>
+            <p className={styles.companyLine}>{t("home.contactAddress")}</p>
+            <p className={styles.companyLine}>{t("home.contactPhone")}</p>
             <Link className={styles.contactBtn} to="/lien-he">
               <span className={styles.btnIcon} aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -105,15 +102,15 @@ export default function CTA() {
                   />
                 </svg>
               </span>
-              Liên hệ với chúng tôi
+              {t("home.contactUsBtn")}
             </Link>
           </div>
 
           <hr className={styles.rule} />
 
           <div className={styles.bottomRow}>
-            <p className={styles.copy}>Bản quyền © 2024 SVN Automation.</p>
-            <div className={styles.socialRow} aria-label="Mạng xã hội">
+            <p className={styles.copy}>{t("home.copyright")}</p>
+            <div className={styles.socialRow} aria-label={t("home.socialAria")}>
               <a
                 className={styles.social}
                 href="https://www.facebook.com/SVNAutomation"
