@@ -37,11 +37,11 @@ export default function PdfDownloadButton({
           : pdfPayloadFromProduct(full, kind);
       await exportContentPdf(doc);
     } catch (err) {
-      console.error("PDF export failed", err);
-      const message = err?.message
-        ? `Không tạo được PDF: ${err.message}`
-        : "Không tạo được PDF. Thử lại.";
-      setError(message);
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : "Không tạo được PDF. Thử lại.";
+      setError(message.startsWith("Không") ? message : `Không tạo được PDF: ${message}`);
     } finally {
       setBusy(false);
     }

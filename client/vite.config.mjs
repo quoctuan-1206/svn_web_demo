@@ -16,7 +16,7 @@ const devProxy = {
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   optimizeDeps: {
-    include: ["pdfmake/build/pdfmake.min.js", "pdfmake/build/vfs_fonts.js"],
+    exclude: ["pdfmake/build/vfs_fonts.js"],
   },
   server: {
     port: 3000,

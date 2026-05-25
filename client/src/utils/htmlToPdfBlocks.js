@@ -165,9 +165,9 @@ async function htmlDomToBlocks(html) {
 
 /**
  * @param {string} body
- * @returns {Array<{ text: string, style?: string, margin?: number[], [key: string]: unknown }>}
+ * @returns {Promise<Array<{ text?: string, style?: string, margin?: number[], [key: string]: unknown }>>}
  */
-export function htmlToPdfBlocks(body) {
+export async function htmlToPdfBlocks(body) {
   const raw = String(body || "").trim();
   if (!raw) {
     return [
@@ -184,7 +184,8 @@ export function htmlToPdfBlocks(body) {
     /<(p|div|img|h[1-6]|ul|ol|li|br|figure|blockquote)\b/i.test(raw);
 
   if (isHtml && typeof document !== "undefined") {
-    return htmlDomToBlocks(decodeEntities(raw));
+    const blocks = await htmlDomToBlocks(decodeEntities(raw));
+    return Array.isArray(blocks) ? blocks : [];
   }
 
   return plainLinesToBlocks(decodeEntities(stripTags(raw)));

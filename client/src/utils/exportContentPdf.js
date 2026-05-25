@@ -30,44 +30,56 @@ const PDF_STYLES = {
   hr: { margin: [0, 16, 0, 16] },
 };
 
-/** Chỉ load pdfmake khi xuất PDF — tránh làm hỏng toàn bộ app lúc khởi động. */
 let pdfMakePromise = null;
+
+async function loadPdfMake() {
+  const pdfMakeModule = await import("pdfmake/build/pdfmake.min.js");
+  const pdfMake = pdfMakeModule.default ?? pdfMakeModule;
+
+  if (typeof globalThis !== "undefined") {
+    globalThis.pdfMake = pdfMake;
+  }
+
+  const vfsModule = await import("pdfmake/build/vfs_fonts.js");
+  const vfs = vfsModule.default ?? vfsModule.pdfMake?.vfs ?? vfsModule;
+
+  if (typeof pdfMake.addVirtualFileSystem === "function" && vfs) {
+    pdfMake.addVirtualFileSystem(vfs);
+  } else if (vfs) {
+    pdfMake.vfs = vfs;
+  }
+
+  try {
+    await import("pdfmake/build/fonts/Roboto.js");
+  } catch {
+    /* Roboto đã đăng ký qua vfs */
+  }
+
+  if (!pdfMake.createPdf) {
+    throw new Error("Thư viện PDF chưa sẵn sàng.");
+  }
+
+  return pdfMake;
+}
 
 async function getPdfMake() {
   if (!pdfMakePromise) {
-    pdfMakePromise = (async () => {
-      let pdfMakeMod;
-      try {
-        pdfMakeMod = await import("pdfmake/build/pdfmake.min.js");
-      } catch {
-        pdfMakeMod = await import("pdfmake/build/pdfmake");
-      }
-      const pdfMake = pdfMakeMod.default ?? pdfMakeMod;
-
-      let vfsMod;
-      try {
-        vfsMod = await import("pdfmake/build/vfs_fonts.js");
-      } catch {
-        vfsMod = await import("pdfmake/build/vfs_fonts");
-      }
-
-      const vfs =
-        vfsMod?.pdfMake?.vfs ||
-        vfsMod?.default?.pdfMake?.vfs ||
-        vfsMod?.default?.vfs ||
-        vfsMod?.vfs;
-
-      if (vfs && pdfMake?.vfs !== vfs) {
-        pdfMake.vfs = vfs;
-      }
-
-      if (typeof globalThis !== "undefined" && !globalThis.pdfMake) {
-        globalThis.pdfMake = pdfMake;
-      }
-      return pdfMake;
-    })();
+    pdfMakePromise = loadPdfMake();
   }
   return pdfMakePromise;
+}
+
+function triggerBrowserDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.rel = "noopener";
+  anchor.style.display = "none";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 /**
@@ -84,7 +96,7 @@ async function getPdfMake() {
 export async function exportContentPdf(doc) {
   if (!doc?.title) throw new Error("Thiếu nội dung PDF.");
 
-  const bodyBlocks = htmlToPdfBlocks(doc.body);
+  const bodyBlocks = await htmlToPdfBlocks(doc.body);
   const hasText =
     doc.title ||
     doc.excerpt ||
@@ -93,9 +105,6 @@ export async function exportContentPdf(doc) {
   if (!hasText) throw new Error("Nội dung PDF trống.");
 
   const pdfMake = await getPdfMake();
-  if (!pdfMake?.createPdf) {
-    throw new Error("Không khởi tạo được pdfmake.");
-  }
 
   const definition = {
     pageSize: "A4",
@@ -149,10 +158,21 @@ export async function exportContentPdf(doc) {
     ],
   };
 
+  const pdfDoc = pdfMake.createPdf(definition);
+
+  if (typeof pdfDoc.getBlob === "function") {
+    const blob = await pdfDoc.getBlob();
+    triggerBrowserDownload(blob, doc.filename);
+    return;
+  }
+
   return new Promise((resolve, reject) => {
     try {
-      pdfMake.createPdf(definition).download(doc.filename);
-      resolve();
+      pdfDoc.download(
+        doc.filename,
+        () => resolve(),
+        (err) => reject(err ?? new Error("Tải PDF thất bại.")),
+      );
     } catch (err) {
       reject(err);
     }
