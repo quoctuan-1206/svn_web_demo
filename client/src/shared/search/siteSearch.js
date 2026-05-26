@@ -1,4 +1,5 @@
 import { catalogItemPath, newsArticlePath } from "../../utils/contentPaths";
+import { apiFetch } from "../../utils/apiOriginUrl";
 import {
   localizedField,
   pickLocalizedLead,
@@ -215,8 +216,8 @@ export async function fetchSiteSearchIndex(t) {
 
   try {
     const [productsRes, newsRes] = await Promise.all([
-      fetch("/api/products?page=1&limit=200"),
-      fetch("/api/news?page=1&limit=100"),
+      apiFetch("/api/products?page=1&limit=200"),
+      apiFetch("/api/news?page=1&limit=100"),
     ]);
 
     if (productsRes.ok) {
