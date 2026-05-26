@@ -8,7 +8,7 @@ import {
   Package,
 } from "lucide-react";
 
-const API_BASE = "";
+import { apiFetch } from "../../../utils/apiOriginUrl";
 
 function formatDate(value) {
   try {
@@ -121,9 +121,9 @@ export default function Dashboard() {
 
       try {
         const [pRes, nRes, cRes] = await Promise.all([
-          fetch(`${API_BASE}/api/products`, { headers }),
-          fetch(`${API_BASE}/api/news?page=1&limit=100`, { headers }),
-          fetch(`${API_BASE}/api/contact?page=1&limit=200`, { headers }),
+          apiFetch("/api/products", { headers }),
+          apiFetch("/api/news?page=1&limit=100", { headers }),
+          apiFetch("/api/contact?page=1&limit=200", { headers }),
         ]);
 
         const pJson = await pRes.json().catch(() => null);

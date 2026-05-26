@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { apiFetch } from "../../utils/apiOriginUrl";
 import styles from "./Contact.module.css";
 
 export const PURPOSES = [
@@ -71,7 +72,7 @@ export default function ContactFormBlock({
     };
 
     try {
-      const res = await fetch("/api/contact", {
+      const res = await apiFetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
