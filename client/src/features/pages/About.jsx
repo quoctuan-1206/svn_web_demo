@@ -8,15 +8,11 @@ export default function About() {
 
   return (
     <main className="page page-about">
-      <div className="container">
+      <div className="container about-hero">
         <p className="page-eyebrow">Về chúng tôi</p>
-        <h1>
+        <h1 className="about-title">
           SVN <span className="green">Automation</span>
         </h1>
-        <p className="page-desc">
-          Đồng hành cùng nền công nghiệp Việt Nam trong hành trình số hóa và tự
-          động hóa
-        </p>
       </div>
     </main>
   );

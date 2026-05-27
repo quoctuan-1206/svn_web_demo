@@ -4,8 +4,8 @@
   width: 100%;
   height: 100%;
 
-  --row-gap: 20px;
-  --image-gap: 20px;
+  /* Giữ khoảng cách giữa ảnh và giữa các hàng bằng nhau */
+  --gap: 20px;
 
   overflow: hidden;
   background: #0f1216;
@@ -44,7 +44,7 @@
   flex-direction: column;
   justify-content: center;
 
-  gap: var(--row-gap);
+  gap: var(--gap);
 }
 
 .row {
@@ -63,7 +63,7 @@
 
 .track {
   display: flex;
-  gap: var(--image-gap);
+  gap: var(--gap);
 
   width: max-content;
 
@@ -90,14 +90,11 @@
   width: 547px;
   height: 320px;
 
-  border-radius: 20px;
-  overflow: hidden;
-
-  background: #14171c;
-
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.28),
-    0 30px 60px rgba(0, 0, 0, 0.18);
+  /* Bỏ khung/viền: ảnh hiển thị trực tiếp */
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
 
   transform: none;
 }
@@ -214,24 +211,23 @@
 
 @media (max-width: 768px) {
   .marquee {
-    gap: var(--row-gap);
+    gap: var(--gap);
     transform: translate(-50%, -50%) rotate(-4deg) scale(1.03);
   }
 
   .track {
-    gap: var(--image-gap);
+    gap: var(--gap);
   }
 
   .cell {
-    width: 312px;
-    height: 208px;
+    width: 272px;
+    height: 176px;
 
-    border-radius: 16px;
+    border-radius: 0;
   }
 
   .section {
-    --row-gap: 20px;
-    --image-gap: 20px;
+    --gap: 16px;
   }
 
   .row:nth-child(1),
@@ -246,5 +242,39 @@
   .section::before,
   .section::after {
     width: 80px;
+  }
+}
+
+@media (max-width: 420px) {
+  .section {
+    --gap: 12px;
+  }
+
+  .marquee {
+    width: 132%;
+    height: 132%;
+    transform: translate(-50%, -50%) rotate(-3deg) scale(1.02);
+  }
+
+  .cell {
+    width: 230px;
+    height: 150px;
+  }
+
+  .overlay {
+    background: rgba(5, 15, 24, 0.6);
+  }
+
+  .section::before,
+  .section::after {
+    width: 56px;
+  }
+
+  .content {
+    transform: translate(-50%, -50%) rotate(-2deg);
+  }
+
+  .title {
+    letter-spacing: 0.08em;
   }
 }

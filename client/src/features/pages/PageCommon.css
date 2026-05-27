@@ -16,6 +16,34 @@ main.page > section.page-hero + .page-content {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  /* Full screen bình thường: căn giữa nội dung, cho phép cuộn nếu dài */
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: #0a0a0a;
+}
+
+.about-hero {
+  width: 100%;
+  padding-top: 24px;
+}
+
+.about-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(34px, 5.5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.about-title .green {
+  background: linear-gradient(90deg, #75c01f 0%, #a7ff3a 45%, #2fe37a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .page-hero {
