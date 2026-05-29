@@ -1,15 +1,12 @@
 .section {
   position: relative;
-
   width: 100%;
   height: 100%;
-
-  /* Giữ khoảng cách giữa ảnh và giữa các hàng bằng nhau */
-  --gap: 20px;
-
+  /* Khe đều giữa ảnh (ngang + dọc) — giống masonry grid trong mockup */
+  --gap: 14px;
+  --intro-tilt: -7deg;
   overflow: hidden;
   background: #0f1216;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,28 +19,21 @@
 .marqueeMask {
   position: absolute;
   inset: 0;
-
   overflow: hidden;
-
   pointer-events: none;
   z-index: 0;
 }
 
 .marquee {
   position: absolute;
-
   top: 50%;
   left: 50%;
-
   width: 120%;
   height: 120%;
-
-  transform: translate(-50%, -50%) rotate(-6deg) scale(1.06);
-
+  transform: translate(-50%, -50%) rotate(var(--intro-tilt)) scale(1.05);
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   gap: var(--gap);
 }
 
@@ -52,30 +42,18 @@
   overflow: hidden;
 }
 
-/* tạo chiều sâu nhẹ */
-.row:nth-child(1) {
-  transform: translateX(-60px);
-}
-
-.row:nth-child(3) {
-  transform: translateX(60px);
-}
-
 .track {
   display: flex;
+  align-items: stretch;
   gap: var(--gap);
-
   width: max-content;
-
   will-change: transform;
 }
 
-/* hàng trên + dưới */
 .rowRight .track {
   animation: introScrollRight 70s linear infinite;
 }
 
-/* hàng giữa */
 .rowLeft .track {
   animation: introScrollLeft 70s linear infinite;
 }
@@ -86,74 +64,47 @@
 
 .cell {
   flex: 0 0 auto;
-
-  width: 547px;
-  height: 320px;
-
-  /* Bỏ khung/viền: ảnh hiển thị trực tiếp */
-  border-radius: 0;
-  overflow: visible;
-  background: transparent;
-  box-shadow: none;
-
-  transform: none;
+  width: 520px;
+  height: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #14171c;
 }
 
 .cell img {
   width: 100%;
   height: 100%;
-
-  object-fit: contain;
+  object-fit: cover;
   display: block;
-
   user-select: none;
-
-  transition: none;
-}
-
-.cell:hover img {
-  transform: none;
-}
-
-.row:nth-child(2) {
-  opacity: 0.75;
-  transform: scale(0.96) translateX(10px);
 }
 
 /* fade 2 bên */
 .section::before,
 .section::after {
   content: "";
-
   position: absolute;
   top: 0;
-
   width: 180px;
   height: 100%;
-
   z-index: 2;
   pointer-events: none;
 }
 
 .section::before {
   left: 0;
-
   background: linear-gradient(to right, #0f1216, transparent);
 }
 
 .section::after {
   right: 0;
-
   background: linear-gradient(to left, #0f1216, transparent);
 }
 
-/* overlay tối */
 .overlay {
   position: absolute;
   inset: 0;
-
   background: rgba(5, 15, 24, 0.55);
-
   z-index: 1;
   pointer-events: none;
 }
@@ -163,15 +114,12 @@
   top: 50%;
   left: 50%;
   z-index: 3;
-
   text-align: center;
   max-width: min(920px, 92vw);
-
   color: #f3f6fb;
   font-family: var(--font-display);
   text-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
-
-  transform: translate(-50%, -50%) rotate(-4deg);
+  transform: translate(-50%, -50%) rotate(var(--intro-tilt));
 }
 
 .title {
@@ -186,7 +134,6 @@
   from {
     transform: translateX(0);
   }
-
   to {
     transform: translateX(-33.333%);
   }
@@ -196,7 +143,6 @@
   from {
     transform: translateX(-33.333%);
   }
-
   to {
     transform: translateX(0);
   }
@@ -210,9 +156,14 @@
 }
 
 @media (max-width: 768px) {
+  .section {
+    --gap: 12px;
+    --intro-tilt: -5deg;
+  }
+
   .marquee {
     gap: var(--gap);
-    transform: translate(-50%, -50%) rotate(-4deg) scale(1.03);
+    transform: translate(-50%, -50%) rotate(var(--intro-tilt)) scale(1.04);
   }
 
   .track {
@@ -220,45 +171,28 @@
   }
 
   .cell {
-    width: 272px;
-    height: 176px;
-
-    border-radius: 0;
-  }
-
-  .section {
-    --gap: 16px;
-  }
-
-  .row:nth-child(1),
-  .row:nth-child(3) {
-    transform: none;
-  }
-
-  .row:nth-child(2) {
-    transform: scale(0.96);
-  }
-
-  .section::before,
-  .section::after {
-    width: 80px;
+    width: 280px;
+    height: 180px;
+    border-radius: 12px;
   }
 }
 
 @media (max-width: 420px) {
   .section {
-    --gap: 12px;
+    --gap: 10px;
+    --intro-tilt: -4deg;
   }
 
   .marquee {
-    width: 132%;
-    height: 132%;
-    transform: translate(-50%, -50%) rotate(-3deg) scale(1.02);
+    width: 135%;
+    height: 135%;
+    transform: translate(-50%, -50%) rotate(var(--intro-tilt)) scale(1.03);
   }
 
   .cell {
-    width: 230px;
-    height: 150px;
+    width: 220px;
+    height: 145px;
+    border-radius: 10px;
   }
 
   .overlay {
@@ -267,14 +201,10 @@
 
   .section::before,
   .section::after {
-    width: 56px;
-  }
-
-  .content {
-    transform: translate(-50%, -50%) rotate(-2deg);
+    width: 48px;
   }
 
   .title {
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
   }
 }
