@@ -54,22 +54,31 @@ export default function Partners() {
           </h2>
         </header>
 
-        <div className={styles.grid} aria-label={t("home.partnersGridAria")}>
-          {PARTNER_ITEMS.map(({ lines, logo, logoAlt }) => (
-            <div key={lines.join(" ")} className={styles.item}>
-              {logo ? (
-                <img
-                  className={styles.itemLogo}
-                  src={logo}
-                  alt={logoAlt ?? ""}
-                  loading="lazy"
-                  draggable={false}
-                />
-              ) : null}
-              <div className={styles.itemTitle}>{lines[0]}</div>
-              <div className={styles.itemSub}>{lines[1]}</div>
-            </div>
-          ))}
+        <div className={styles.gridWrap}>
+          <div className={styles.grid} aria-label={t("home.partnersGridAria")}>
+            {PARTNER_ITEMS.map(({ lines, logo, logoAlt }) => (
+              <div key={lines.join(" ")} className={styles.item}>
+                {logo ? (
+                  <img
+                    className={styles.itemLogo}
+                    src={logo}
+                    alt={logoAlt ?? ""}
+                    loading="lazy"
+                    draggable={false}
+                  />
+                ) : null}
+                <div className={styles.itemTitle}>{lines[0]}</div>
+                <div className={styles.itemSub}>{lines[1]}</div>
+              </div>
+            ))}
+          </div>
+          <img
+            className={styles.centerGlobe}
+            src="/images/ear.png"
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+          />
         </div>
 
         <div className={styles.ctaRow}>
