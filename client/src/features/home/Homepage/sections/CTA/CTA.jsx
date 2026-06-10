@@ -6,10 +6,30 @@ import contactStyles from "../../../../pages/Contact.module.css";
 import ContactFormBlock from "../../../../pages/ContactFormBlock";
 
 const QUICK_LINKS = [
-  { to: "/", labelKey: "home.quickHome" },
+  { to: "/giai-phap", labelKey: "home.quickSolutions" },
+  { to: "/dich-vu-ho-tro", labelKey: "home.quickServices" },
   { to: "/san-pham", labelKey: "home.quickProducts" },
-  { to: "/tin-tuc", labelKey: "home.quickNews" },
-  { to: "/lien-he", labelKey: "home.quickContact" },
+  { to: "/tong-quan", labelKey: "home.quickIntro" },
+];
+
+const SOCIAL_LINKS = [
+  {
+    href: "#",
+    label: "LinkedIn",
+    icon: "/images/In.png",
+  },
+  {
+    href: "https://www.facebook.com/SVNAutomation",
+    label: "Facebook",
+    icon: "/images/Facebook.png",
+    external: true,
+  },
+  {
+    href: "https://www.youtube.com/@SVNAutomationCompanyLimited",
+    label: "YouTube",
+    icon: "/images/Youtube.png",
+    external: true,
+  },
 ];
 
 export default function CTA() {
@@ -37,59 +57,50 @@ export default function CTA() {
   return (
     <section className={styles.section} id="lien-he" aria-label={t("home.contactAria")}>
       <div className={`${styles.container} ${styles.shell}`}>
-        <header className={styles.headline}>
-          <h2 className={styles.title}>{t("home.contactTitle")}</h2>
-          <button
-            type="button"
-            className={`${styles.scrollBtn} ${showForm ? styles.scrollBtnOpen : ""}`}
-            aria-expanded={showForm}
-            aria-label={showForm ? t("home.closeForm") : t("home.openForm")}
-            onClick={toggleFormFromArrow}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M12 5v14M5 13l7 7 7-7"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </header>
+        <div className={styles.leftColumn}>
+          <div className={styles.topBody}>
+            <header className={styles.headline}>
+              <h2 className={styles.title}>{t("home.contactTitle")}</h2>
+              <button
+                type="button"
+                className={`${styles.scrollBtn} ${showForm ? styles.scrollBtnOpen : ""}`}
+                aria-expanded={showForm}
+                aria-label={showForm ? t("home.closeForm") : t("home.openForm")}
+                onClick={toggleFormFromArrow}
+              >
+                <svg
+                  className={styles.scrollBtnIcon}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 5v14M5 13l7 7 7-7"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </header>
 
-        <aside
-          className={`${styles.formSlot} ${showForm ? styles.formSlotOpen : ""}`}
-          aria-label={t("home.formAria")}
-        >
-          {showForm ? (
-            <ContactFormBlock
-              formRef={formRef}
-              source="homepage_cta"
-              hideTitle
-              cardClassName={contactStyles.formCardCta}
-            />
-          ) : null}
-        </aside>
+            <nav className={styles.quickLinks} aria-label={t("home.quickLinksAria")}>
+              {QUICK_LINKS.map((item) => (
+                <Link key={item.to} className={styles.quickLink} to={item.to}>
+                  {t(item.labelKey)}
+                </Link>
+              ))}
+            </nav>
+          </div>
 
-        <div className={styles.leftRest}>
-          <nav className={styles.quickLinks} aria-label={t("home.quickLinksAria")}>
-            {QUICK_LINKS.map((item) => (
-              <Link key={item.to} className={styles.quickLink} to={item.to}>
-                {t(item.labelKey)}
-              </Link>
-            ))}
-          </nav>
-          <div className={styles.company}>
-            <div className={styles.companyTitle}>SVN AUTOMATION CO., LTD</div>
-            <p className={styles.companyLine}>{t("home.contactAddress")}</p>
-            <p className={styles.companyLine}>{t("home.contactPhone")}</p>
+          <div className={styles.bottomBody}>
+            <div className={styles.company}>
+              <div className={styles.companyTitle}>SVN AUTOMATION CO., LTD</div>
+              <p className={styles.companyLine}>{t("home.contactAddress")}</p>
+              <p className={styles.companyLine}>{t("home.contactPhone")}</p>
+            </div>
+
             <Link className={styles.contactBtn} to="/lien-he">
               <span className={styles.btnIcon} aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -104,71 +115,51 @@ export default function CTA() {
               </span>
               {t("home.contactUsBtn")}
             </Link>
-          </div>
 
-          <hr className={styles.rule} />
+            <hr className={styles.rule} />
 
-          <div className={styles.bottomRow}>
-            <p className={styles.copy}>{t("home.copyright")}</p>
-            <div className={styles.socialRow} aria-label={t("home.socialAria")}>
-              <a
-                className={styles.social}
-                href="https://www.facebook.com/SVNAutomation"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M13.5 22v-9h3l.5-4h-4V7.5c0-1.16.32-2 2.44-2H17V2.14C16.39 2.05 14.59 2 12.6 2 8.52 2 6 4.16 6 7.36V9H3v4h3v9h4.5z"
-                  />
-                </svg>
-              </a>
-              <a className={styles.social} href="#" aria-label="LinkedIn">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M6.94 6.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM5 22V8h4v14H5zm6 0V13.2c0-2.12 2.06-2.87 3.2-1.55l.3.35V22h4v-8.9c0-3.45-3.22-4.42-5.6-2.03L15 11V8h-4v14z"
-                  />
-                </svg>
-              </a>
-              <a
-                className={styles.social}
-                href="https://www.youtube.com/@SVNAutomationCompanyLimited"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M21.6 7.2s-.2-1.4-.8-2c-.8-.8-1.7-.8-2.1-.9C16 4 12 4 12 4s-4 0-6.7.3c-.4 0-1.3.1-2.1.9-.6.6-.8 2-.8 2S2 8.9 2 10.6v1.8c0 1.7.2 3.4.2 3.4s.2 1.4.8 2c.8.8 1.9.8 2.4.9 1.8.2 7.6.3 7.6.3s4 0 6.7-.3c.4 0 1.3-.1 2.1-.9.6-.6.8-2 .8-2s.2-1.7.2-3.4v-1.8c0-1.7-.2-3.4-.2-3.4zM10 14.5v-7l6 3.5-6 3.5z"
-                  />
-                </svg>
-              </a>
+            <div className={styles.bottomRow}>
+              <p className={styles.copy}>{t("home.copyright")}</p>
+              <div className={styles.socialRow} aria-label={t("home.socialAria")}>
+                {SOCIAL_LINKS.map(({ href, label, icon, external }) => (
+                  <a
+                    key={label}
+                    className={styles.social}
+                    href={href}
+                    aria-label={label}
+                    {...(external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                  >
+                    <img
+                      className={styles.socialIcon}
+                      src={icon}
+                      alt=""
+                      width={24}
+                      height={24}
+                      loading="lazy"
+                      draggable={false}
+                    />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        {!showForm ? (
-          <div className={styles.rightRest} aria-hidden="true" />
-        ) : null}
+        <aside
+          className={`${styles.formSlot} ${showForm ? styles.formSlotOpen : ""}`}
+          aria-label={t("home.formAria")}
+        >
+          {showForm ? (
+            <ContactFormBlock
+              formRef={formRef}
+              source="homepage_cta"
+              hideTitle
+              cardClassName={contactStyles.formCardCta}
+            />
+          ) : null}
+        </aside>
       </div>
     </section>
   );

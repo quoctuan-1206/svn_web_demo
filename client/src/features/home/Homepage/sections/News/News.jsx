@@ -60,8 +60,10 @@ export default function News() {
                 className={styles.titleLink}
                 aria-label={t("home.newsLinkAria")}
               >
-                {t("home.newsTitlePrefix")}{" "}
                 <span className={styles.headingPrimary}>
+                  {t("home.newsTitlePrefix")}
+                </span>{" "}
+                <span className={styles.headingSecondary}>
                   {t("home.newsTitleHighlight")}
                 </span>
               </Link>
@@ -81,7 +83,11 @@ export default function News() {
               className={`${styles.item} ${styles.itemLink}`}
             >
               <div className={styles.date}>
-                {formatLocaleDate(p.publishedAt || p.date)}
+                {formatLocaleDate(p.publishedAt || p.date, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </div>
               <h3 className={styles.itemTitle}>
                 {String(title || "")

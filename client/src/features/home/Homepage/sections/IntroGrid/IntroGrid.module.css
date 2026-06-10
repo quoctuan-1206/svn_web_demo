@@ -4,7 +4,7 @@
   height: 100%;
   /* Khe đều giữa ảnh (ngang + dọc) — giống masonry grid trong mockup */
   --gap: 14px;
-  --intro-tilt: -7deg;
+  --intro-tilt: -10deg;
   overflow: hidden;
   background: #0f1216;
   display: flex;
@@ -117,17 +117,18 @@
   text-align: center;
   max-width: min(920px, 92vw);
   color: #f3f6fb;
-  font-family: var(--font-display);
+  font-family: "Inter", sans-serif;
   text-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
   transform: translate(-50%, -50%) rotate(var(--intro-tilt));
 }
 
 .title {
   margin: 0;
-  font-size: clamp(24px, 3.6vw, 44px);
+  font-family: "Inter", sans-serif;
+  font-size: 33px;
+  line-height: 1.3;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  font-family: var(--font-display);
+  letter-spacing: 0.02em;
 }
 
 @keyframes introScrollLeft {
@@ -158,7 +159,7 @@
 @media (max-width: 768px) {
   .section {
     --gap: 12px;
-    --intro-tilt: -5deg;
+    --intro-tilt: -10deg;
   }
 
   .marquee {
@@ -180,7 +181,7 @@
 @media (max-width: 420px) {
   .section {
     --gap: 10px;
-    --intro-tilt: -4deg;
+    --intro-tilt: -10deg;
   }
 
   .marquee {
@@ -205,6 +206,8 @@
   }
 
   .title {
-    letter-spacing: 0.06em;
+    font-size: 33px;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
   }
 }

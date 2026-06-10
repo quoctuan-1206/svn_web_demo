@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./LanguageSwitcher.module.css";
 
+const GLOBE_ICON_SRC = "/images/traidat.png";
+
 const LANGUAGES = [
   { code: "vi", labelKey: "header.langVi" },
   { code: "en", labelKey: "header.langEn" },
@@ -37,7 +39,15 @@ export default function LanguageSwitcher() {
         aria-haspopup="listbox"
         onClick={() => setOpen((v) => !v)}
       >
-        {current} ▾
+        <img
+          className={styles.globeIcon}
+          src={GLOBE_ICON_SRC}
+          alt=""
+          width={28}
+          height={28}
+          aria-hidden="true"
+        />
+        <span className={styles.langLabel}>{current}</span>
       </button>
       {open ? (
         <ul className={styles.menu} role="listbox" aria-label={t("header.langMenu")}>

@@ -6,10 +6,10 @@ import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import { useHomepageSection } from "../../../context/HomepageSectionContext";
 
 const LOGO_SRC = "/images/SVN1.png";
-const SEARCH_ICON_SRC = "/images/search.png";
+const SEARCH_ICON_SRC = "/images/kinhlup.png";
 
 const NAV_ITEMS = [
-  { to: "/ve-chung-toi", labelKey: "nav.about" },
+  { to: "/ve-chung-toi", labelKey: "nav.svn", accent: true },
   { to: "/san-pham", labelKey: "nav.products", sectionId: "san-pham" },
   { to: "/giai-phap", labelKey: "nav.solutions", sectionId: "giai-phap" },
   { to: "/doi-tac", labelKey: "nav.partners", sectionId: "doi-tac" },
@@ -80,7 +80,7 @@ export default function Header() {
             <button
               key={item.to}
               type="button"
-              className={`${styles.link} ${
+              className={`${styles.link} ${item.accent ? styles.linkAccent : ""} ${
                 isHomepage
                   ? activeSectionId && item.sectionId === activeSectionId
                     ? styles.active
@@ -98,6 +98,7 @@ export default function Header() {
         </nav>
 
         <div className={styles.controls}>
+
           <Link
             className={styles.searchLink}
             to="/tim-kiem"
