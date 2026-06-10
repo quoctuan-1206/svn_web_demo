@@ -256,3 +256,85 @@
     font-size: 16px;
   }
 }
+
+@media (min-width: 1915px) {
+  .section :global(.container) {
+    max-width: calc(1200px * var(--hp-scale-w));
+  }
+
+  .titleRow {
+    gap: calc(12px * var(--hp-scale-w));
+    margin-bottom: calc(12px * var(--hp-scale-y));
+    padding-top: calc(50px * var(--hp-scale-y));
+  }
+
+  .headingLink {
+    font-size: calc(33px * var(--hp-scale-y));
+  }
+
+  .sub {
+    margin: calc(6px * var(--hp-scale-y)) 0 0;
+    font-size: calc(19px * var(--hp-scale-y));
+  }
+
+  .viewport {
+    margin-top: clamp(
+      calc(36px * var(--hp-scale-y)),
+      calc(5vw * var(--hp-scale-w)),
+      calc(64px * var(--hp-scale-y))
+    );
+    padding: calc(6px * var(--hp-scale-y))
+      clamp(
+        calc(20px * var(--hp-scale-w)),
+        calc(5vw * var(--hp-scale-w)),
+        calc(69px * var(--hp-scale-w))
+      )
+      calc(14px * var(--hp-scale-y));
+    scroll-padding-inline: clamp(
+      calc(20px * var(--hp-scale-w)),
+      calc(5vw * var(--hp-scale-w)),
+      calc(69px * var(--hp-scale-w))
+    );
+  }
+
+  .track {
+    gap: clamp(
+      calc(24px * var(--hp-scale-w)),
+      calc(5vw * var(--hp-scale-w)),
+      calc(102px * var(--hp-scale-w))
+    );
+  }
+
+  .card {
+    width: calc(365px * var(--hp-scale-w));
+    height: calc(409px * var(--hp-scale-y));
+    border-radius: calc(8px * var(--hp-scale-y));
+  }
+
+  .overlay,
+  .panel {
+    height: calc(204px * var(--hp-scale-y));
+  }
+
+  .panel {
+    padding: calc(18px * var(--hp-scale-y)) calc(20px * var(--hp-scale-w))
+      calc(16px * var(--hp-scale-y));
+  }
+
+  .cardTitle {
+    font-size: calc(21px * var(--hp-scale-y));
+  }
+
+  .divider {
+    margin: calc(10px * var(--hp-scale-y)) 0 calc(12px * var(--hp-scale-y));
+  }
+
+  .cardDesc {
+    font-size: calc(14px * var(--hp-scale-y));
+  }
+
+  .cardLink {
+    gap: calc(4px * var(--hp-scale-y));
+    font-size: calc(12px * var(--hp-scale-y));
+  }
+}

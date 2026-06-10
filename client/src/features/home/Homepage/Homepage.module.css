@@ -4,6 +4,13 @@ body:has([data-homepage-fullpage]) {
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   scroll-padding: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html:has([data-homepage-fullpage])::-webkit-scrollbar,
+body:has([data-homepage-fullpage])::-webkit-scrollbar {
+  display: none;
 }
 
 body:has([data-homepage-fullpage]) {
@@ -15,6 +22,28 @@ body:has([data-homepage-fullpage]) {
   width: 100%;
   background: #ffffff;
   --homepage-header-h: 56px;
+  /* Baseline thiết kế: 1915×970. 27" QHD (2560×1440): scale tối đa theo tỷ lệ. */
+  --hp-ref-w: 1915;
+  --hp-ref-h: 970;
+  --hp-target-w: 2560;
+  --hp-target-h: 1440;
+  --hp-scale-w: 1;
+  --hp-scale-y: 1;
+}
+
+@media (min-width: 1915px) {
+  .page {
+    --hp-scale-w: clamp(
+      1,
+      100vw / (var(--hp-ref-w) * 1px),
+      calc(var(--hp-target-w) / var(--hp-ref-w))
+    );
+    --hp-scale-y: clamp(
+      1,
+      100dvh / (var(--hp-ref-h) * 1px),
+      calc(var(--hp-target-h) / var(--hp-ref-h))
+    );
+  }
 }
 
 /* Mỗi section = đúng 1 màn hình, không cộng padding làm vượt viewport */
@@ -120,4 +149,41 @@ body:has([data-homepage-fullpage]) {
 
 .page > section#lien-he p {
   font-size: 13px;
+}
+
+@media (min-width: 1915px) {
+  .page > section:not(#hero) :global(.container) {
+    padding-top: calc((var(--homepage-header-h) + 20px) * var(--hp-scale-y));
+    padding-bottom: calc(24px * var(--hp-scale-y));
+  }
+
+  :global(.sectionRouteBtn) {
+    height: calc(34px * var(--hp-scale-y));
+    padding: 0 calc(16px * var(--hp-scale-w));
+    font-size: calc(12px * var(--hp-scale-y));
+    box-shadow:
+      0 calc(8px * var(--hp-scale-y)) calc(20px * var(--hp-scale-y))
+        rgba(0, 0, 0, 0.28),
+      0 0 0 calc(3px * var(--hp-scale-y)) rgba(0, 230, 118, 0.14);
+  }
+
+  .page > section#lien-he {
+    padding-bottom: clamp(
+      calc(12px * var(--hp-scale-y)),
+      2.5dvh,
+      calc(28px * var(--hp-scale-y))
+    );
+  }
+
+  .page > section#lien-he :global(.container) {
+    padding-bottom: calc(12px * var(--hp-scale-y));
+  }
+
+  .page > section h1 {
+    font-size: calc(64px * var(--hp-scale-y));
+  }
+
+  .page > section#lien-he p {
+    font-size: calc(13px * var(--hp-scale-y));
+  }
 }

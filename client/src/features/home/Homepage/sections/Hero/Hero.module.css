@@ -40,3 +40,21 @@
   letter-spacing: 0.02em;
   text-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
+
+@media (min-width: 1915px) {
+  .titleRow {
+    top: calc(24px * var(--hp-scale-y));
+    left: calc(24px * var(--hp-scale-w));
+    gap: calc(12px * var(--hp-scale-w));
+  }
+
+  .title {
+    font-size: clamp(
+      calc(22px * var(--hp-scale-y)),
+      calc(3vw * var(--hp-scale-w)),
+      calc(34px * var(--hp-scale-y))
+    );
+    text-shadow: 0 calc(10px * var(--hp-scale-y)) calc(30px * var(--hp-scale-y))
+      rgba(0, 0, 0, 0.45);
+  }
+}
