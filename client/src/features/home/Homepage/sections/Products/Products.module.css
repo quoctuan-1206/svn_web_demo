@@ -6,11 +6,18 @@
 
   /* nền trắng */
   background-color: #f3fbf6;
-  background-image: url("/images/bgsanpham.png");
+  background-image: url("/images/bgsp.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   color: #0a0a0a;
+}
+
+.section :global(.container) {
+  max-width: 920px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .titleRow {
@@ -48,10 +55,10 @@
 }
 
 .headingLink {
-  font-family: var(--font-display);
-  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
   letter-spacing: 0.01em;
-  font-size: clamp(34px, 4vw, 56px);
+  font-size: 33px;
   line-height: 1.05;
   text-decoration: none;
   color: inherit;
@@ -83,10 +90,11 @@
 
 .sub {
   margin: 6px 0 0;
+  font-family: "Inter", sans-serif;
   text-align: center;
-  color: #334155;
-  font-size: 24px;
-  font-weight: 500;
+  color: #000000;
+  font-size: 19px;
+  font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: none;
 }
@@ -97,14 +105,12 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 229px);
-  gap: 22px;
+  grid-template-columns: repeat(4, 215px);
+  gap: 20px;
   align-items: stretch;
-  margin-top: 126px;
   justify-content: center;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-top: 128px;
+  width: 100%;
 }
 
 /* =========================
@@ -114,9 +120,8 @@
 .card {
   position: relative;
 
-  width: 229px;
-  height: auto;
-  aspect-ratio: 229 / 365;
+  width: 215px;
+  height: 344px;
 
   border-radius: 18px;
 
@@ -186,9 +191,10 @@
   margin: 0;
   white-space: pre-line;
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
   letter-spacing: 0.02em;
-  color: #0a0a0a;
-  font-size: 18px;
+  color: white;
+  font-size: 21px;
   line-height: 1.15;
 }

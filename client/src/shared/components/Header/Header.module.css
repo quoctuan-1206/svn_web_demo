@@ -6,6 +6,8 @@
   z-index: 50;
   height: 56px;
   padding: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
   background: rgba(10, 10, 10, 0.92);
   backdrop-filter: blur(14px);
   transition:
@@ -37,6 +39,7 @@
   border: 0;
   cursor: pointer;
   padding: 0;
+  text-decoration: none;
 }
 
 .logo {
@@ -60,10 +63,13 @@
 }
 
 .link {
-  font-family: var(--font-display);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
-  font-weight: 350;
-  letter-spacing: 0.5px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
   padding: 6px 12px;
   background: transparent;
   border: 1px solid transparent;
@@ -76,8 +82,21 @@
   color: var(--white);
 }
 
-.active {
+.active:not(.linkAccent) {
   color: var(--green);
+}
+
+.linkAccent {
+  color: #75c01f;
+}
+
+.linkAccent:hover {
+  color: #75c01f;
+  opacity: 0.88;
+}
+
+.linkAccent.active {
+  color: #75c01f;
 }
 
 .searchLink {
@@ -93,38 +112,25 @@
 }
 
 .searchIcon {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
   display: block;
   object-fit: contain;
-  filter: brightness(0) invert(1);
+  flex-shrink: 0;
 }
 
 .searchText {
-  font-family: var(--font-display);
+  font-family: "Inter", sans-serif;
   font-size: 16px;
-  font-weight: 200;
+  font-weight: 400;
   letter-spacing: 0.02em;
   color: var(--white-dim);
 }
 
-.langBtn {
-  font-family: var(--font-display);
-  font-size: 16px;
-  background: transparent;
-  border: 0;
-  color: var(--white-dim);
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 300;
-  transition:
-    color 160ms ease,
-    background 160ms ease;
-}
-
-.langBtn:hover {
-  color: var(--green);
+.header .controls button,
+.header .controls a {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
 }
 
 .burger {
@@ -189,5 +195,9 @@
 
   .searchLink {
     padding: 8px 12px;
+  }
+
+  .searchText {
+    display: none;
   }
 }

@@ -12,6 +12,13 @@
   background-repeat: no-repeat;
 }
 
+.section :global(.container) {
+  max-width: 984px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .header {
   text-align: center;
   margin-bottom: 72px;
@@ -21,10 +28,10 @@
 
 .title {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: Inter, sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
-  font-size: clamp(42px, 4vw, 58px);
+  font-size: 33px;
   line-height: 1.05;
   color: #000;
   padding-top: 50px;
@@ -57,23 +64,77 @@
   width: 100%;
 }
 
-.centerGlobe {
+.globeCanvas {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  width: clamp(200px, 28vw, 400px);
-  height: auto;
-  object-fit: contain;
+  box-sizing: border-box;
+  width: min(400px, 42vw);
+  height: min(400px, 42vw);
+  max-width: 400px;
+  max-height: 400px;
+  overflow: hidden;
   pointer-events: none;
 }
+
+.globeImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 3D globe model styles (commented out)
+.globeCanvas {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(245, 247, 250, 0.55) 55%,
+    transparent 72%
+  );
+}
+
+.globeCanvas:active {
+  cursor: grabbing;
+}
+
+.globeCanvas > * {
+  width: 100%;
+  height: 100%;
+}
+
+.globeCanvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.globeFallback {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+*/
 
 .item {
   text-align: center;
 }
 
 .item:nth-child(3) {
+  position: relative;
+  left: -90px;
+  justify-self: start;
+  text-align: center;
+}
+.item:nth-child(4) {
+  position: relative;
+  left: 90px;
   justify-self: start;
   text-align: center;
 }
@@ -93,14 +154,21 @@
   object-fit: contain;
 }
 
+.item:nth-child(1) .itemLogo {
+  width: 123px;
+  height: 38px;
+  max-width: 123px;
+  max-height: 38px;
+}
+
 .itemTitle,
 .itemSub {
-  font-family: var(--font-display);
+  font-family: Inter, sans-serif;
   font-weight: 500;
-  color: #1e293b;
-  letter-spacing: -0.02em;
-  font-size: clamp(13px, 0.9vw, 18px);
-  line-height: 1.22;
+  color: #a6a6a6;
+  letter-spacing: 0%;
+  font-size: 14px;
+  line-height: 100%;
 }
 
 .itemSub {
@@ -118,11 +186,12 @@
 .cta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-
-  color: #5cab2f;
-  font-weight: 600;
-  font-size: 24px;
+  gap: 4px;
+  font-family: Inter, sans-serif;
+  color: #75c01f;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1;
 
   text-decoration: none;
   transition:
@@ -136,14 +205,17 @@
 }
 
 .ctaArrow {
-  font-size: 34px;
+  font-size: inherit;
+  font-weight: inherit;
   line-height: 1;
 }
 
 @media (max-width: 900px) {
-  .centerGlobe {
-    width: clamp(160px, 42vw, 280px);
-    opacity: 0.35;
+  .globeCanvas {
+    width: min(280px, 72vw);
+    height: min(280px, 72vw);
+    max-width: 280px;
+    max-height: 280px;
   }
 
   .item:nth-child(3),
