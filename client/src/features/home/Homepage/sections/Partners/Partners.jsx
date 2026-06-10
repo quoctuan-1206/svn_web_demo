@@ -100,7 +100,7 @@ const PARTNER_ITEMS = [
   },
   {
     lines: ["The World Leader In", "Force Measurement"],
-    logo: "/images/Interface.png",
+    logo: "/images/ITF.png",
     logoAlt: "The World Leader In Force Measurement",
   },
   {
@@ -110,17 +110,17 @@ const PARTNER_ITEMS = [
   },
   {
     lines: ["Leading Global Material", "Control System (MCS) Software"],
-    logo: "/images/Romaric.png",
+    logo: "/images/RC.png",
     logoAlt: "Leading Global Material Control System (MCS) Software",
   },
   {
     lines: ["Leading Around The Globe", "In Torque Products"],
-    logo: "/images/Mountz.png",
+    logo: "/images/MZ.png",
     logoAlt: "Leading Around The Globe In Torque Products",
   },
   {
     lines: ["SCADA Visualization", "Software"],
-    logo: "/images/Microsys.png",
+    logo: "/images/MCS.png",
     logoAlt: "SCADA Visualization Software",
   },
 ];
