@@ -9,8 +9,8 @@ const router = express.Router();
 router.get('/', optionalAuth, newsController.list);
 router.get('/:id', optionalAuth, newsController.getById);
 
-router.post('/', authMiddleware, singleImage('image'), newsController.create);
-router.put('/:id', authMiddleware, singleImage('image'), newsController.update);
+router.post('/', authMiddleware, ...singleImage('image'), newsController.create);
+router.put('/:id', authMiddleware, ...singleImage('image'), newsController.update);
 router.delete('/:id', authMiddleware, newsController.remove);
 
 module.exports = router;

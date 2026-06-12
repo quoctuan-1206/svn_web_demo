@@ -1,70 +1,43 @@
 const express = require('express');
-const fs = require('fs').promises;
-const path = require('path');
 
 const asyncHandler = require('../utils/asyncHandler');
 const { httpError } = require('../utils/httpError');
 const authMiddleware = require('../middleware/authMiddleware');
 const { arrayImages } = require('../middleware/handleUpload');
 const upload = require('../middleware/uploadMiddleware');
+const cloudinaryService = require('../services/cloudinaryService');
 const { unlinkUploadedImage } = require('../utils/uploadUtils');
 
 const router = express.Router();
 const MAX_FILES = 20;
 const MAX_LIST = 500;
-const ALLOWED_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+
+function requireCloudinary() {
+  if (!cloudinaryService.isConfigured()) {
+    throw httpError(
+      503,
+      'CLOUDINARY_URL chưa cấu hình. Thêm biến môi trường Cloudinary trên server.',
+    );
+  }
+}
 
 router.get(
   '/images',
   authMiddleware,
   asyncHandler(async (req, res) => {
+    requireCloudinary();
+
     const limit = Math.min(MAX_LIST, Math.max(1, parseInt(req.query?.limit, 10) || 200));
     const offset = Math.max(0, parseInt(req.query?.offset, 10) || 0);
-
-    let entries = [];
-    try {
-      entries = await fs.readdir(upload.UPLOAD_DIR, { withFileTypes: true });
-    } catch (err) {
-      if (err?.code !== 'ENOENT') {
-        throw httpError(500, 'Failed to read uploads');
-      }
-      return res.json({ items: [], total: 0 });
-    }
-
-    const files = entries
-      .filter((entry) => entry.isFile())
-      .map((entry) => entry.name)
-      .filter((name) => ALLOWED_EXT.has(path.extname(name).toLowerCase()));
-
-    const stats = await Promise.all(
-      files.map(async (name) => {
-        try {
-          const stat = await fs.stat(path.join(upload.UPLOAD_DIR, name));
-          return {
-            name,
-            size: stat.size,
-            mtime: stat.mtimeMs,
-            url: upload.publicUploadUrl(name),
-          };
-        } catch {
-          return null;
-        }
-      }),
-    );
-
-    const items = stats.filter(Boolean).sort((a, b) => b.mtime - a.mtime);
-
-    res.json({
-      items: items.slice(offset, offset + limit),
-      total: items.length,
-    });
+    const { items, total } = await cloudinaryService.listImages({ limit, offset });
+    res.json({ items, total });
   }),
 );
 
 router.post(
   '/images',
   authMiddleware,
-  arrayImages('images', MAX_FILES),
+  ...arrayImages('images', MAX_FILES),
   asyncHandler(async (req, res) => {
     const files = req.files || [];
     if (!files.length) {
@@ -74,7 +47,11 @@ router.post(
       );
     }
 
-    const urls = files.map((file) => upload.publicUploadUrl(file.filename));
+    const urls = files.map((file) => upload.resolveUploadedImageUrl(file)).filter(Boolean);
+    if (!urls.length) {
+      throw httpError(500, 'Upload lên Cloudinary thất bại');
+    }
+
     res.status(201).json({ urls });
   }),
 );
@@ -83,6 +60,8 @@ router.post(
   '/cleanup',
   authMiddleware,
   asyncHandler(async (req, res) => {
+    requireCloudinary();
+
     const urls = Array.isArray(req.body?.urls) ? req.body.urls : [];
     if (!urls.length) throw httpError(400, 'urls is required');
     if (urls.length > 50) throw httpError(400, 'too many urls');

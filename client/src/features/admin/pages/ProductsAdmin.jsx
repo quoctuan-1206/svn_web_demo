@@ -684,8 +684,8 @@ export default function ProductsAdmin() {
       </div>
 
       <div className="text-xs text-slate-500">
-        Tip: API ảnh trả từ backend dạng{" "}
-        <span className="font-mono">/uploads/...</span> hoặc URL đầy đủ.
+        Ảnh admin được lưu trên Cloudinary (URL dạng{" "}
+        <span className="font-mono">res.cloudinary.com/...</span>).
       </div>
     </div>
   );

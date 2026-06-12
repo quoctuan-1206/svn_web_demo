@@ -33,7 +33,14 @@ Sau khi cài, mặc định MongoDB chạy tại: `mongodb://localhost:27017`
 PORT=3001
 MONGODB_URI=mongodb://localhost:27017/svn_automation
 JWT_SECRET=your_secret_key_here
+CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
 ```
+
+> **Cloudinary (bắt buộc):** mọi ảnh admin (sản phẩm, giải pháp, tin tức, editor) upload lên Cloudinary. Thêm vào `server/.env`:
+> ```
+> CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+> ```
+> Trên Render: Environment → `CLOUDINARY_URL`. Không commit secret vào git.
 
 > Nếu dùng Atlas thì thay `MONGODB_URI` bằng connection string ở trên.
 

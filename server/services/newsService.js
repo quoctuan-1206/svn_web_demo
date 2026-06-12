@@ -5,6 +5,7 @@ const { uniqueSlug } = require('../utils/slug');
 const { httpError } = require('../utils/httpError');
 const { parsePagination, paginatedResult } = require('../utils/pagination');
 const { unlinkUploadedImage, normalizeImageForResponse } = require('../utils/uploadUtils');
+const { resolveUploadedImageUrl } = require('../middleware/uploadMiddleware');
 const {
   buildEnglishFields,
   shouldAutoTranslate,
@@ -132,7 +133,12 @@ async function createNews({ body, file, publicUploadUrl }) {
     slug: await uniqueSlug(News, title, 'news'),
     excerpt: vi.excerpt || undefined,
     content: vi.content || undefined,
-    image: file ? publicUploadUrl(file.filename) : undefined,
+    image: (() => {
+      if (!file) return undefined;
+      const imageUrl = resolveUploadedImageUrl(file);
+      if (!imageUrl) throw httpError(500, 'Upload lên Cloudinary thất bại');
+      return imageUrl;
+    })(),
     gallery: gallery?.length ? gallery : undefined,
     publishedAt: parsePublishedAt(publishedAt),
     isPublished: parseBool(body?.isPublished, false),
@@ -188,8 +194,10 @@ async function updateNews({ id, body, file, publicUploadUrl, uploadDir }) {
   }
 
   if (file) {
+    const imageUrl = resolveUploadedImageUrl(file);
+    if (!imageUrl) throw httpError(500, 'Upload lên Cloudinary thất bại');
     const prevImage = existing.image;
-    existing.image = publicUploadUrl(file.filename);
+    existing.image = imageUrl;
     await unlinkUploadedImage({ uploadDir, imageUrl: prevImage });
   }
 

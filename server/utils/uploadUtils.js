@@ -1,8 +1,10 @@
 const path = require('path');
 const fs = require('fs').promises;
+const cloudinaryService = require('../services/cloudinaryService');
 
 function filenameFromImageUrl(imageUrl) {
   if (!imageUrl || typeof imageUrl !== 'string') return null;
+  if (cloudinaryService.isCloudinaryUrl(imageUrl)) return null;
   const marker = '/uploads/';
   const i = imageUrl.indexOf(marker);
   const raw = i !== -1 ? imageUrl.slice(i + marker.length) : path.basename(imageUrl);
@@ -12,6 +14,13 @@ function filenameFromImageUrl(imageUrl) {
 }
 
 async function unlinkUploadedImage({ uploadDir, imageUrl }) {
+  if (!imageUrl) return;
+
+  if (cloudinaryService.isCloudinaryUrl(imageUrl)) {
+    await cloudinaryService.destroyByUrl(imageUrl);
+    return;
+  }
+
   const filename = filenameFromImageUrl(imageUrl);
   if (!filename) return;
   const filePath = path.join(uploadDir, filename);
@@ -33,4 +42,3 @@ module.exports = {
   unlinkUploadedImage,
   normalizeImageForResponse,
 };
-

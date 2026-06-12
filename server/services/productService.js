@@ -4,6 +4,7 @@ const { isObjectId } = require('../utils/mongo');
 const { uniqueSlug } = require('../utils/slug');
 const { httpError } = require('../utils/httpError');
 const { unlinkUploadedImage, normalizeImageForResponse } = require('../utils/uploadUtils');
+const { resolveUploadedImageUrl } = require('../middleware/uploadMiddleware');
 const {
   buildEnglishFields,
   shouldAutoTranslate,
@@ -72,7 +73,12 @@ async function createProduct({ body, file, publicUploadUrl }) {
     category: category || undefined,
     order: parseNumber(body?.order, 0),
     isActive: parseBool(body?.isActive, true),
-    image: file ? publicUploadUrl(file.filename) : undefined,
+    image: (() => {
+      if (!file) return undefined;
+      const imageUrl = resolveUploadedImageUrl(file);
+      if (!imageUrl) throw httpError(500, 'Upload lên Cloudinary thất bại');
+      return imageUrl;
+    })(),
   });
 
   return mapProductItem({ publicUploadUrl, item: doc.toObject() });
@@ -102,8 +108,12 @@ async function updateProduct({ id, body, file, publicUploadUrl, uploadDir }) {
   if (body?.isActive !== undefined) existing.isActive = parseBool(body.isActive, existing.isActive);
 
   if (file) {
+    const imageUrl = resolveUploadedImageUrl(file);
+    if (!imageUrl) {
+      throw httpError(500, 'Upload lên Cloudinary thất bại');
+    }
     const prevImage = existing.image;
-    existing.image = publicUploadUrl(file.filename);
+    existing.image = imageUrl;
     await unlinkUploadedImage({ uploadDir, imageUrl: prevImage });
   }
 
