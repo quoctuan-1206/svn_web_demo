@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   CheckCircle,
   Eye,
+  Lightbulb,
   Mail,
   Newspaper,
   Package,
@@ -171,12 +172,20 @@ export default function Dashboard() {
   }, []);
 
   const stats = useMemo(() => {
-    const totalProducts = products.length;
+    const productItems = products.filter(
+      (p) => (p?.category || "product") === "product",
+    );
+    const solutionItems = products.filter((p) => p?.category === "solution");
+    const totalProducts = productItems.length;
+    const totalSolutions = solutionItems.length;
     const totalNews = news.length;
     const publishedNews = news.filter((n) => Boolean(n?.isPublished)).length;
-    const activeProducts = products.filter((p) => p?.isActive !== false).length;
+    const activeProducts = productItems.filter(
+      (p) => p?.isActive !== false,
+    ).length;
     return {
       totalProducts,
+      totalSolutions,
       totalNews,
       publishedNews,
       activeProducts,
@@ -186,6 +195,14 @@ export default function Dashboard() {
 
   const latestProducts = useMemo(() => {
     return [...products]
+      .filter((p) => (p?.category || "product") === "product")
+      .sort((a, b) => new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0))
+      .slice(0, 5);
+  }, [products]);
+
+  const latestSolutions = useMemo(() => {
+    return [...products]
+      .filter((p) => p?.category === "solution")
       .sort((a, b) => new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0))
       .slice(0, 5);
   }, [products]);
@@ -212,13 +229,20 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           <button
             type="button"
             onClick={() => navigate("/admin/products")}
             className="admin-button-primary inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
           >
             + Thêm sản phẩm
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/admin/solutions")}
+            className="admin-button-primary inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
+          >
+            + Thêm giải pháp
           </button>
           <button
             type="button"
@@ -236,13 +260,20 @@ export default function Dashboard() {
         </div>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           Icon={Package}
           iconBg="bg-emerald-100"
           iconColor="text-emerald-600"
           label="Tổng sản phẩm"
           value={loading ? "—" : stats.totalProducts}
+        />
+        <StatCard
+          Icon={Lightbulb}
+          iconBg="bg-violet-100"
+          iconColor="text-violet-600"
+          label="Tổng giải pháp"
+          value={loading ? "—" : stats.totalSolutions}
         />
         <StatCard
           Icon={Newspaper}
@@ -274,7 +305,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-3">
         <TableCard
           title="5 sản phẩm mới nhất"
           right={
@@ -290,6 +321,39 @@ export default function Dashboard() {
           <SimpleTable
             rows={latestProducts}
             emptyText={loading ? "Đang tải..." : "Chưa có sản phẩm nào"}
+            renderRow={(p) => (
+              <tr key={p?._id || p?.id} className="text-sm text-slate-700">
+                <td className="font-semibold text-slate-900">
+                  {p?.title || "(Không tên)"}
+                </td>
+                <td className="text-slate-600">{formatDate(p?.createdAt)}</td>
+                <td>
+                  {p?.isActive === false ? (
+                    <StatusBadge tone="red">Inactive</StatusBadge>
+                  ) : (
+                    <StatusBadge tone="orange">Active</StatusBadge>
+                  )}
+                </td>
+              </tr>
+            )}
+          />
+        </TableCard>
+
+        <TableCard
+          title="5 giải pháp mới nhất"
+          right={
+            <button
+              type="button"
+              onClick={() => navigate("/admin/solutions")}
+              className="text-xs font-semibold text-teal-700 hover:text-teal-800"
+            >
+              Xem tất cả
+            </button>
+          }
+        >
+          <SimpleTable
+            rows={latestSolutions}
+            emptyText={loading ? "Đang tải..." : "Chưa có giải pháp nào"}
             renderRow={(p) => (
               <tr key={p?._id || p?.id} className="text-sm text-slate-700">
                 <td className="font-semibold text-slate-900">

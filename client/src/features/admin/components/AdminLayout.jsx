@@ -4,7 +4,8 @@ import AdminSidebar from "./AdminSidebar";
 import "../admin.css";
 
 function getTitleFromPath(pathname) {
-  if (pathname.startsWith("/admin/products")) return "Products";
+  if (pathname.startsWith("/admin/products")) return "Sản phẩm";
+  if (pathname.startsWith("/admin/solutions")) return "Giải pháp";
   if (pathname.startsWith("/admin/news")) return "News";
   if (pathname.startsWith("/admin/contacts")) return "Liên hệ";
   if (pathname.startsWith("/admin/dashboard")) return "Dashboard";

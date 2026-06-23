@@ -84,7 +84,8 @@ function AppShell() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="products" element={<ProductsAdmin />} />
+            <Route path="products" element={<ProductsAdmin fixedCategory="product" />} />
+            <Route path="solutions" element={<ProductsAdmin fixedCategory="solution" />} />
             <Route path="news" element={<NewsAdmin />} />
             <Route path="contacts" element={<ContactLeadsAdmin />} />
           </Route>

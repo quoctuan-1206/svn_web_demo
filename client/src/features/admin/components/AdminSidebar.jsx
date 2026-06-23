@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import {
   Inbox,
   LayoutDashboard,
+  Lightbulb,
   LogOut,
   Newspaper,
   Package,
@@ -11,7 +12,8 @@ import useAuth from "../hooks/useAuth";
 
 const navItems = [
   { label: "Dashboard", to: "/admin/dashboard", Icon: LayoutDashboard },
-  { label: "Products", to: "/admin/products", Icon: Package },
+  { label: "Sản phẩm", to: "/admin/products", Icon: Package },
+  { label: "Giải pháp", to: "/admin/solutions", Icon: Lightbulb },
   { label: "News", to: "/admin/news", Icon: Newspaper },
   { label: "Liên hệ", to: "/admin/contacts", Icon: Inbox },
 ];

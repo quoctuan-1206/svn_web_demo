@@ -45,22 +45,36 @@ function StatusBadge({ active }) {
   );
 }
 
-function CategoryBadge({ category }) {
-  const label =
-    category === "solution"
-      ? "Giải pháp"
-      : category === "product"
-        ? "Sản phẩm"
-        : "—";
-  const tone =
-    category === "solution"
-      ? "admin-badge-purple"
-      : category === "product"
-        ? "admin-badge-blue"
-        : "admin-badge-neutral";
-
-  return <span className={["admin-badge", tone].join(" ")}>{label}</span>;
-}
+const PAGE_LABELS = {
+  product: {
+    manageTitle: "Quản lý sản phẩm",
+    addButton: "+ Thêm sản phẩm",
+    addTitle: "Thêm sản phẩm",
+    editTitle: "Sửa sản phẩm",
+    createSubtitle: "Tạo mới sản phẩm",
+    imageLabel: "Ảnh sản phẩm",
+    statusHint: "Hiển thị / Ẩn sản phẩm",
+    emptyList: "Chưa có sản phẩm nào",
+    emptyAction: "+ Thêm sản phẩm",
+    listError: "Không tải được danh sách sản phẩm",
+    deleteConfirm: (title) => `Xóa sản phẩm "${title}"?`,
+    countLabel: (n) => `${n} sản phẩm`,
+  },
+  solution: {
+    manageTitle: "Quản lý giải pháp",
+    addButton: "+ Thêm giải pháp",
+    addTitle: "Thêm giải pháp",
+    editTitle: "Sửa giải pháp",
+    createSubtitle: "Tạo mới giải pháp",
+    imageLabel: "Ảnh giải pháp",
+    statusHint: "Hiển thị / Ẩn giải pháp",
+    emptyList: "Chưa có giải pháp nào",
+    emptyAction: "+ Thêm giải pháp",
+    listError: "Không tải được danh sách giải pháp",
+    deleteConfirm: (title) => `Xóa giải pháp "${title}"?`,
+    countLabel: (n) => `${n} giải pháp`,
+  },
+};
 
 function FieldLabel({ children }) {
   return (
@@ -68,8 +82,9 @@ function FieldLabel({ children }) {
   );
 }
 
-export default function ProductsAdmin() {
+export default function ProductsAdmin({ fixedCategory = "product" }) {
   const navigate = useNavigate();
+  const labels = PAGE_LABELS[fixedCategory] || PAGE_LABELS.product;
 
   const [view, setView] = useState("list"); // 'list' | 'form'
   const [loadingList, setLoadingList] = useState(false);
@@ -84,7 +99,6 @@ export default function ProductsAdmin() {
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [existingSlug, setExistingSlug] = useState("");
-  const [category, setCategory] = useState("product");
   const [order, setOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
   const [autoTranslateEn, setAutoTranslateEn] = useState(true);
@@ -185,7 +199,7 @@ export default function ProductsAdmin() {
       });
       const data = await resp.json().catch(() => null);
       if (!resp.ok) {
-        throw new Error(data?.message || "Không tải được danh sách sản phẩm");
+        throw new Error(data?.message || labels.listError);
       }
       setItems(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -194,6 +208,13 @@ export default function ProductsAdmin() {
       setLoadingList(false);
     }
   }
+
+  const filteredItems = useMemo(() => {
+    return items.filter((item) => {
+      const cat = item?.category || "product";
+      return cat === fixedCategory;
+    });
+  }, [items, fixedCategory]);
 
   useEffect(() => {
     fetchProducts();
@@ -207,7 +228,6 @@ export default function ProductsAdmin() {
     setExcerpt("");
     setContent("");
     setExistingSlug("");
-    setCategory("product");
     setOrder(0);
     setIsActive(true);
     setExistingImageUrl("");
@@ -227,7 +247,6 @@ export default function ProductsAdmin() {
     setExcerpt(item?.excerpt || "");
     setContent(item?.content || "");
     setExistingSlug(item?.slug || "");
-    setCategory(item?.category || "product");
     setOrder(Number.isFinite(Number(item?.order)) ? Number(item.order) : 0);
     setIsActive(item?.isActive !== false);
     setExistingImageUrl(item?.image || "");
@@ -245,7 +264,7 @@ export default function ProductsAdmin() {
     const id = item?._id || item?.id;
     if (!id) return;
 
-    const ok = window.confirm(`Xóa sản phẩm "${item?.title || ""}"?`);
+    const ok = window.confirm(labels.deleteConfirm(item?.title || ""));
     if (!ok) return;
 
     setError("");
@@ -284,7 +303,7 @@ export default function ProductsAdmin() {
     if (description) fd.append("description", description);
     fd.append("excerpt", excerpt ?? "");
     fd.append("content", content ?? "");
-    if (category) fd.append("category", category);
+    fd.append("category", fixedCategory);
     fd.append("order", String(order ?? 0));
     fd.append("isActive", String(Boolean(isActive)));
     if (imageFile) fd.append("image", imageFile);
@@ -326,10 +345,10 @@ export default function ProductsAdmin() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="text-xl font-bold text-slate-900">
-              {isEditing ? "Sửa sản phẩm" : "Thêm sản phẩm"}
+              {isEditing ? labels.editTitle : labels.addTitle}
             </div>
             <div className="mt-1 text-sm text-slate-500">
-              {isEditing ? `ID: ${editingId}` : "Tạo mới sản phẩm"}
+              {isEditing ? `ID: ${editingId}` : labels.createSubtitle}
             </div>
           </div>
 
@@ -420,28 +439,14 @@ export default function ProductsAdmin() {
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <FieldLabel>Danh mục</FieldLabel>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="admin-select h-11 w-full px-3 text-sm"
-                  >
-                    <option value="product">Sản phẩm</option>
-                    <option value="solution">Giải pháp</option>
-                  </select>
-                </div>
-
-                <div>
-                  <FieldLabel>Thứ tự</FieldLabel>
-                  <input
-                    type="number"
-                    value={order}
-                    onChange={(e) => setOrder(Number(e.target.value))}
-                    className="admin-input h-11 w-full px-3 text-sm"
-                  />
-                </div>
+              <div>
+                <FieldLabel>Thứ tự</FieldLabel>
+                <input
+                  type="number"
+                  value={order}
+                  onChange={(e) => setOrder(Number(e.target.value))}
+                  className="admin-input h-11 w-full px-3 text-sm"
+                />
               </div>
 
               <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
@@ -449,9 +454,7 @@ export default function ProductsAdmin() {
                   <div className="text-sm font-semibold text-slate-900">
                     Trạng thái
                   </div>
-                  <div className="text-xs text-slate-500">
-                    Hiển thị / Ẩn sản phẩm
-                  </div>
+                  <div className="text-xs text-slate-500">{labels.statusHint}</div>
                 </div>
                 <button
                   type="button"
@@ -503,7 +506,7 @@ export default function ProductsAdmin() {
 
           <div className="admin-card p-5">
             <div className="text-sm font-semibold text-slate-900">
-              Ảnh sản phẩm
+              {labels.imageLabel}
             </div>
             <div className="mt-3">
               <input
@@ -560,10 +563,12 @@ export default function ProductsAdmin() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="text-xl font-bold text-slate-900">
-            Quản lý sản phẩm
+            {labels.manageTitle}
           </div>
           <div className="mt-1 text-sm text-slate-500">
-            {loadingList ? "Đang tải..." : `${items.length} sản phẩm`}
+            {loadingList
+              ? "Đang tải..."
+              : labels.countLabel(filteredItems.length)}
           </div>
         </div>
 
@@ -580,7 +585,7 @@ export default function ProductsAdmin() {
             onClick={openCreate}
             className="admin-button-primary inline-flex h-10 items-center justify-center px-4 text-sm font-semibold"
           >
-            + Thêm sản phẩm
+            {labels.addButton}
           </button>
         </div>
       </div>
@@ -599,14 +604,13 @@ export default function ProductsAdmin() {
                 <th>STT</th>
                 <th>Ảnh</th>
                 <th>Tiêu đề</th>
-                <th>Danh mục</th>
                 <th>Trạng thái</th>
                 <th>Tạo lúc</th>
                 <th>Hành động</th>
               </tr>
             </thead>
             <tbody>
-              {items.map((item, idx) => (
+              {filteredItems.map((item, idx) => (
                 <tr
                   key={item?._id || item?.id || idx}
                   className="text-sm text-slate-700"
@@ -631,9 +635,6 @@ export default function ProductsAdmin() {
                       Order:{" "}
                       {Number.isFinite(Number(item?.order)) ? item.order : 0}
                     </div>
-                  </td>
-                  <td>
-                    <CategoryBadge category={item?.category} />
                   </td>
                   <td>
                     <StatusBadge active={item?.isActive !== false} />
@@ -664,15 +665,15 @@ export default function ProductsAdmin() {
                 </tr>
               ))}
 
-              {!loadingList && items.length === 0 ? (
+              {!loadingList && filteredItems.length === 0 ? (
                 <tr>
                   <td
                     className="px-4 py-8 text-center text-sm text-slate-500"
-                    colSpan={7}
+                    colSpan={6}
                   >
-                    Chưa có sản phẩm nào. Bấm{" "}
+                    {labels.emptyList}. Bấm{" "}
                     <span className="font-semibold text-slate-900">
-                      + Thêm sản phẩm
+                      {labels.emptyAction}
                     </span>{" "}
                     để tạo mới.
                   </td>
